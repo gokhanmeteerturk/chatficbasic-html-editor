@@ -1,0 +1,22 @@
+body {
+
+  background-color: #f2f2ff;
+}
+
+.accordion-body {
+  height: calc(100vh - 160px) !important;
+}
+
+.scrollable {
+
+  overflow-y: auto;
+}
+
+.accordion-button {
+  background-color: #ddd !important;
+  font-weight:bold;
+  border-top: 2px solid #aaa !important;
+}
+h2 small{
+  font-size:13px;
+}
