@@ -35,13 +35,12 @@ var chatfic = {
 var storyInfoComplete = false;
 var storyInfoMistakes = [];
 const storyInfoCompleteLabel = document.getElementById("storyInfoComplete");
- 
-
 
 function setModified() {
-    var time = time;
     chatfic.modified = new Date().getTime();
-    document.getElementById('cf-modified').innerText = chatfic.modified;
+    if(document.getElementById('cf-modified')){
+        document.getElementById('cf-modified').innerText = chatfic.modified;
+    }
 }
 function setEpisode(episode) {
     chatfic.episode = episode;
@@ -94,15 +93,24 @@ function checkChatfic() {
     if(chatfic.author.length < 3) storyInfoMistakes.push('Author: should be at least 3 characters long.');
     if(chatfic.patreonusername.length < 3) storyInfoMistakes.push('Patreon Username: should be at least 3 characters long.');
 
+
+    document.getElementById('missingInfo').innerHTML='';
     if (storyInfoMistakes.length == 0) {
         storyInfoComplete = true;
-        storyInfoCompleteLabel.innerHtml='complete';
+        storyInfoCompleteLabel.innerHTML='complete';
         storyInfoCompleteLabel.className='text-success';
+        document.getElementById('whatsmissingbutton').style.display='none';
     }
     else{
         storyInfoComplete = false;
-        storyInfoCompleteLabel.innerHtml='incomplete';
+        storyInfoCompleteLabel.innerHTML='incomplete';
         storyInfoCompleteLabel.className='text-danger';
+        let listText ='';
+        storyInfoMistakes.forEach(mistakeText => {
+            listText = listText+`<li>${mistakeText}</li>`;
+        });
+        document.getElementById('missingInfo').innerHTML=listText;
+        document.getElementById('whatsmissingbutton').style.display='inline-block';
     }
 }
 function refreshCharacters() {

@@ -2,9 +2,12 @@ body {
 
   background-color: #f2f2ff;
 }
-
+.accordion{
+  margin-top:36px;
+  height: calc(100vh - 36px) !important;
+}
 .accordion-body {
-  height: calc(100vh - 160px) !important;
+  height: calc(100vh - 196px) !important;
 }
 
 .scrollable {
@@ -14,9 +17,89 @@ body {
 
 .accordion-button {
   background-color: #ddd !important;
-  font-weight:bold;
+  font-weight: bold;
   border-top: 2px solid #aaa !important;
 }
-h2 small{
-  font-size:13px;
+
+h2 small {
+  font-size: 13px;
+}
+
+@media screen and (min-width: 650px) {
+  .accordion-button {
+    text-align: right;
+  }
+
+  .accordion-button span {
+    flex-grow: 1;
+    text-align: right;
+    padding-right: 18px;
+  }
+
+  .accordion-button::after {
+    flex-grow: 0;
+  }
+
+  .accordion {
+    margin-top:0px;
+    height: 100vw !important;
+    width: calc(100vh - 36px);
+    position: fixed;
+    top: calc(100vh);
+    left: 0;
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    -webkit-transform: rotate(-90deg);
+    -webkit-backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: none !important;
+    backface-visibility: hidden;
+    will-change: transform;
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+
+  .accordion-collapse.show {
+    height: calc(100vw - 160px) !important;
+  }
+
+  .accordion-body {
+    position: relative;
+    transform-origin: left top;
+    transform: rotate(90deg);
+    right: calc(-100vh + 36px);
+    height: calc(100vh - 36px) !important;
+    width: calc(100vw - 160px);
+    -webkit-backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    backface-visibility: hidden;
+    will-change: transform;
+    -webkit-font-smoothing: subpixel-antialiased;
+    transition: none !important;
+  }
+
+  .form-text,
+  .btn {
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    backface-visibility: hidden;
+    will-change: transform;
+    -webkit-font-smoothing: subpixel-antialiased;
+    transition: none !important;
+  }
+}
+
+@media screen and (min-width: 950px) {
+  .collapse:not(.show) {
+    display: block !important;
+}
+  .accordion-collapse, .accordion-collapse.show {
+    height: calc(33vw - 54px) !important;
+  }
+  .accordion-body {
+    width: calc(33vw - 54px);
+  }
+  .accordion-button::after {display:none;}
+
+
 }

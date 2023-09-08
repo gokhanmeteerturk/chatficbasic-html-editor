@@ -15,12 +15,15 @@
 </head>
 
 <body>
+  <nav style="position:fixed;top:0;left:0;z-index:99;height:36px;background:rgb(201,201,201);width:100%;box-sizing: border-box;padding:4px;">
+    <small><b>Chatfic Editor by chatficlab.com</b></small>
+  </nav>
   <div class="accordion open accordion-flush" id="accordionFlushExample" style="height:100vh;">
     <div class="accordion-item">
       <h2 class="accordion-header" id="flush-headingOne">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
           data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-          Settings & Pages
+          <span>Settings & Pages</span>
         </button>
       </h2>
       <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
@@ -30,53 +33,17 @@
             <h2>Story info <small>(<span id="cf-title">No Title</span>)</small></h2>
             Story info is <span id="storyInfoComplete" class="text-danger">incomplete</span>.
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#storyInfoErrorsModal">
-              Launch demo modal
+            <button id="whatsmissingbutton" type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#storyInfoErrorsModal">
+              ?
             </button>
 
-            <!-- Modal -->
-            <div class="modal fade" id="storyInfoErrorsModal" tabindex="-1" aria-labelledby="storyInfoErrorsModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="storyInfoErrorsModalLabel">Story Info Missing Information</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div id="missingInfo"></div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+         
+
             <button id="editInfoButton"
               class="btn btn-primary btn-sm ml-2">Edit Info</button>
+
             <br /><br />
 
-          <!-- Story Info Modal -->
-          <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="infoModalLabel">Edit Story Info</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <span>Changes are saved automatically as you type them.</span>
-                  <div class="mb-3">
-                    <label for="newTitleInput" class="form-label">Title</label>
-                    <input type="text" oninput="setTitle(this.value);" class="form-control" id="newTitleInput">
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div><!-- / pages modal-->
-          
             <h2>Page Management</h2>
             Select current page:
             <select id="pageSelect" class="form-select"></select>
@@ -88,39 +55,14 @@
             </div>
           </div>
 
-          <!-- Pages Modal -->
-          <div class="modal fade" id="pageModal" tabindex="-1" aria-labelledby="pageModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="pageModalLabel">Edit Pages</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <ul id="pageList" class="list-group">
-                    <!-- Pages will be dynamically added here -->
-                  </ul>
-                  <div class="mb-3">
-                    <label for="newPageInput" class="form-label">Add New Page</label>
-                    <input type="text" class="form-control" id="newPageInput">
-                  </div>
-                  <button id="addPageButton" class="btn btn-success">Add Page</button>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div><!-- / pages modal-->
-
         </div> <!-- /accordion body 1 -->
       </div> <!-- /accordion collapse 1 -->
     </div> <!-- /accordion item 1 -->
     <div class="accordion-item">
       <h2 class="accordion-header" id="flush-headingTwo">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        <button class="accordion-button" type="button" data-bs-toggle="collapse"
           data-bs-target="#flush-collapseTwo" aria-expanded="true" aria-controls="flush-collapseTwo">
-          Chat Editor
+          <span>Chat Editor</span>
         </button>
       </h2>
       <div id="flush-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="flush-headingTwo"
@@ -179,7 +121,7 @@
       <h2 class="accordion-header" id="flush-headingThree">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
           data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-          ChatficBasic Code
+          <span>ChatficBasic Code</span>
         </button>
       </h2>
       <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree"
@@ -190,7 +132,78 @@
       </div> <!-- /accordion collapse 3-->
     </div> <!-- /accordion item 3 -->
   </div>
+     <!-- What's Missing Modal -->
+     <div class="modal fade" id="storyInfoErrorsModal" tabindex="-1" aria-labelledby="storyInfoErrorsModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="storyInfoErrorsModalLabel">
+              Story Info Missing Information
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <ul id="missingInfo"></ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div> <!-- / What's Missing Modal -->
+
+    
+          <!-- Story Info Modal -->
+          <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="infoModalLabel">Edit Story Info</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <span>Changes are saved automatically as you type them.</span>
+                  <div class="mb-3">
+                    <label for="newTitleInput" class="form-label">Title</label>
+                    <input type="text" oninput="setTitle(this.value);" class="form-control" id="newTitleInput">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Done</button>
+                </div>
+              </div>
+            </div>
+          </div><!-- /Story Info modal-->
+
+          <!-- Pages Modal -->
+          <div class="modal fade" id="pageModal" tabindex="-1" aria-labelledby="pageModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="pageModalLabel">Edit Pages</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <ul id="pageList" class="list-group">
+                    <!-- Pages will be dynamically added here -->
+                  </ul>
+                  <div class="mb-3">
+                    <label for="newPageInput" class="form-label">Add New Page</label>
+                    <input type="text" class="form-control" id="newPageInput">
+                  </div>
+                  <button id="addPageButton" class="btn btn-success">Add Page</button>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div><!-- / pages modal-->
+
   <script src="main.js"></script>
+  <script>
+    checkChatfic();
+  </script>
 </body>
 
 </html>
