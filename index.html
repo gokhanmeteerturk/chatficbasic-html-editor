@@ -11,7 +11,19 @@
   <link href="bs/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Bootstrap JS CDN script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
   <script src="bs/js/bootstrap.bundle.min.js"></script>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+  <symbol id="success" fill="#198754" width="22px" height="22px" viewBox="-1.7 0 20.4 20.4">
+    <path  d="M16.417 10.283A7.917 7.917 0 1 1 8.5 2.366a7.916 7.916 0 0 1 7.917 7.917zm-4.105-4.498a.791.791 0 0 0-1.082.29l-3.828 6.63-1.733-2.08a.791.791 0 1 0-1.216 1.014l2.459 2.952a.792.792 0 0 0 .608.285.83.83 0 0 0 .068-.003.791.791 0 0 0 .618-.393L12.6 6.866a.791.791 0 0 0-.29-1.081z"/>
+  </symbol>
+  <symbol id="fail" fill="#6c757d" width="22px" height="22px" viewBox="-1 0 19 19">
+    <path d="M16.417 9.6A7.917 7.917 0 1 1 8.5 1.683 7.917 7.917 0 0 1 16.417 9.6zm-5.352.168a6.082 6.082 0 0 0-.139-1.32 3.285 3.285 0 0 0-.444-1.093 2.29 2.29 0 0 0-.792-.745 2.344 2.344 0 0 0-1.18-.278 2.37 2.37 0 0 0-1.186.278 2.318 2.318 0 0 0-.802.745 3.22 3.22 0 0 0-.449 1.093 6.35 6.35 0 0 0 0 2.644 3.314 3.314 0 0 0 .45 1.107 2.238 2.238 0 0 0 1.986 1.042 2.207 2.207 0 0 0 1.973-1.042 3.382 3.382 0 0 0 .444-1.107 6.14 6.14 0 0 0 .14-1.324zm-1.63-.676q.037.37.037.676 0 .315-.037.69a3.39 3.39 0 0 1-.139.694 1.504 1.504 0 0 1-.291.537.626.626 0 0 1-.496.218.64.64 0 0 1-.5-.218 1.509 1.509 0 0 1-.301-.537 3.175 3.175 0 0 1-.144-.694q-.037-.375-.037-.69 0-.306.037-.676a3.174 3.174 0 0 1 .144-.69 1.509 1.509 0 0 1 .3-.537.64.64 0 0 1 .501-.218.626.626 0 0 1 .495.218 1.504 1.504 0 0 1 .292.537 3.39 3.39 0 0 1 .14.69z"/>
+  </symbol>
+</svg>
+
+
 </head>
 
 <body>
@@ -30,28 +42,40 @@
         data-bs-parent="#accordionFlushExample">
         <div class="accordion-body">
           <div class="container">
-            <h2>Story info <small>(<span id="cf-title">No Title</span>)</small></h2>
+            
+            
+            <div class="alert p-1 alert-secondary d-flex align-items-center align-baseline" role="alert">
+              <div class="bi bi-exclamation-triangle-fill flex-shrink-0 ms-1 align-baseline me-2 fs-4 lh-1"><b>①</b></div>
+              <span style="font-weight:500;">
+                <small>Story info <sup>(<span id="cf-title">No Title</span>)</sup></small>
+              </span>
+            </div>
             Story info is <span id="storyInfoComplete" class="text-danger">incomplete</span>.
             <!-- Button trigger modal -->
             <button id="whatsmissingbutton" type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#storyInfoErrorsModal">
               ?
             </button>
-
-         
-
             <button id="editInfoButton"
               class="btn btn-primary btn-sm ml-2">Edit Info</button>
 
-            <br /><br />
+            <div class="alert p-1 mt-3 alert-secondary d-flex align-items-center align-baseline" role="alert">
+              <div class="bi bi-exclamation-triangle-fill flex-shrink-0 ms-1 align-baseline me-2 fs-4 lh-1">
+                <b>②</b>
+              </div>
+              <span style="font-weight:500;"><small>Page Management</small></span>
+            </div>
+            <button id="editPagesButton" class="btn btn-primary btn-sm">Add / Edit Pages</button>
 
-            <h2>Page Management</h2>
-            Select current page:
-            <select id="pageSelect" class="form-select"></select>
-            <button id="editPagesButton" class="mt-2 btn btn-primary btn-sm">Add / Edit Pages</button>
-            <div class="form-text">Pages are just a way to split your story into parts so you can find them and link
-              them easier.<br />If your story doesn't have any options for the player to choose from, you don't need
-              multiple pages. You can have just one page.<br />But if you want players to have multiple choices, you
-              should group your messages into different 'pages' so you can link different options to different pages.
+            <div class="form-text text-xs lh-1">
+              <sub>If you want players to have multiple choices, you
+              should put your messages into different 'pages' so you can create links between them.
+              </sub>
+            </div>
+            <h6 class="mt-3">Page Links</h6>
+            <button class="btn btn-primary btn-sm">Add New Link</button>
+
+            <div class="mt-2">
+              <div id="page-options-lister"></div>
             </div>
           </div>
 
@@ -69,15 +93,67 @@
         data-bs-parent="#accordionFlushExample">
         <div class="accordion-body show">
           <div class="d-flex flex-column h-100">
+            <div class="d-flex flex-row align-middle">
+              <div class="align-middle"><span class="me-2 align-middle">Page:</span></div>
+              <div class="flex-grow-1 align-middle">
+                <select id="pageSelect" class="form-select form-select-sm"></select>
+              </div>
+            </div>
+            <div>
+              <div>&nbsp;</div>
+            </div>
             <div class="flex-grow-1 flex-fill scrollable">
               <div id="chatscreen" class="chatscreen">
-                <br><br><br><br><br><br>
-                <br><br><br><br><br><br>
-                <br><br><br><br><br><br>
-                test1
-                <br><br><br><br><br><br>
-                <br><br><br><br><br><br>
-                <br><br><br><br><br><br>
+
+                <div class="chat">
+                  <div class="right messages">
+                    <div class="message last">
+                      Dude
+                     </div>
+                  </div>
+                  <div class="left messages">
+                    <div class="message">
+                      Hey!
+                    </div>
+                    <div class="message">
+                      You there?
+                    </div>
+                    <div class="message last">
+                      Hello, how's it going?
+                    </div>
+                  </div>
+                  <div class="left messages">
+                    <div class="message">
+                      Hey!
+                    </div>
+                    <div class="message">
+                      You there?
+                    </div>
+                    <div class="message last">
+                      Hello, how's it going?
+                    </div>
+                  </div>
+                  <div class="left messages">
+                    <div class="message">
+                      Hey!
+                    </div>
+                    <div class="message">
+                      You there?
+                    </div>
+                    <div class="message last">
+                      Hello, how's it going?
+                    </div>
+                  </div>
+                  <div class="right messages">
+                    <div class="message">
+                      Great thanks!
+                    </div> 
+                    <div class="message last">
+                      How about you?
+                     </div>
+                  </div>
+                </div>
+
               </div><!-- / chatscreen -->
             </div> <!-- /flex grow-1 -->
             <div class="chatbar">
@@ -203,6 +279,7 @@
   <script src="main.js"></script>
   <script>
     checkChatfic();
+    refreshPageOptionsList();
   </script>
 </body>
 

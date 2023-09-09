@@ -1,3 +1,8 @@
+function setTooltips(){
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+}
+
 var defaultTitle = "My Chatfic Story";
 var defaultAuthor = "/u/myself";
 var defaultPatreonusername = "mypatreonusername";
@@ -34,6 +39,11 @@ var chatfic = {
 };
 var storyInfoComplete = false;
 var storyInfoMistakes = [];
+
+let pages = [{id:1, name:'initial', messages:[], options:[{to:1}]}];
+let selectedPageId = 1;
+
+
 const storyInfoCompleteLabel = document.getElementById("storyInfoComplete");
 
 function setModified() {
@@ -116,6 +126,55 @@ function checkChatfic() {
 function refreshCharacters() {
 
 }
+function refreshPageOptionsList(){
+    let pageOptionsList = "";
+    pages.forEach(page => {
+        let optionsPart = '';
+        if(page.options.length == 0){
+            optionsPart = `<button class="btn btn-danger btn-xs">Set<span class="d-none d-sm-inline"> options</span></button>`;
+        }
+        else if(page.options.length == 1){
+            optionsPart = pages.find(x => x.id === page.options[0].to).name;
+        }
+        else{
+            // multiple options
+            optionPageNames = '';
+            page.options.forEach(pageOption => {
+                optionPageNames += ", " + pages.find(x => x.id === page.options[0].to).name;
+            });
+            optionsPageNames = optionsPageNames.slice(2);
+            optionsPart = `<span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="${optionsPageNames}" class="badge rounded-pill bg-secondary">
+            ${page.options.length} options
+            </span>`;
+        }
+        let status = "success";
+        let fromsText = "aaa";
+        let pageOption = `
+            <div class="d-flex justify-content-between mt-2">
+                <div class="arrow-start-text">
+                <svg width="22" height="22" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="${fromsText}">
+                    <use xlink:href="#${status}"/>
+                </svg>
+                </div>
+                <div class="flex-grow-1">
+                <div class="arrowstart"></div>
+                </div>
+                <div class="arrow-middle-text">
+                    ${page.name}
+                </div>
+                <div class="flex-grow-1">
+                <div class="arrowend"></div>
+                </div>
+                <div class="arrow-end-text">
+                ${optionsPart}
+                </div>
+            </div>`;
+        pageOptionsList += pageOption;
+    });
+  let pageOptionsLister = document.getElementById('page-options-lister');
+  pageOptionsLister.innerHTML=pageOptionsList;
+}
+
 function addMessage() {
     // Fetch input values
     var chatroom = document.getElementById("chatroom").value;
@@ -144,8 +203,6 @@ function addMessage() {
 
 
 
-let pages = [];
-let selectedPageIndex = 0;
 
 const pageSelect = document.getElementById("pageSelect");
 const editInfoButton = document.getElementById("editInfoButton");
@@ -173,16 +230,16 @@ function populatePageSelect() {
     pageSelect.innerHTML = "";
     for (let i = 0; i < pages.length; i++) {
         const option = document.createElement("option");
-        option.value = i;
+        option.value = pages[i].id;
         option.text = pages[i].name;
         pageSelect.appendChild(option);
     }
 }
 
-// Function to update the select element and selectedPageIndex
+// Function to update the select element and selectedPageId
 function updatePageSelect() {
     populatePageSelect();
-    pageSelect.value = selectedPageIndex;
+    pageSelect.value = selectedPageId;
 }
 
 function infoModalShow() {
@@ -197,25 +254,34 @@ function pagesModalShow() {
     for (let i = 0; i < pages.length; i++) {
         const li = document.createElement("li");
         li.className = "list-group-item";
+        if(i!=0){
+            li.innerHTML = `
+                <span class="align-middle">${pages[i].name}</span>
+                <button class="btn btn-danger btn-sm float-end remove-page-btn">Remove</button>
+                <button class="btn btn-primary btn-sm float-end mx-2 rename-page-btn">Rename</button>
+            `;
+        }
+        else{
         li.innerHTML = `
-            ${pages[i].name}
-            <button class="btn btn-danger btn-sm float-end remove-page-btn">Remove</button>
+        <span class="align-middle">${pages[i].name}</span>
             <button class="btn btn-primary btn-sm float-end mx-2 rename-page-btn">Rename</button>
         `;
+        }
         pageList.appendChild(li);
 
-        // Add a click event listener to the remove button for each page
-        const removeButton = li.querySelector(".remove-page-btn");
-        removeButton.addEventListener("click", () => {
-            // Remove the page from the array and update the select element
-            pages.splice(i, 1);
-            selectedPageIndex = 0; // Reset selectedPageIndex to the first page
-            updatePageSelect();
-            // Close the modal
-            //pageModal.hide();
-            pagesModalShow();
-        });
-
+        if(i!=0){
+            // Add a click event listener to the remove button for each page
+            const removeButton = li.querySelector(".remove-page-btn");
+            removeButton.addEventListener("click", () => {
+                // Remove the page from the array and update the select element
+                pages.splice(i, 1);
+                selectedPageId = 1; // Reset selectedPageId to the first page
+                updatePageSelect();
+                // Close the modal
+                //pageModal.hide();
+                pagesModalShow();
+            });
+        }
         const renameButton = li.querySelector(".rename-page-btn");
         renameButton.addEventListener("click", () => {
             // Use the prompt function to get a new name from the user
@@ -240,7 +306,7 @@ editPagesButton.addEventListener("click", () => {
 addPageButton.addEventListener("click", () => {
     const newPageName = newPageInput.value.trim();
     if (newPageName !== "") {
-        const newPage = { id: pages.length + 1, name: newPageName, extra: [] };
+        const newPage = { id: pages[pages.length-1].id + 1, name: newPageName, messages: [], options: [] };
         pages.push(newPage);
         newPageInput.value = "";
         updatePageSelect()
@@ -251,10 +317,11 @@ addPageButton.addEventListener("click", () => {
 
 // Initial population of the select element
 populatePageSelect();
-
+// initial tooltip setup
+setTooltips();
 
 
 // Event listener for select element change
 pageSelect.addEventListener("change", () => {
-    selectedPageIndex = parseInt(pageSelect.value);
+    selectedPageId = parseInt(pageSelect.value);
 });
