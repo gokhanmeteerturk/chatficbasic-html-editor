@@ -5,15 +5,24 @@ body {
   margin-top:36px;
   height: calc(100vh - 36px) !important;
 }
+.bg-slight{
+  background:#f2f2f2;
+}
 .accordion-body {
+  background:#f2f2f2;
   height: calc(100vh - 196px) !important;
 }
 
 .scrollable {
-
   overflow-y: auto;
 }
-
+.chatscroll{
+  border: 1px solid #aaa;
+}
+.list-group-sm .list-group-item {
+  font-size: .75rem;
+  padding: 0.25rem 0.75rem;
+}
 .accordion-button {
   background-color: #ddd !important;
   font-weight: bold;
@@ -23,10 +32,43 @@ body {
 h2 small {
   font-size: 13px;
 }
+#editPagesButton{
+  position: relative;
+  z-index: 5;
+}
 
+.message-input{
+  border: 1px solid #aaa;
+  border-radius:50px;
+  font-size:14px;
+  padding:4px 12px;
+  width:100%;
+  box-sizing: border-box;
+}
+.border-ycircle{
+  border-radius: 50px !important;
+}
 
+#character, #chatroom{
+  font-size:12px;
+  padding-right: 30px !important;
+}
 
-
+.chatroom-header{
+  background:linear-gradient(rgba(189, 204, 211, 255), rgba(220, 228, 231,255), rgba(236, 240, 242,255), rgba(255,255,255,0));
+  padding: 4px;
+  margin-top:8px;
+  font-size:13px;
+  text-align:center;
+  line-height:22px;
+  height:28px;
+  border-bottom:none;
+}
+.chatroom-header::before{
+  content:'Chatroom:';
+  font-weight: bold;
+  opacity: 0.85;
+}
 
 
 
@@ -38,18 +80,29 @@ h2 small {
 }
 
 .messages {
-  margin-top: 16px;
+  margin-top: 0px;
   display: flex;
   flex-direction: column;
 }
-
 .message {
+  position: relative;
+  z-index: 2;
   border-radius: 20px;
   padding: 4px 8px;
-  margin-top: 2px;
-  margin-bottom: 3px;
+  margin-top: 0px;
+  margin-bottom: 0px;
   display: inline-block;
   font-size:small;
+}
+.message:has(img){
+  border-radius: 10px;
+  padding: 2px 2px;
+}
+.message img{
+  max-width: 120px;
+  max-height: 150px;
+  margin: 4px;
+  border-radius: 6px;
 }
 
 .left {
@@ -98,6 +151,49 @@ h2 small {
   margin-left: 25%;
   background: #0085D1;
   position: relative;
+}
+
+cursor{
+  cursor:pointer;
+  opacity: 0;
+  position: relative;
+  height:2px;
+  background:grey;
+  width: 100%;
+  z-index: 8;
+  transition: opacity 0.1s ease;
+}
+cursor:hover, .messages:focus+cursor:not(.active){
+  transition: none;
+  cursor:pointer;
+  opacity: 0.7;  
+}
+cursor::after{
+  content: 'add messages here ?';
+  font-size: 11px;
+  font-weight: bold;
+  color:white;
+  display: inline-block;
+  position: absolute;
+  top:0;
+  left:50%;
+  margin-left: -60px;
+  width: 120px;
+  text-align: center;
+  background-color: grey;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+cursor.active{
+  opacity: 1;
+  background:orangered;
+  margin-bottom:8px;
+}
+cursor.active::after{
+  content: 'new messages position \00a0 \00a0 ✕' !important;
+  width:160px;
+  margin-left: -80px;
+  background-color: orangered;
 }
 
 .right .message.last:before {
@@ -172,6 +268,11 @@ h2 small {
   line-height: 1.5 !important;
   border-radius: 3px !important;
 }
+.btn-xs-tx{
+  padding: 1px 5px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
 
 .arrow-start-text{
   flex-grow: 0;
@@ -179,6 +280,25 @@ h2 small {
   height:22px;
   line-height: 20px;
   vertical-align: top;
+}
+#pageOptionsModal .btn-group .btn{
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+#pagedirect, #pagemultiple{
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  padding:8px;
+}
+#pagedirect{
+  border: 1px solid #0d6efd;
+  border-top: 6px solid #0d6efd;
+  background-color: rgba(13, 49, 253, 0.2);
+}
+#pagemultiple{
+  border: 1px solid #198754;
+  border-top: 6px solid #198754;
+  background-color: rgba(25, 135, 41, 0.2);
 }
 
 @media screen and (min-width: 576px) {
@@ -250,12 +370,18 @@ h2 small {
     display: block !important;
 }
   .accordion-collapse, .accordion-collapse.show {
-    height: calc(33vw - 54px) !important;
+    height: calc(39vw - 54px) !important;
   }
   .accordion-body {
-    width: calc(33vw - 54px);
+    width: calc(39vw - 54px);
   }
   .accordion-button::after {display:none;}
 
+  .accordion-item:last-child .accordion-collapse, .accordion-item:last-child .accordion-collapse.show{
+    height: calc(22vw - 54px) !important;
+  }
+  .accordion-item:last-child .accordion-body{
+    width: calc(22vw - 54px);
+  }
 
 }

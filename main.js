@@ -54,7 +54,9 @@ function setModified() {
 }
 function setEpisode(episode) {
     chatfic.episode = episode;
-    document.getElementById('cf-episode').innerText = chatfic.episode;
+    if(document.getElementById('cf-episode')){
+        document.getElementById('cf-episode').innerText = chatfic.episode;
+    }
     checkChatfic();
 }
 function setEpisodes(episodes) {
@@ -69,17 +71,23 @@ function setTitle(title) {
 }
 function setDescription(description) {
     chatfic.description = description;
-    document.getElementById('cf-description').innerText = chatfic.description;
+    if(document.getElementById('cf-description')){
+        document.getElementById('cf-description').innerText = chatfic.description;
+    }
     checkChatfic();
 }
 function setAuthor(author) {
     chatfic.author = author;
-    document.getElementById('cf-author').innerText = chatfic.author;
+    if(document.getElementById('cf-author')){
+        document.getElementById('cf-author').innerText = chatfic.author;
+    }
     checkChatfic();
 }
 function setPatreonusername(patreonusername) {
     chatfic.patreonusername = patreonusername;
-    document.getElementById('cf-patreonusername').innerText = chatfic.patreonusername;
+    if(document.getElementById('cf-patreonusername')){
+        document.getElementById('cf-patreonusername').innerText = chatfic.patreonusername;
+    }
     checkChatfic();
 }
 function setCharacter(slug, name, color = null, avatar = null) {
@@ -117,7 +125,7 @@ function checkChatfic() {
         storyInfoCompleteLabel.className='text-danger';
         let listText ='';
         storyInfoMistakes.forEach(mistakeText => {
-            listText = listText+`<li>${mistakeText}</li>`;
+            listText = listText+`<li class="small">${mistakeText}</li>`;
         });
         document.getElementById('missingInfo').innerHTML=listText;
         document.getElementById('whatsmissingbutton').style.display='inline-block';
@@ -131,7 +139,7 @@ function refreshPageOptionsList(){
     pages.forEach(page => {
         let optionsPart = '';
         if(page.options.length == 0){
-            optionsPart = `<button class="btn btn-danger btn-xs">Set<span class="d-none d-sm-inline"> options</span></button>`;
+            optionsPart = `<button onclick="showPageOptionsModal(${page.id});" class="btn btn-danger btn-xs">Set<span class="d-none d-sm-inline"> options</span></button>`;
         }
         else if(page.options.length == 1){
             optionsPart = pages.find(x => x.id === page.options[0].to).name;
@@ -175,6 +183,73 @@ function refreshPageOptionsList(){
   pageOptionsLister.innerHTML=pageOptionsList;
 }
 
+const pageOptionsModal = new bootstrap.Modal(document.getElementById("pageOptionsModal"));
+const pageOptionsTitle = document.getElementById('optionspagetitle');
+const pageOptionsTitleAlt = document.getElementById('optionspagetitlealt');
+
+function pageOptionsMultiple(isMultiple){
+    if(isMultiple){
+        document.getElementById('pagedirect').style.display='none';
+        document.getElementById('pagemultiple').style.display='block';
+    }
+    else{
+        document.getElementById('pagedirect').style.display='block';
+        document.getElementById('pagemultiple').style.display='none';
+    }
+}
+
+function showPageOptionsModal(pageId){
+    // get page by id:
+    let page = pages.find(x => x.id == pageId);
+    pageOptionsTitle.innerText = page.name;
+    pageOptionsTitleAlt.innerText = page.name;
+    if(page.options.length == 1){
+        populatePageSelect2(page.options[0].to);
+    }
+    else{
+        populatePageSelect2();
+        if(page.options.length > 1){
+            page.options.forEach(pageOption => {
+                let dflex = newPageOptionRow(pageOption.to);
+
+                document.getElementById('pageoptionslist').appendChild(dflex);
+            });
+        }
+        if(page.options.length < 4){
+            for (let i = 0; i < (4-page.options.length); i++) {
+                const xdflex = newPageOptionRow();
+                document.getElementById('pageoptionslist').appendChild(xdflex);
+            }
+        }
+    }
+    // show modal
+    pageOptionsModal.show();
+}
+function newPageOptionRow(pageTo=null){
+    let newPageSelectHolder = document.createElement("div");
+    newPageSelectHolder.className='input-group input-group-sm mb-2';
+
+    newPageSelectHolder.innerHTML=`<label class="input-group-text">
+        Option
+    </label>`;
+
+
+    
+    let optionName = document.createElement("input");
+    optionName.setAttribute('type','text');
+    optionName.className='form-control';
+    newPageSelectHolder.appendChild(optionName);
+
+    let selectLabel = document.createElement("label");
+    selectLabel.className='input-group-text';
+    selectLabel.innerText='will go to page';
+    newPageSelectHolder.appendChild(selectLabel);
+
+    let selector = newPageSelect(pageTo);
+    newPageSelectHolder.appendChild(selector);
+    return newPageSelectHolder;
+}
+
 function addMessage() {
     // Fetch input values
     var chatroom = document.getElementById("chatroom").value;
@@ -205,6 +280,7 @@ function addMessage() {
 
 
 const pageSelect = document.getElementById("pageSelect");
+const pageSelect2 = document.getElementById("pageSelect2");
 const editInfoButton = document.getElementById("editInfoButton");
 const infoModal = new bootstrap.Modal(document.getElementById("infoModal"));
 
@@ -219,12 +295,6 @@ const addPageButton = document.getElementById("addPageButton");
 editInfoButton.addEventListener("click", () => {
     infoModalShow();
 });
-
-
-
-
-
-
 // Function to populate the select element with options from the "pages" array
 function populatePageSelect() {
     pageSelect.innerHTML = "";
@@ -235,6 +305,44 @@ function populatePageSelect() {
         pageSelect.appendChild(option);
     }
 }
+
+function newPageSelect(selectId=null){
+
+
+    let newPageSelect = document.createElement("select");
+    newPageSelect.className='form-select form-select-sm';
+    
+    const option = document.createElement("option");
+    option.value = 0;
+    option.text = "";
+    newPageSelect.appendChild(option);
+    for (let i = 0; i < pages.length; i++) {
+        const option = document.createElement("option");
+        option.value = pages[i].id;
+        option.text = pages[i].name;
+        newPageSelect.appendChild(option);
+        if(selectId && selectId==pages[i].id){
+            option.selected=true;
+            newPageSelect.value=option.value;
+        }
+    }
+    
+    return newPageSelect;
+}
+function populatePageSelect2(selectId=null) {
+    pageSelect2.innerHTML = "";
+    for (let i = 0; i < pages.length; i++) {
+        const option = document.createElement("option");
+        option.value = pages[i].id;
+        option.text = pages[i].name;
+        pageSelect2.appendChild(option);
+        if(selectId && selectId==pages[i].id){
+            option.selected=true;
+            pageSelect2.value=option.value;
+        }
+    }
+}
+
 
 // Function to update the select element and selectedPageId
 function updatePageSelect() {
@@ -257,14 +365,14 @@ function pagesModalShow() {
         if(i!=0){
             li.innerHTML = `
                 <span class="align-middle">${pages[i].name}</span>
-                <button class="btn btn-danger btn-sm float-end remove-page-btn">Remove</button>
-                <button class="btn btn-primary btn-sm float-end mx-2 rename-page-btn">Rename</button>
+                <button class="btn btn-primary btn-xs float-end mt-1 ms-2 rename-page-btn">Rename</button>
+                <button class="btn btn-danger btn-xs float-end mt-1 ms-2 me-2 remove-page-btn">Remove</button>
             `;
         }
         else{
         li.innerHTML = `
         <span class="align-middle">${pages[i].name}</span>
-            <button class="btn btn-primary btn-sm float-end mx-2 rename-page-btn">Rename</button>
+            <button class="btn btn-primary btn-xs float-end mt-1 ms-2 rename-page-btn">Rename</button>
         `;
         }
         pageList.appendChild(li);
@@ -279,6 +387,7 @@ function pagesModalShow() {
                 updatePageSelect();
                 // Close the modal
                 //pageModal.hide();
+                refreshPageOptionsList();
                 pagesModalShow();
             });
         }
@@ -290,6 +399,7 @@ function pagesModalShow() {
                 pages[i].name = newName;
                 updatePageSelect();
                 //pageModal.hide();
+                refreshPageOptionsList();
                 pagesModalShow();
             }
         });
@@ -309,16 +419,36 @@ addPageButton.addEventListener("click", () => {
         const newPage = { id: pages[pages.length-1].id + 1, name: newPageName, messages: [], options: [] };
         pages.push(newPage);
         newPageInput.value = "";
-        updatePageSelect()
+        updatePageSelect();
+        refreshPageOptionsList();
         //pageModal.hide();
         pagesModalShow();
     }
 });
 
+function setCursor(cursorEl){
+if(cursorEl.className.indexOf('active') === -1){
+    // remove all cursors first
+    var cursors = document.querySelectorAll('cursor');
+    [].forEach.call(cursors, function(cursor) {
+    cursor.classList.remove('active');
+    });
+
+    // get message index
+    let messageEl = cursorEl.nextElementSibling;
+    document.getElementById("position").value = messageEl.getAttribute('data-index');
+}
+else{
+    document.getElementById("position").value=0;
+}
+cursorEl.classList.toggle('active');
+}
+
 // Initial population of the select element
 populatePageSelect();
 // initial tooltip setup
 setTooltips();
+
 
 
 // Event listener for select element change

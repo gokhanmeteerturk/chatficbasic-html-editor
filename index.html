@@ -21,6 +21,25 @@
   <symbol id="fail" fill="#6c757d" width="22px" height="22px" viewBox="-1 0 19 19">
     <path d="M16.417 9.6A7.917 7.917 0 1 1 8.5 1.683 7.917 7.917 0 0 1 16.417 9.6zm-5.352.168a6.082 6.082 0 0 0-.139-1.32 3.285 3.285 0 0 0-.444-1.093 2.29 2.29 0 0 0-.792-.745 2.344 2.344 0 0 0-1.18-.278 2.37 2.37 0 0 0-1.186.278 2.318 2.318 0 0 0-.802.745 3.22 3.22 0 0 0-.449 1.093 6.35 6.35 0 0 0 0 2.644 3.314 3.314 0 0 0 .45 1.107 2.238 2.238 0 0 0 1.986 1.042 2.207 2.207 0 0 0 1.973-1.042 3.382 3.382 0 0 0 .444-1.107 6.14 6.14 0 0 0 .14-1.324zm-1.63-.676q.037.37.037.676 0 .315-.037.69a3.39 3.39 0 0 1-.139.694 1.504 1.504 0 0 1-.291.537.626.626 0 0 1-.496.218.64.64 0 0 1-.5-.218 1.509 1.509 0 0 1-.301-.537 3.175 3.175 0 0 1-.144-.694q-.037-.375-.037-.69 0-.306.037-.676a3.174 3.174 0 0 1 .144-.69 1.509 1.509 0 0 1 .3-.537.64.64 0 0 1 .501-.218.626.626 0 0 1 .495.218 1.504 1.504 0 0 1 .292.537 3.39 3.39 0 0 1 .14.69z"/>
   </symbol>
+
+  <symbol id="character" height="16px" width="16px" viewBox="0 0 512 512">
+  <g>
+    <path class="st0" fill="#444444" d="M458.159,404.216c-18.93-33.65-49.934-71.764-100.409-93.431c-28.868,20.196-63.938,32.087-101.745,32.087
+      c-37.828,0-72.898-11.89-101.767-32.087c-50.474,21.667-81.479,59.782-100.398,93.431C28.731,448.848,48.417,512,91.842,512
+      c43.426,0,164.164,0,164.164,0s120.726,0,164.153,0C463.583,512,483.269,448.848,458.159,404.216z"/>
+    <path class="st0" fill="#444444" d="M256.005,300.641c74.144,0,134.231-60.108,134.231-134.242v-32.158C390.236,60.108,330.149,0,256.005,0
+      c-74.155,0-134.252,60.108-134.252,134.242V166.4C121.753,240.533,181.851,300.641,256.005,300.641z"/>
+  </g>
+  </symbol>
+
+  <symbol id="edit" height="16px" width="16px" viewBox="0 0 24 24">
+
+    <path fill-rule="evenodd" clip-rule="evenodd"
+    d="m3.99 16.854-1.314 3.504a.75.75 0 0 0 .966.965l3.503-1.314a3 3 0 0 0 1.068-.687L18.36 9.175s-.354-1.061-1.414-2.122c-1.06-1.06-2.122-1.414-2.122-1.414L4.677 15.786a3 3 0 0 0-.687 1.068zm12.249-12.63 1.383-1.383c.248-.248.579-.406.925-.348.487.08 1.232.322 1.934 1.025.703.703.945 1.447 1.025 1.934.058.346-.1.677-.348.925L19.774 7.76s-.353-1.06-1.414-2.12c-1.06-1.062-2.121-1.415-2.121-1.415z"
+      fill="#444444"/>
+
+  </symbol>
+
 </svg>
 
 
@@ -44,19 +63,20 @@
           <div class="container">
             
             
-            <div class="alert p-1 alert-secondary d-flex align-items-center align-baseline" role="alert">
+            <div class="alert p-1 alert-secondary mb-0 d-flex align-items-center align-baseline" role="alert">
               <div class="bi bi-exclamation-triangle-fill flex-shrink-0 ms-1 align-baseline me-2 fs-4 lh-1"><b>①</b></div>
               <span style="font-weight:500;">
                 <small>Story info <sup>(<span id="cf-title">No Title</span>)</sup></small>
               </span>
             </div>
-            Story info is <span id="storyInfoComplete" class="text-danger">incomplete</span>.
+            <small class="mt-2 align-bottom">Story info is <span id="storyInfoComplete" class="text-danger">incomplete</span>.</small>
             <!-- Button trigger modal -->
-            <button id="whatsmissingbutton" type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#storyInfoErrorsModal">
+            <button id="whatsmissingbutton" type="button" class="btn btn-outline-primary btn-xs mt-2" data-bs-toggle="modal" data-bs-target="#storyInfoErrorsModal">
               ?
             </button>
             <button id="editInfoButton"
-              class="btn btn-primary btn-sm ml-2">Edit Info</button>
+              class="btn btn-primary float-end btn-sm ml-2 mt-2">Edit Info</button>
+              <div class="clearfix"></div>
 
             <div class="alert p-1 mt-3 alert-secondary d-flex align-items-center align-baseline" role="alert">
               <div class="bi bi-exclamation-triangle-fill flex-shrink-0 ms-1 align-baseline me-2 fs-4 lh-1">
@@ -64,7 +84,7 @@
               </div>
               <span style="font-weight:500;"><small>Page Management</small></span>
             </div>
-            <button id="editPagesButton" class="btn btn-primary btn-sm">Add / Edit Pages</button>
+            <button id="editPagesButton" class="btn btn-primary btn-sm float-end ms-2">Add / Edit Pages</button>
 
             <div class="form-text text-xs lh-1">
               <sub>If you want players to have multiple choices, you
@@ -72,7 +92,6 @@
               </sub>
             </div>
             <h6 class="mt-3">Page Links</h6>
-            <button class="btn btn-primary btn-sm">Add New Link</button>
 
             <div class="mt-2">
               <div id="page-options-lister"></div>
@@ -94,16 +113,16 @@
         <div class="accordion-body show">
           <div class="d-flex flex-column h-100">
             <div class="d-flex flex-row align-middle">
-              <div class="align-middle"><span class="me-2 align-middle">Page:</span></div>
-              <div class="flex-grow-1 align-middle">
+              
+              <div class="input-group input-group-sm mb-2">
+                <label class="input-group-text" for="chatroom">
+                  Page
+                </label>
                 <select id="pageSelect" class="form-select form-select-sm"></select>
               </div>
             </div>
-            <div>
-              <div>&nbsp;</div>
-            </div>
-            <div class="flex-grow-1 flex-fill scrollable">
-              <div id="chatscreen" class="chatscreen">
+            <div class="flex-grow-1 flex-fill scrollable chatscroll">
+              <div id="chatscreen" class="chatscreen bg-white">
 
                 <div class="chat">
                   <div class="right messages">
@@ -111,35 +130,61 @@
                       Dude
                      </div>
                   </div>
-                  <div class="left messages">
+                  <div class="sticky-top chatroom-header">
+                    aaa
+                  </div>
+                  <div data-index="5" tabindex="0" class="left messages">
                     <div class="message">
                       Hey!
                     </div>
+                  </div>
+                  <cursor onclick="setCursor(this);"></cursor>
+                  <div data-index="5" tabindex="0" class="left messages">
                     <div class="message">
                       You there?
                     </div>
+                  </div>
+                  
+                  <div class="sticky-top chatroom-header">
+                    bbb
+                  </div>
+                  <cursor onclick="setCursor(this);"></cursor>
+                  <div data-index="5" tabindex="0" class="left messages">
                     <div class="message last">
                       Hello, how's it going?
                     </div>
                   </div>
-                  <div class="left messages">
+                  <cursor onclick="setCursor(this);"></cursor>
+                  <div data-index="5" tabindex="0" class="left messages">
                     <div class="message">
                       Hey!
                     </div>
+                  </div>
+                  <cursor onclick="setCursor(this);"></cursor>
+                  <div data-index="5" tabindex="0" class="left messages">
                     <div class="message">
                       You there?
                     </div>
+                  </div>
+                  <cursor onclick="setCursor(this);"></cursor>
+                  <div data-index="4" tabindex="0" class="left messages">
                     <div class="message last">
                       Hello, how's it going?
                     </div>
                   </div>
-                  <div class="left messages">
+                  <cursor onclick="setCursor(this);"></cursor>
+                  <div data-index="5" tabindex="0" class="left messages">
                     <div class="message">
                       Hey!
                     </div>
+                  </div>
+                  <cursor onclick="setCursor(this);"></cursor>
+                  <div data-index="5" tabindex="0" class="left messages">
                     <div class="message">
-                      You there?
+                      <img src="https://i0.wp.com/css-tricks.com/wp-content/uploads/2019/08/website-lightning.png?w=1200&ssl=1" alt="">
                     </div>
+                  </div>
+                  <div class="left messages">
                     <div class="message last">
                       Hello, how's it going?
                     </div>
@@ -148,6 +193,8 @@
                     <div class="message">
                       Great thanks!
                     </div> 
+                  </div>
+                  <div class="right messages">
                     <div class="message last">
                       How about you?
                      </div>
@@ -156,19 +203,62 @@
 
               </div><!-- / chatscreen -->
             </div> <!-- /flex grow-1 -->
-            <div class="chatbar">
-              <label for="chatroom">Chatroom:</label>
-              <select id="chatroom">
-                <!-- Options for chatrooms -->
-              </select>
+            <div class="chatbar mt-2">
 
-              <label for="character">Character:</label>
-              <select id="character">
-                <!-- Options for characters -->
-              </select>
 
-              <label for="message">Message:</label>
-              <input type="text" id="message">
+              <div class="row g-2 mb-2">
+                <div class="col-5">
+                  <div class="input-group input-group-sm">
+                    <label class="input-group-text" for="character">
+                      <svg width="16" height="16" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Character">
+                        <use xlink:href="#character"/>
+                      </svg>
+                    </label>
+                    <select class="form-select" id="character" aria-label="Example select with button addon">
+                      <!-- Options for characters -->
+                      <option selected>Choose...</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                    <button class="btn btn-outline-secondary btn-xs-tx" type="button">
+                      <svg width="16" height="16">
+                        <use xlink:href="#edit"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="col-7">
+                  <div class="input-group input-group-sm">
+                    <label class="input-group-text" for="chatroom">
+                      <small>Chatroom</small>
+                    </label>
+                    <select class="form-select" id="chatroom" aria-label="Example select with button addon">
+                      <!-- Options for characters -->
+                      <option selected>Choose...</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                    <button class="btn btn-outline-secondary btn-xs-tx" type="button">
+                      <svg width="16" height="16">
+                        <use xlink:href="#edit"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex">
+                <div class="flex-grow-1">
+                  <input type="text" class="message-input" placeholder="Type here" id="message"/>
+                </div>
+                <div class="flex-grow-0">
+                  
+              <button class="btn btn-sm ms-2 btn-outline-danger border-ycircle" onclick="addMessage()">Send</button>
+                </div>
+              </div>
+              
 
 
               <div class="btn-group my-2 btn-group-sm w-100" role="group" aria-label="Basic radio toggle button group">
@@ -185,7 +275,6 @@
               <label for="position">Position:</label>
               <input type="number" id="position" value="0">
 
-              <button onclick="addMessage()">Add</button>
             </div><!-- /chatbar -->
 
           </div><!-- /d-flex -->
@@ -197,7 +286,7 @@
       <h2 class="accordion-header" id="flush-headingThree">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
           data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-          <span>ChatficBasic Code</span>
+          <span>Save and Export</span>
         </button>
       </h2>
       <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree"
@@ -213,16 +302,16 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="storyInfoErrorsModalLabel">
+            <h1 class="modal-title fs-6" id="storyInfoErrorsModalLabel">
               Story Info Missing Information
             </h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body bg-slight">
             <ul id="missingInfo"></ul>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -234,18 +323,34 @@
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="infoModalLabel">Edit Story Info</h5>
+                  <h5 class="modal-title fs-6" id="infoModalLabel">Edit Story Info</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                  <span>Changes are saved automatically as you type them.</span>
-                  <div class="mb-3">
-                    <label for="newTitleInput" class="form-label">Title</label>
-                    <input type="text" oninput="setTitle(this.value);" class="form-control" id="newTitleInput">
+                <div class="modal-body bg-slight">
+                  <small>Changes are saved automatically as you type them.</small>
+                  <div class="mt-2 mb-3">
+
+                    <div class="input-group input-group-sm mb-2">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Title</span>
+                      <input oninput="setTitle(this.value);" id="newTitleInput" type="text" class="form-control">
+                    </div>
+                    <div class="input-group input-group-sm mb-2">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Description</span>
+                      <input oninput="setDescription(this.value);" id="newDescriptionInput" type="text" class="form-control">
+                    </div>
+                    <div class="input-group input-group-sm mb-2">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Author</span>
+                      <input placeholder="myself" oninput="setAuthor(this.value);" id="newAuthorInput" type="text" class="form-control">
+                    </div>
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Patreon Username</span>
+                      <input placeholder="mypatreonpage" oninput="setPatreonusername(this.value);" id="newPatreonusernameInput" type="text" class="form-control">
+                    </div>
+                    <div class="form-text small mb-2 ms-3 text-end"><sup>If your patreon page is <b>https://patreon.com/chatking/</b>, just put <b>chatking</b> above.</sup></div>
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Done</button>
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Done</button>
                 </div>
               </div>
             </div>
@@ -256,30 +361,68 @@
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="pageModalLabel">Edit Pages</h5>
+                  <h5 class="modal-title fs-6" id="pageModalLabel">Edit Pages</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body bg-slight">
                   <ul id="pageList" class="list-group">
                     <!-- Pages will be dynamically added here -->
                   </ul>
-                  <div class="mb-3">
-                    <label for="newPageInput" class="form-label">Add New Page</label>
-                    <input type="text" class="form-control" id="newPageInput">
+                  <div class="mb-2 mt-3">
+                    <label for="newPageInput" class="form-label small">Add New Page:</label>
+                    <input type="text" class="form-control form-control-sm" id="newPageInput">
                   </div>
-                  <button id="addPageButton" class="btn btn-success">Add Page</button>
+                  <button id="addPageButton" class="btn btn-success btn-sm">Add Page</button>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
                 </div>
               </div>
             </div>
           </div><!-- / pages modal-->
 
+          <!-- Page Options Modal -->
+          <div class="modal fade" id="pageOptionsModal" tabindex="-1" aria-labelledby="pageOptionsModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title fs-6" id="pageOptionsModalLabel">Page '<span id="optionspagetitle"></span>' Options</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-slight">
+                  <span class="text-center d-block mb-2">What will happen at the end of page '<b id="optionspagetitlealt"></b>'?</span>
+                  <div class="btn-group btn-group-sm btn-toolbar" role="group" aria-label="Basic radio toggle button group">
+                    <input onclick="pageOptionsMultiple(false);" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary" for="btnradio1">Go to another page</label>
+                  
+                    <input onclick="pageOptionsMultiple(true);" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                    <label class="btn btn-outline-success" for="btnradio2">Multiple Options</label>
+                  </div>
+                  <div id="pagedirect">
+                    <small>Story will continue from this page:</small>
+                    <select id="pageSelect2" class="form-select form-select-sm mt-2">
+                      <!-- pages will be dynamically added here -->
+                    </select>
+                  </div>
+                  <div id="pagemultiple" style="display:none;">
+                    <ul id="pageoptionslist"></ul>
+                  </div>
+                  <div class="mb-2 mt-3">
+                    <label for="newPageInput" class="form-label small">Add New Page:</label>
+                    <input type="text" class="form-control form-control-sm" id="newPageInput">
+                  </div>
+                  <button id="addPageButton" class="btn btn-success btn-sm">Add Page</button>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div><!-- / Page Options Modal -->
+
   <script src="main.js"></script>
   <script>
     checkChatfic();
-    refreshPageOptionsList();
   </script>
 </body>
 
