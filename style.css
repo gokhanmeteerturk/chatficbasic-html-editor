@@ -6,11 +6,24 @@ body {
   height: calc(100vh - 36px) !important;
 }
 .bg-slight{
-  background:#f2f2f2;
+  background:#f2f2f2 !important;
 }
 .accordion-body {
   background:#f2f2f2;
   height: calc(100vh - 196px) !important;
+}
+.cpoint{
+  cursor:pointer;
+}
+.only-if-multiple-pages, .d-flex.only-if-multiple-pages{
+  display:none !important;
+}
+.only-if-multiple-pages.multiple{
+  display:block !important;
+}
+.cmw5h{
+  margin: 0 auto;
+  max-width: 350px;
 }
 
 .scrollable {
@@ -28,7 +41,14 @@ body {
   font-weight: bold;
   border-top: 2px solid #aaa !important;
 }
-
+.setCustomChatroom{
+  text-decoration:none !important;
+  color: #999 !important;
+  cursor: pointer;
+}
+.setCustomChatroom:hover{
+  color: #666 !important;
+}
 h2 small {
   font-size: 13px;
 }
@@ -70,7 +90,9 @@ h2 small {
   opacity: 0.85;
 }
 
-
+.col-width-80-percent{
+  width:80vw;
+}
 
 .chat {
   width: 100%;
@@ -290,6 +312,12 @@ cursor.active::after{
   border-bottom-right-radius: 6px;
   padding:8px;
 }
+#page-options-lister .badge{
+  cursor:pointer;
+}
+.wslc{
+  width:100px !important;
+}
 #pagedirect{
   border: 1px solid #0d6efd;
   border-top: 6px solid #0d6efd;
@@ -338,6 +366,9 @@ cursor.active::after{
     height: calc(100vw - 160px) !important;
   }
 
+  .col-width-80-percent{
+    width:calc(80vw - 160px);
+  }
   .accordion-body {
     position: relative;
     transform-origin: left top;
@@ -374,6 +405,10 @@ cursor.active::after{
   }
   .accordion-body {
     width: calc(39vw - 54px);
+  }
+  
+  .col-width-80-percent{
+    width:calc(32vw - 54px);
   }
   .accordion-button::after {display:none;}
 

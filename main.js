@@ -21,26 +21,16 @@ var chatfic = {
         player: {
             name: "John"
         },
-        ayse: {
-            name: "Ayşe",
-            color: "0xFF0000FF"
+        jessica: {
+            name: "Jessica",
+            color: "black"
         },
-        kubra: {
-            name: "Kübra",
-            avatar: "kubra.jpg"
-        },
-        mehmet: {
-            name: "Mehmet"
-        },
-        ahmet: {
-            name: "Ahmet"
-        }
     }
 };
 var storyInfoComplete = false;
 var storyInfoMistakes = [];
 
-let pages = [{id:1, name:'initial', messages:[], options:[{to:1}]}];
+let pages = [{id:1, name:'initial', messages:[], options:[]}];
 let selectedPageId = 1;
 
 
@@ -90,10 +80,18 @@ function setPatreonusername(patreonusername) {
     }
     checkChatfic();
 }
-function setCharacter(slug, name, color = null, avatar = null) {
+function setCharacter(slug, name, color = null, avatar = null, replace=false) {
+    if(name.trim().length <3 || slug.length < 3){
+        alert('character name and slug can\'t be shorter than 3 characters');
+        return;
+    }
     // adds new character too, if doesn't exist. 
+    if(replace == false && chatfic.characters.hasOwnProperty(slug)){
+        alert('Character exists already');
+        return;
+    }
     chatfic.characters[slug] = {};
-    chatfic.characters[slug]['name'] = name;
+    chatfic.characters[slug]['name'] = name.trim();
     color && color != "" ? chatfic.characters[slug]['color'] = color : null;
     avatar && avatar != "" ? chatfic.characters[slug]['avatar'] = avatar : null;
     refreshCharacters();
@@ -132,26 +130,109 @@ function checkChatfic() {
     }
 }
 function refreshCharacters() {
+    const charactersListInModal = document.getElementById('charactersListInModal');
+    charactersListInModal.innerHTML='';
+    for (let key in chatfic.characters) {
+        const character = chatfic.characters[key];
 
+        const characterCard = document.createElement("li");
+        characterCard.className = "list-group-item small";
+
+        const characterRow = document.createElement('div');
+        characterRow.className='d-flex';
+        if(key != "player"){
+            const saveOverCell = document.createElement('div');
+            saveOverCell.className='flex-grow-0';
+            saveOverCell.innerHTML=`<button onclick="setCharacter('${key}', document.getElementById('newCharacterNameInput').value, document.getElementById('newCharacterColorInput').value, null, true)" class="btn btn-xs btn-success me-2 mt-1 mb-1">Save over this</button>`;
+            characterRow.appendChild(saveOverCell);
+        }
+        const infoCell = document.createElement('div');
+        infoCell.className='flex-grow-1 mt-1 mb-1';
+        infoCell.innerHTML=`<span class="d-sm-inline d-block"><b>Slug:</b> ${key}, </span><span class="d-sm-inline d-block"><b class="ms-sm-2">Name:</b> ${character.name}, </span><span class="d-sm-inline d-block"><b class="ms-sm-2">Color:</b> ${character.color ?? 'Not set'}</span>`;
+        characterRow.appendChild(infoCell);
+        if(key != "player"){
+            const removeCell = document.createElement('div');
+            removeCell.className='flex-grow-0';
+            removeCell.innerHTML=`<button onclick="deleteCharacter('${key}')" class="btn btn-xs btn-danger pb-1 mt-1 mb-1">
+            <svg width="16" height="16" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete">
+            <use xlink:href="#delete"/>
+          </svg>
+            </button>`;
+            characterRow.appendChild(removeCell);
+        }
+        else{
+            const renameCell = document.createElement('div');
+            renameCell.className='flex-grow-0';
+            renameCell.innerHTML=`<button onclick="renamePlayer()" class="btn btn-xs btn-primary  mt-1 mb-1">Rename</button>`;
+            characterRow.appendChild(renameCell);
+        }
+        characterCard.appendChild(characterRow);
+        charactersListInModal.appendChild(characterCard);
+      }
+
+      const characterSelect = document.getElementById('characterSelectMain');
+      const oldSlug = characterSelect.value;
+      characterSelect.innerHTML='';
+      
+      for (let key in chatfic.characters) {
+          const character = chatfic.characters[key];
+          const newOption = document.createElement('option');
+          newOption.value=key;
+          if(key == 'player'){
+            newOption.innerText=character.name + " (player)";
+          }
+          else{
+            newOption.innerText=character.name;
+          }
+          characterSelect.appendChild(newOption);
+          if(key == oldSlug){
+            newOption.selected=true;
+            characterSelect.value=key;
+          }
+      }
+      
+      
+
+}
+function renamePlayer(){
+    let newName = prompt("Please enter new name for the player").trim();
+    if (newName != null && newName.length > 1){
+    chatfic.characters.player.name=newName;
+    refreshCharacters();
+    }
+}
+function deleteCharacter(slug){
+    const canI = checkCurrentMessagesForCharacter(slug);
+    if(!canI){
+        alert('You can\'t delete a character without removing all messages from that character first');
+        return false;
+    }
+    delete chatfic.characters[slug];
+    refreshCharacters();
+}
+function checkCurrentMessagesForCharacter(slug){
+    // TODO: check
+    alert("check current characters TODO");
+    return true;
 }
 function refreshPageOptionsList(){
     let pageOptionsList = "";
     pages.forEach(page => {
         let optionsPart = '';
         if(page.options.length == 0){
-            optionsPart = `<button onclick="showPageOptionsModal(${page.id});" class="btn btn-danger btn-xs">Set<span class="d-none d-sm-inline"> options</span></button>`;
+            optionsPart = `<button onclick="showPageOptionsModal(${page.id});" class="btn btn-danger btn-xs">Set<span class="d-none d-sm-inline"> next</span></button>`;
         }
         else if(page.options.length == 1){
-            optionsPart = pages.find(x => x.id === page.options[0].to).name;
+            optionsPart = `<span onclick="showPageOptionsModal(${page.id});" class="badge rounded-pill bg-success">'${pages.find(x => x.id == page.options[0].to).name}'</span>`;
         }
         else{
             // multiple options
-            optionPageNames = '';
+            let optionsPageNames = '';
             page.options.forEach(pageOption => {
-                optionPageNames += ", " + pages.find(x => x.id === page.options[0].to).name;
+                optionsPageNames += ", " + pages.find(x => x.id == pageOption.to).name;
             });
             optionsPageNames = optionsPageNames.slice(2);
-            optionsPart = `<span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="${optionsPageNames}" class="badge rounded-pill bg-secondary">
+            optionsPart = `<span onclick="showPageOptionsModal(${page.id});" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="${optionsPageNames}" class="badge rounded-pill bg-secondary">
             ${page.options.length} options
             </span>`;
         }
@@ -186,6 +267,7 @@ function refreshPageOptionsList(){
 const pageOptionsModal = new bootstrap.Modal(document.getElementById("pageOptionsModal"));
 const pageOptionsTitle = document.getElementById('optionspagetitle');
 const pageOptionsTitleAlt = document.getElementById('optionspagetitlealt');
+const saveOptionsButton = document.getElementById('saveOptionsButton');
 
 function pageOptionsMultiple(isMultiple){
     if(isMultiple){
@@ -201,16 +283,24 @@ function pageOptionsMultiple(isMultiple){
 function showPageOptionsModal(pageId){
     // get page by id:
     let page = pages.find(x => x.id == pageId);
+    saveOptionsButton.setAttribute('data-pageId',page.id);
     pageOptionsTitle.innerText = page.name;
     pageOptionsTitleAlt.innerText = page.name;
     if(page.options.length == 1){
         populatePageSelect2(page.options[0].to);
     }
     else{
+        document.getElementById('pageoptionslist').innerHTML='';
         populatePageSelect2();
         if(page.options.length > 1){
             page.options.forEach(pageOption => {
-                let dflex = newPageOptionRow(pageOption.to);
+                let dflex = null;
+                if(pageOption.hasOwnProperty('message')){
+                    dflex = newPageOptionRow(pageOption.to, pageOption.message);
+                }
+                else{
+                    dflex = newPageOptionRow(pageOption.to);
+                }
 
                 document.getElementById('pageoptionslist').appendChild(dflex);
             });
@@ -225,7 +315,32 @@ function showPageOptionsModal(pageId){
     // show modal
     pageOptionsModal.show();
 }
-function newPageOptionRow(pageTo=null){
+
+function savePageOptions(){
+    let page = pages.find(x => x.id == saveOptionsButton.getAttribute('data-pageId'));
+    
+    page.options = [];
+    if(document.getElementById('btnradio1').checked){
+        // single option logic
+        page.options.push({to: parseInt(pageSelect2.value)});
+    }
+    else{
+        // multiple options logic
+        var inputGroups = document.querySelectorAll('#pageoptionslist .input-group');
+        [].forEach.call(inputGroups, function(inputGroup) {
+            let optionName = inputGroup.querySelector('input').value;
+            let optionPageId = inputGroup.querySelector('select').value;
+            if(optionName && optionName.length>1 && optionPageId !== null && optionPageId != 0){
+                page.options.push({to: parseInt(optionPageId), message: optionName});
+            }
+        });        
+    }
+    refreshPageOptionsList();
+    pageOptionsModal.hide();
+    setTooltips();
+}
+
+function newPageOptionRow(pageTo=null, optionMessage=null){
     let newPageSelectHolder = document.createElement("div");
     newPageSelectHolder.className='input-group input-group-sm mb-2';
 
@@ -237,18 +352,39 @@ function newPageOptionRow(pageTo=null){
     
     let optionName = document.createElement("input");
     optionName.setAttribute('type','text');
-    optionName.className='form-control';
+    optionName.className='form-control me-4 me-sm-0';
+    if(optionMessage){
+        optionName.value=optionMessage;
+    }
     newPageSelectHolder.appendChild(optionName);
 
+
+    let mobileBreaker = document.createElement("div");
+    mobileBreaker.className='flex-fill w-100 d-sm-none d-block';
+    newPageSelectHolder.appendChild(mobileBreaker);
+
+    let mobileFloater = document.createElement("div");
+    mobileFloater.className='flex-grow-1 d-sm-none d-block';
+    mobileFloater.innerHTML='&nbsp;';
+    newPageSelectHolder.appendChild(mobileFloater);
+    
     let selectLabel = document.createElement("label");
-    selectLabel.className='input-group-text';
-    selectLabel.innerText='will go to page';
+    selectLabel.className='input-group-text small ms-3 ms-sm-0';
+    selectLabel.innerHTML='<sup class="mt-2">will go to page:</sup>';
     newPageSelectHolder.appendChild(selectLabel);
 
     let selector = newPageSelect(pageTo);
     newPageSelectHolder.appendChild(selector);
     return newPageSelectHolder;
 }
+
+
+
+const charactersModal = new bootstrap.Modal(document.getElementById("charactersModal"));
+function showCharactersModal(){
+    charactersModal.show();
+}
+
 
 function addMessage() {
     // Fetch input values
@@ -310,7 +446,7 @@ function newPageSelect(selectId=null){
 
 
     let newPageSelect = document.createElement("select");
-    newPageSelect.className='form-select form-select-sm';
+    newPageSelect.className='form-select form-select-sm wslc flex-grow-0';
     
     const option = document.createElement("option");
     option.value = 0;
@@ -449,6 +585,13 @@ populatePageSelect();
 // initial tooltip setup
 setTooltips();
 
+function toggleMultiplePages(){
+    var stff = document.querySelectorAll('.only-if-multiple-pages'), i;
+
+    for (i = 0; i < stff.length; ++i) {
+        stff[i].classList.toggle('multiple');
+    }
+}
 
 
 // Event listener for select element change
