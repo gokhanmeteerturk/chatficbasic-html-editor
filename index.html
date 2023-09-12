@@ -11,61 +11,68 @@
   <link href="bs/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Bootstrap JS CDN script -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+    integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   <script src="bs/js/bootstrap.bundle.min.js"></script>
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
-  <symbol id="success" fill="#198754" width="22px" height="22px" viewBox="-1.7 0 20.4 20.4">
-    <path  d="M16.417 10.283A7.917 7.917 0 1 1 8.5 2.366a7.916 7.916 0 0 1 7.917 7.917zm-4.105-4.498a.791.791 0 0 0-1.082.29l-3.828 6.63-1.733-2.08a.791.791 0 1 0-1.216 1.014l2.459 2.952a.792.792 0 0 0 .608.285.83.83 0 0 0 .068-.003.791.791 0 0 0 .618-.393L12.6 6.866a.791.791 0 0 0-.29-1.081z"/>
-  </symbol>
-  <symbol id="fail" fill="#6c757d" width="22px" height="22px" viewBox="-1 0 19 19">
-    <path d="M16.417 9.6A7.917 7.917 0 1 1 8.5 1.683 7.917 7.917 0 0 1 16.417 9.6zm-5.352.168a6.082 6.082 0 0 0-.139-1.32 3.285 3.285 0 0 0-.444-1.093 2.29 2.29 0 0 0-.792-.745 2.344 2.344 0 0 0-1.18-.278 2.37 2.37 0 0 0-1.186.278 2.318 2.318 0 0 0-.802.745 3.22 3.22 0 0 0-.449 1.093 6.35 6.35 0 0 0 0 2.644 3.314 3.314 0 0 0 .45 1.107 2.238 2.238 0 0 0 1.986 1.042 2.207 2.207 0 0 0 1.973-1.042 3.382 3.382 0 0 0 .444-1.107 6.14 6.14 0 0 0 .14-1.324zm-1.63-.676q.037.37.037.676 0 .315-.037.69a3.39 3.39 0 0 1-.139.694 1.504 1.504 0 0 1-.291.537.626.626 0 0 1-.496.218.64.64 0 0 1-.5-.218 1.509 1.509 0 0 1-.301-.537 3.175 3.175 0 0 1-.144-.694q-.037-.375-.037-.69 0-.306.037-.676a3.174 3.174 0 0 1 .144-.69 1.509 1.509 0 0 1 .3-.537.64.64 0 0 1 .501-.218.626.626 0 0 1 .495.218 1.504 1.504 0 0 1 .292.537 3.39 3.39 0 0 1 .14.69z"/>
-  </symbol>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+    <symbol id="success" fill="#198754" width="22px" height="22px" viewBox="-1.7 0 20.4 20.4">
+      <path
+        d="M16.417 10.283A7.917 7.917 0 1 1 8.5 2.366a7.916 7.916 0 0 1 7.917 7.917zm-4.105-4.498a.791.791 0 0 0-1.082.29l-3.828 6.63-1.733-2.08a.791.791 0 1 0-1.216 1.014l2.459 2.952a.792.792 0 0 0 .608.285.83.83 0 0 0 .068-.003.791.791 0 0 0 .618-.393L12.6 6.866a.791.791 0 0 0-.29-1.081z" />
+    </symbol>
+    <symbol id="fail" fill="#6c757d" width="22px" height="22px" viewBox="-1 0 19 19">
+      <path
+        d="M16.417 9.6A7.917 7.917 0 1 1 8.5 1.683 7.917 7.917 0 0 1 16.417 9.6zm-5.352.168a6.082 6.082 0 0 0-.139-1.32 3.285 3.285 0 0 0-.444-1.093 2.29 2.29 0 0 0-.792-.745 2.344 2.344 0 0 0-1.18-.278 2.37 2.37 0 0 0-1.186.278 2.318 2.318 0 0 0-.802.745 3.22 3.22 0 0 0-.449 1.093 6.35 6.35 0 0 0 0 2.644 3.314 3.314 0 0 0 .45 1.107 2.238 2.238 0 0 0 1.986 1.042 2.207 2.207 0 0 0 1.973-1.042 3.382 3.382 0 0 0 .444-1.107 6.14 6.14 0 0 0 .14-1.324zm-1.63-.676q.037.37.037.676 0 .315-.037.69a3.39 3.39 0 0 1-.139.694 1.504 1.504 0 0 1-.291.537.626.626 0 0 1-.496.218.64.64 0 0 1-.5-.218 1.509 1.509 0 0 1-.301-.537 3.175 3.175 0 0 1-.144-.694q-.037-.375-.037-.69 0-.306.037-.676a3.174 3.174 0 0 1 .144-.69 1.509 1.509 0 0 1 .3-.537.64.64 0 0 1 .501-.218.626.626 0 0 1 .495.218 1.504 1.504 0 0 1 .292.537 3.39 3.39 0 0 1 .14.69z" />
+    </symbol>
 
-  <symbol id="character" height="16px" width="16px" viewBox="0 0 512 512">
-  <g>
-    <path class="st0" fill="#444444" d="M458.159,404.216c-18.93-33.65-49.934-71.764-100.409-93.431c-28.868,20.196-63.938,32.087-101.745,32.087
+    <symbol id="character" height="16px" width="16px" viewBox="0 0 512 512">
+      <g>
+        <path class="st0" fill="#444444" d="M458.159,404.216c-18.93-33.65-49.934-71.764-100.409-93.431c-28.868,20.196-63.938,32.087-101.745,32.087
       c-37.828,0-72.898-11.89-101.767-32.087c-50.474,21.667-81.479,59.782-100.398,93.431C28.731,448.848,48.417,512,91.842,512
-      c43.426,0,164.164,0,164.164,0s120.726,0,164.153,0C463.583,512,483.269,448.848,458.159,404.216z"/>
-    <path class="st0" fill="#444444" d="M256.005,300.641c74.144,0,134.231-60.108,134.231-134.242v-32.158C390.236,60.108,330.149,0,256.005,0
-      c-74.155,0-134.252,60.108-134.252,134.242V166.4C121.753,240.533,181.851,300.641,256.005,300.641z"/>
-  </g>
-  </symbol>
-
-  <symbol id="edit" height="16px" width="16px" viewBox="0 0 24 24">
-
-    <path fill-rule="evenodd" clip-rule="evenodd"
-    d="m3.99 16.854-1.314 3.504a.75.75 0 0 0 .966.965l3.503-1.314a3 3 0 0 0 1.068-.687L18.36 9.175s-.354-1.061-1.414-2.122c-1.06-1.06-2.122-1.414-2.122-1.414L4.677 15.786a3 3 0 0 0-.687 1.068zm12.249-12.63 1.383-1.383c.248-.248.579-.406.925-.348.487.08 1.232.322 1.934 1.025.703.703.945 1.447 1.025 1.934.058.346-.1.677-.348.925L19.774 7.76s-.353-1.06-1.414-2.12c-1.06-1.062-2.121-1.415-2.121-1.415z"
-      fill="#444444"/>
-
-  </symbol>
-  <symbol id="delete" height="16px" width="16px" viewBox="-3 0 32 32">
-
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-      <g id="Icon-Set-Filled" sketch:type="MSLayerGroup" transform="translate(-261.000000, -205.000000)"
-      fill="#ffffff">
-          <path d="M268,220 C268,219.448 268.448,219 269,219 C269.552,219 270,219.448 270,220 L270,232 C270,232.553 269.552,233 269,233 C268.448,233 268,232.553 268,232 L268,220 L268,220 Z M273,220 C273,219.448 273.448,219 274,219 C274.552,219 275,219.448 275,220 L275,232 C275,232.553 274.552,233 274,233 C273.448,233 273,232.553 273,232 L273,220 L273,220 Z M278,220 C278,219.448 278.448,219 279,219 C279.552,219 280,219.448 280,220 L280,232 C280,232.553 279.552,233 279,233 C278.448,233 278,232.553 278,232 L278,220 L278,220 Z M263,233 C263,235.209 264.791,237 267,237 L281,237 C283.209,237 285,235.209 285,233 L285,217 L263,217 L263,233 L263,233 Z M277,209 L271,209 L271,208 C271,207.447 271.448,207 272,207 L276,207 C276.552,207 277,207.447 277,208 L277,209 L277,209 Z M285,209 L279,209 L279,207 C279,205.896 278.104,205 277,205 L271,205 C269.896,205 269,205.896 269,207 L269,209 L263,209 C261.896,209 261,209.896 261,211 L261,213 C261,214.104 261.895,214.999 262.999,215 L285.002,215 C286.105,214.999 287,214.104 287,213 L287,211 C287,209.896 286.104,209 285,209 L285,209 Z" sketch:type="MSShapeGroup">
-          </path>
+      c43.426,0,164.164,0,164.164,0s120.726,0,164.153,0C463.583,512,483.269,448.848,458.159,404.216z" />
+        <path class="st0" fill="#444444" d="M256.005,300.641c74.144,0,134.231-60.108,134.231-134.242v-32.158C390.236,60.108,330.149,0,256.005,0
+      c-74.155,0-134.252,60.108-134.252,134.242V166.4C121.753,240.533,181.851,300.641,256.005,300.641z" />
       </g>
-    </g>
+    </symbol>
 
-  </symbol>
-  <symbol id="photo" fill="#444444" width="24" height="24" viewBox="0 0 52 52">
- <g>
-   <path d="M26,20c-4.4,0-8,3.6-8,8s3.6,8,8,8s8-3.6,8-8S30.4,20,26,20z"/>
-   <path d="M46,14h-5.2c-1.4,0-2.6-0.7-3.4-1.8l-2.3-3.5C34.4,7,32.7,6,30.9,6h-9.8c-1.8,0-3.5,1-4.3,2.7l-2.3,3.5
+    <symbol id="edit" height="16px" width="16px" viewBox="0 0 24 24">
+
+      <path fill-rule="evenodd" clip-rule="evenodd"
+        d="m3.99 16.854-1.314 3.504a.75.75 0 0 0 .966.965l3.503-1.314a3 3 0 0 0 1.068-.687L18.36 9.175s-.354-1.061-1.414-2.122c-1.06-1.06-2.122-1.414-2.122-1.414L4.677 15.786a3 3 0 0 0-.687 1.068zm12.249-12.63 1.383-1.383c.248-.248.579-.406.925-.348.487.08 1.232.322 1.934 1.025.703.703.945 1.447 1.025 1.934.058.346-.1.677-.348.925L19.774 7.76s-.353-1.06-1.414-2.12c-1.06-1.062-2.121-1.415-2.121-1.415z"
+        fill="#444444" />
+
+    </symbol>
+    <symbol id="delete" height="16px" width="16px" viewBox="-3 0 32 32">
+
+      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Icon-Set-Filled" sketch:type="MSLayerGroup" transform="translate(-261.000000, -205.000000)"
+          fill="#ffffff">
+          <path
+            d="M268,220 C268,219.448 268.448,219 269,219 C269.552,219 270,219.448 270,220 L270,232 C270,232.553 269.552,233 269,233 C268.448,233 268,232.553 268,232 L268,220 L268,220 Z M273,220 C273,219.448 273.448,219 274,219 C274.552,219 275,219.448 275,220 L275,232 C275,232.553 274.552,233 274,233 C273.448,233 273,232.553 273,232 L273,220 L273,220 Z M278,220 C278,219.448 278.448,219 279,219 C279.552,219 280,219.448 280,220 L280,232 C280,232.553 279.552,233 279,233 C278.448,233 278,232.553 278,232 L278,220 L278,220 Z M263,233 C263,235.209 264.791,237 267,237 L281,237 C283.209,237 285,235.209 285,233 L285,217 L263,217 L263,233 L263,233 Z M277,209 L271,209 L271,208 C271,207.447 271.448,207 272,207 L276,207 C276.552,207 277,207.447 277,208 L277,209 L277,209 Z M285,209 L279,209 L279,207 C279,205.896 278.104,205 277,205 L271,205 C269.896,205 269,205.896 269,207 L269,209 L263,209 C261.896,209 261,209.896 261,211 L261,213 C261,214.104 261.895,214.999 262.999,215 L285.002,215 C286.105,214.999 287,214.104 287,213 L287,211 C287,209.896 286.104,209 285,209 L285,209 Z"
+            sketch:type="MSShapeGroup">
+          </path>
+        </g>
+      </g>
+
+    </symbol>
+    <symbol id="photo" fill="#444444" width="24" height="24" viewBox="0 0 52 52">
+      <g>
+        <path d="M26,20c-4.4,0-8,3.6-8,8s3.6,8,8,8s8-3.6,8-8S30.4,20,26,20z" />
+        <path d="M46,14h-5.2c-1.4,0-2.6-0.7-3.4-1.8l-2.3-3.5C34.4,7,32.7,6,30.9,6h-9.8c-1.8,0-3.5,1-4.3,2.7l-2.3,3.5
      c-0.7,1.1-2,1.8-3.4,1.8H6c-2.2,0-4,1.8-4,4v24c0,2.2,1.8,4,4,4h40c2.2,0,4-1.8,4-4V18C50,15.8,48.2,14,46,14z M26,40
-     c-6.6,0-12-5.4-12-12s5.4-12,12-12s12,5.4,12,12S32.6,40,26,40z"/>
- </g>
-  </symbol>
+     c-6.6,0-12-5.4-12-12s5.4-12,12-12s12,5.4,12,12S32.6,40,26,40z" />
+      </g>
+    </symbol>
 
-</svg>
+  </svg>
 
 
 </head>
 
 <body>
-  <nav style="position:fixed;top:0;left:0;z-index:99;height:36px;background:rgb(201,201,201);width:100%;box-sizing: border-box;padding:4px;">
+  <nav
+    style="position:fixed;top:0;left:0;z-index:99;height:36px;background:rgb(201,201,201);width:100%;box-sizing: border-box;padding:4px;">
     <small><b>Chatfic Editor by chatficlab.com</b></small>
   </nav>
   <div class="accordion open accordion-flush" id="accordionFlushExample" style="height:100vh;">
@@ -80,53 +87,57 @@
         data-bs-parent="#accordionFlushExample">
         <div class="accordion-body">
           <div class="container h-100">
-            
+
             <div class="d-flex flex-column h-100">
-            <div class="flex-grow-0">
-            <div class="alert p-1 alert-secondary mb-0 d-flex align-items-center align-baseline" role="alert">
-              <div class="bi bi-exclamation-triangle-fill flex-shrink-0 ms-1 align-baseline me-2 fs-4 lh-1"><b>①</b></div>
-              <span style="font-weight:500;">
-                <small>Story info <sup>(<span id="cf-title">No Title</span>)</sup></small>
-              </span>
-            </div>
-            <small class="mt-2 align-bottom">Story info is <span id="storyInfoComplete" class="text-danger">incomplete</span>.</small>
-            <!-- Button trigger modal -->
-            <button id="whatsmissingbutton" type="button" class="btn btn-outline-primary btn-xs mt-2" data-bs-toggle="modal" data-bs-target="#storyInfoErrorsModal">
-              ?
-            </button>
-            <button id="editInfoButton"
-              class="btn btn-primary float-end btn-sm ml-2 mt-2">Edit Info</button>
-              <div class="clearfix"></div>
+              <div class="flex-grow-0">
+                <div class="alert p-1 alert-secondary mb-0 d-flex align-items-center align-baseline" role="alert">
+                  <div class="bi bi-exclamation-triangle-fill flex-shrink-0 ms-1 align-baseline me-2 fs-4 lh-1"><b>①</b>
+                  </div>
+                  <span style="font-weight:500;">
+                    <small>Story info <sup>(<span id="cf-title">No Title</span>)</sup></small>
+                  </span>
+                </div>
+                <small class="mt-2 align-bottom">Story info is <span id="storyInfoComplete"
+                    class="text-danger">incomplete</span>.</small>
+                <!-- Button trigger modal -->
+                <button id="whatsmissingbutton" type="button" class="btn btn-outline-primary btn-xs mt-2"
+                  data-bs-toggle="modal" data-bs-target="#storyInfoErrorsModal">
+                  ?
+                </button>
+                <button id="editInfoButton" class="btn btn-primary float-end btn-sm ml-2 mt-2">Edit Info</button>
+                <div class="clearfix"></div>
 
-          <div class="card bg-secondary mt-2 py-1 px-2">
-            <div class="form-check form-switch ps-0">
-              <input onchange="toggleMultiplePages();" class="form-check-input float-end cpoint" type="checkbox" id="multiplePagesCheckbox">
-              <label class="form-check-label small text-white cpoint" for="multiplePagesCheckbox">Non-Linear Story ?</label>
-            </div>
-          </div>
-            <div class="only-if-multiple-pages">
-            <div class="alert p-1 mt-1 alert-secondary d-flex align-items-center align-baseline" role="alert">
-              <div class="bi bi-exclamation-triangle-fill flex-shrink-0 ms-1 align-baseline me-2 fs-4 lh-1">
-                <b>②</b>
+                <div class="card bg-secondary mt-2 py-1 px-2">
+                  <div class="form-check form-switch ps-0">
+                    <input onchange="toggleMultiplePages();" class="form-check-input float-end cpoint" type="checkbox"
+                      id="multiplePagesCheckbox">
+                    <label class="form-check-label small text-white cpoint" for="multiplePagesCheckbox">Non-Linear Story
+                      ?</label>
+                  </div>
+                </div>
+                <div class="only-if-multiple-pages">
+                  <div class="alert p-1 mt-1 alert-secondary d-flex align-items-center align-baseline" role="alert">
+                    <div class="bi bi-exclamation-triangle-fill flex-shrink-0 ms-1 align-baseline me-2 fs-4 lh-1">
+                      <b>②</b>
+                    </div>
+                    <span style="font-weight:500;"><small>Page Management</small></span>
+                  </div>
+                  <button id="editPagesButton" class="btn btn-primary btn-sm float-end ms-2">Add / Edit Pages</button>
+
+                  <div class="form-text text-xs lh-1">
+                    <sub>If you want players to have multiple choices, you
+                      should put your messages into different 'pages' so you can create links between them.
+                    </sub>
+                  </div>
+                  <b class="d-block mt-2">Page Links</b>
+                </div>
               </div>
-              <span style="font-weight:500;"><small>Page Management</small></span>
-            </div>
-            <button id="editPagesButton" class="btn btn-primary btn-sm float-end ms-2">Add / Edit Pages</button>
-
-            <div class="form-text text-xs lh-1">
-              <sub>If you want players to have multiple choices, you
-              should put your messages into different 'pages' so you can create links between them.
-              </sub>
-            </div>
-            <b class="d-block mt-2">Page Links</b>
-            </div>
-</div> 
 
               <div class="flex-fill scrollable only-if-multiple-pages">
-            <div class="mt-2">
-                <div id="page-options-lister"></div>
+                <div class="mt-2">
+                  <div id="page-options-lister"></div>
+                </div>
               </div>
-            </div>
             </div>
           </div>
 
@@ -135,8 +146,8 @@
     </div> <!-- /accordion item 1 -->
     <div class="accordion-item">
       <h2 class="accordion-header" id="flush-headingTwo">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-          data-bs-target="#flush-collapseTwo" aria-expanded="true" aria-controls="flush-collapseTwo">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
+          aria-expanded="true" aria-controls="flush-collapseTwo">
           <span>Chat Editor</span>
         </button>
       </h2>
@@ -145,7 +156,7 @@
         <div class="accordion-body show">
           <div class="d-flex flex-column h-100">
             <div class="d-flex flex-row align-middle only-if-multiple-pages">
-              
+
               <div class="input-group input-group-sm mb-2">
                 <label class="input-group-text" for="pageSelect">
                   Page
@@ -155,114 +166,31 @@
             </div>
             <div id="chatscroll" class="flex-grow-1 flex-fill scrollable chatscroll">
               <div id="chatscreen" class="chatscreen bg-white">
-
-                <script>
-                  /*
-
-                <div class="chat pb-0">
-
-
-
-                  <div class="sticky-top chatroom-header">
-                    aaa
-                  </div>
-                  <div class="right messages">
-                    <div class="message last">
-                      Dude
-                     </div>
-                  </div>
-                  <div data-index="5" tabindex="0" class="left messages">
-                    <div class="message">
-                      Hey!
-                    </div>
-                  </div>
-                  <cursor onclick="setCursor(this);"></cursor>
-                  <div data-index="5" tabindex="0" class="left messages">
-                    <div class="message">
-                      You there?
-                    </div>
-                  </div>
-                  <cursor onclick="setCursor(this);"></cursor>
-                  
-                  <div class="sticky-top chatroom-header">
-                    bbb
-                  </div>
-                  <div data-index="5" tabindex="0" class="left messages">
-                    <div class="message last">
-                      Hello, how's it going?
-                    </div>
-                  </div>
-                  <cursor onclick="setCursor(this);"></cursor>
-                  <div data-index="5" tabindex="0" class="left messages">
-                    <div class="message">
-                      Hey!
-                    </div>
-                  </div>
-                  <cursor onclick="setCursor(this);"></cursor>
-                  <div data-index="5" tabindex="0" class="left messages">
-                    <div class="message">
-                      You there?
-                    </div>
-                  </div>
-                  <cursor onclick="setCursor(this);"></cursor>
-                  <div data-index="4" tabindex="0" class="left messages">
-                    <div class="message last">
-                      Hello, how's it going?
-                    </div>
-                  </div>
-                  <cursor onclick="setCursor(this);"></cursor>
-                  <div data-index="5" tabindex="0" class="left messages">
-                    <div class="message">
-                      Hey!
-                    </div>
-                  </div>
-                  <cursor onclick="setCursor(this);"></cursor>
-                  <div data-index="5" tabindex="0" class="left messages">
-                    <div class="message">
-                      <img src="https://i0.wp.com/css-tricks.com/wp-content/uploads/2019/08/website-lightning.png?w=1200&ssl=1" alt="">
-                    </div>
-                  </div>
-                  <div class="left messages">
-                    <div class="message last">
-                      Hello, how's it going?
-                    </div>
-                  </div>
-                  <div class="right messages">
-                    <div class="message">
-                      Great thanks!
-                    </div> 
-                  </div>
-                  <div class="right messages">
-                    <div class="message last">
-                      How about you?
-                     </div>
-                  </div>
-                </div>
-
-                  */
-                </script>
               </div><!-- / chatscreen -->
             </div> <!-- /flex grow-1 -->
             <div class="chatbar">
 
-              
               <div class="btn-group my-2 btn-group-sm w-100" role="group">
-                <button type="button" class="btn btn-outline-secondary flex-grow-0 dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                <button type="button"
+                  class="btn btn-outline-secondary flex-grow-0 dropdown-toggle dropdown-toggle-split"
+                  data-bs-toggle="dropdown" aria-expanded="false">
                   <span class="visually-hidden">Toggle Dropdown</span>
                 </button>
                 <input type="hidden" id="leftCharacterSlug" value="jessica">
                 <ul class="dropdown-menu shadow" id="weirdCharacterSelectLeft">
                 </ul>
-                <input value="0" type="radio" class="btn-check" name="sideradio" id="sideleft" autocomplete="off" checked/>
+                <input value="0" type="radio" class="btn-check" name="sideradio" id="sideleft" autocomplete="off"
+                  checked />
                 <label id="leftCharacterLabel" class="btn btn-outline-secondary" for="sideleft">
                   Jessica
                 </label>
-                <input value="1" type="radio" class="btn-check" name="sideradio" id="sidemiddle" autocomplete="off"/>
+                <input value="1" type="radio" class="btn-check" name="sideradio" id="sidemiddle" autocomplete="off" />
                 <label class="btn btn-outline-dark" for="sidemiddle">Middle</label>
 
-                <input value="2" type="radio" class="btn-check" name="sideradio" id="sideright" autocomplete="off"/>
+                <input value="2" type="radio" class="btn-check" name="sideradio" id="sideright" autocomplete="off" />
                 <label id="rightCharacterLabel" class="btn btn-outline-primary" for="sideright">John</label>
-                <button type="button" class="btn btn-outline-primary flex-grow-0 dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                <button type="button" class="btn btn-outline-primary flex-grow-0 dropdown-toggle dropdown-toggle-split"
+                  data-bs-toggle="dropdown" aria-expanded="false">
                   <span class="visually-hidden">Toggle Dropdown</span>
                 </button>
                 <input type="hidden" id="rightCharacterSlug" value="player">
@@ -275,38 +203,43 @@
                 <div class="flex-grow-0">
                   <div class="cpoint" onclick="showSendMediaModal();">
                     <svg class="me-2" width="24" height="24">
-                    <use xlink:href="#photo"/>
-                  </svg>
-                </div>
-                </div>
-                <div class="flex-grow-1">
-                  <input type="text" autocomplete="off" class="message-input" placeholder="Type here" id="message"/>
-                </div>
-                <div class="flex-grow-0">
-                  
-              <div class="btn-group dropup">
-                <button class="btn btn-sm ms-2 btn-outline-danger border-ycircle" onclick="addMessage()">Send</button>
-                <button class="btn btn-outline-danger btn-sm dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                  
-                </button>
-                <ul class="dropdown-menu shadow dropdown-menu-end col-width-80-percent bg-danger text-white">
-                  
-                <div class="form-check form-switch mx-1 mt-1 ms-3 ps-0 pe-2">
-                <input onchange="if(!this.checked){document.getElementById('customChatroomNameInput').value='';} document.getElementById('customchatroomname').classList.toggle('d-none');" class="form-check-input cpoint float-end" type="checkbox" value="" id="customChatroom">
-                <label class="form-check-label small cpoint align-top" for="customChatroom">
-                    Group or Non-player chat?
-                </label>
-                </div>
-                <div class="d-none" id="customchatroomname">
-                  <div class="mx-2">
-                    <div class="text-center"><small><b>Set Chatroom Name:</b></small></div>
-                    <div class="input-group input-group-sm">
-                      <input id="customChatroomNameInput" placeholder="Mike-Jessica or TheSquad" type="text" class="form-control">
-                    </div>
+                      <use xlink:href="#photo" />
+                    </svg>
                   </div>
                 </div>
-                </ul>
-              </div>
+                <div class="flex-grow-1">
+                  <input type="text" autocomplete="off" class="message-input" placeholder="Type here" id="message" />
+                </div>
+                <div class="flex-grow-0">
+
+                  <div class="btn-group dropup">
+                    <button class="btn btn-sm ms-2 btn-outline-danger border-ycircle"
+                      onclick="addMessage()">Send</button>
+                    <button class="btn btn-outline-danger btn-sm dropdown-toggle dropdown-toggle-split" type="button"
+                      data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+
+                    </button>
+                    <ul class="dropdown-menu shadow dropdown-menu-end col-width-80-percent bg-danger text-white">
+
+                      <div class="form-check form-switch mx-1 mt-1 ms-3 ps-0 pe-2">
+                        <input
+                          onchange="if(!this.checked){document.getElementById('customChatroomNameInput').value='';} document.getElementById('customchatroomname').classList.toggle('d-none');"
+                          class="form-check-input cpoint float-end" type="checkbox" value="" id="customChatroom">
+                        <label class="form-check-label small cpoint align-top" for="customChatroom">
+                          Group or Non-player chat?
+                        </label>
+                      </div>
+                      <div class="d-none" id="customchatroomname">
+                        <div class="mx-2">
+                          <div class="text-center"><small><b>Set Chatroom Name:</b></small></div>
+                          <div class="input-group input-group-sm">
+                            <input id="customChatroomNameInput" placeholder="Mike-Jessica or TheSquad" type="text"
+                              class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                    </ul>
+                  </div>
 
 
 
@@ -338,371 +271,394 @@
               <small>Save your work</small>
             </div>
             <div class="btn-group btn-group-sm mb-2 w-100">
-            <button id="saveToBrowserButton" onclick="saveLocally();" class="btn btn-sm btn-warning">
-              Save to Browser
-            </button>
-            <button onclick="loadFromLocal();" class="btn btn-sm btn-secondary flex-grow-0">
-              Load
-            </button>
+              <button id="saveToBrowserButton" onclick="saveLocally();" class="btn btn-sm btn-warning">
+                Save to Browser
+              </button>
+              <button onclick="loadFromLocal();" class="btn btn-sm btn-secondary flex-grow-0">
+                Load
+              </button>
             </div>
-          <button onclick="saveZip();" class="btn btn-sm btn-primary mb-2 w-100">
-            Download Chatfic ZIP
-          </button>
+            <button onclick="saveZip();" class="btn btn-sm btn-primary mb-2 w-100">
+              Download Chatfic ZIP
+            </button>
             <div class="my-2" style="font-weight:500;">
               <small>Chatfic Basic</small>
             </div>
-          <div class="btn-group btn-group-sm mb-2 w-100">
-          <button onclick="showViewCodeModal();" class="btn btn-sm btn-outline-secondary">
-            Show Code
-          </button>
-          <button style="opacity:0.5;" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Feature is in development." class="btn btn-sm btn-outline-secondary flex-grow-0">
-            Import
-          </button>
-          </div>
-          <div class="btn-group btn-group-sm mb-2 w-100">
-          <button onclick="showViewCodeModal('json');" class="btn btn-sm btn-outline-secondary">
-            Show JSON (v1)
-          </button>
-          <button onclick="showImportCodeModal();" class="btn btn-sm btn-outline-secondary flex-grow-0">
-            Import
-          </button>
-          </div>
+            <div class="btn-group btn-group-sm mb-2 w-100">
+              <button onclick="showViewCodeModal();" class="btn btn-sm btn-outline-secondary">
+                Show Code
+              </button>
+              <button style="opacity:0.5;" data-bs-toggle="tooltip" data-bs-placement="left"
+                data-bs-title="Feature is in development." class="btn btn-sm btn-outline-secondary flex-grow-0">
+                Import
+              </button>
+            </div>
+            <div class="btn-group btn-group-sm mb-2 w-100">
+              <button onclick="showViewCodeModal('json');" class="btn btn-sm btn-outline-secondary">
+                Show JSON (v1)
+              </button>
+              <button onclick="showImportCodeModal();" class="btn btn-sm btn-outline-secondary flex-grow-0">
+                Import
+              </button>
+            </div>
             <div class="my-2" style="font-weight:500;">
               <small>Ready to publish?</small>
             </div>
-          </button>
-          <small>For regular stories:</small>
-          <button class="btn btn-sm btn-secondary mb-2 mt-1 w-100">
-            Send to Chatfic Lab.
-          </button>
-          <div class="lh-1"><small>For NSFW stories, use the Afterdark server instead:</small></div>
-          <button class="btn btn-sm btn-secondary mb-2 mt-1 w-100">
-            Send to chatficdb.top
-          </button>
-        </div>
+            </button>
+            <small>For regular stories:</small>
+            <a target="_blank" href="https://chatficlab.com/submit" class="btn btn-sm btn-secondary mb-2 mt-1 w-100">
+              Send to Chatfic Lab.
+            </a>
+            <div class="lh-1"><small>For NSFW stories, use the Afterdark server instead:</small></div>
+            <a target="_blank" href="https://chatficdb.top/submit" class="btn btn-sm btn-secondary mb-2 mt-1 w-100">
+              Send to chatficdb.top
+            </a>
+          </div>
         </div> <!-- /accordion body 3-->
       </div> <!-- /accordion collapse 3-->
     </div> <!-- /accordion item 3 -->
   </div>
-     <!-- What's Missing Modal -->
-     <div class="modal fade" id="storyInfoErrorsModal" tabindex="-1" aria-labelledby="storyInfoErrorsModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-6" id="storyInfoErrorsModalLabel">
-              Story Info Missing Information
-            </h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body bg-slight">
-            <ul id="missingInfo"></ul>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-          </div>
+  <!-- What's Missing Modal -->
+  <div class="modal fade" id="storyInfoErrorsModal" tabindex="-1" aria-labelledby="storyInfoErrorsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-6" id="storyInfoErrorsModalLabel">
+            Story Info Missing Information
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body bg-slight">
+          <ul id="missingInfo"></ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
-    </div> <!-- / What's Missing Modal -->
+    </div>
+  </div> <!-- / What's Missing Modal -->
 
-    
-          <!-- Story Info Modal -->
-          <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title fs-6" id="infoModalLabel">Edit Story Info</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body bg-slight">
-                  <small>Changes are saved automatically as you type them.</small>
-                  <div class="mt-2 mb-3">
 
-                    <div class="input-group input-group-sm mb-2">
-                      <span class="input-group-text" id="inputGroup-sizing-sm">Title</span>
-                      <input oninput="setTitle(this.value);" id="newTitleInput" type="text" class="form-control">
-                    </div>
-                    <div class="input-group input-group-sm mb-2">
-                      <span class="input-group-text" id="inputGroup-sizing-sm">Description</span>
-                      <input oninput="setDescription(this.value);" id="newDescriptionInput" type="text" class="form-control">
-                    </div>
-                    <div class="input-group input-group-sm mb-2">
-                      <span class="input-group-text" id="inputGroup-sizing-sm">Author</span>
-                      <input placeholder="myself" oninput="setAuthor(this.value);" id="newAuthorInput" type="text" class="form-control">
-                    </div>
-                    <div class="input-group input-group-sm">
-                      <span class="input-group-text" id="inputGroup-sizing-sm">Patreon Username</span>
-                      <input placeholder="mypatreonpage" oninput="setPatreonusername(this.value);" id="newPatreonusernameInput" type="text" class="form-control">
-                    </div>
-                    <div class="form-text small mb-2 ms-3 text-end"><sup>If your patreon page is <b>https://patreon.com/chatking/</b>, just put <b>chatking</b> above.</sup></div>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Done</button>
-                </div>
+  <!-- Story Info Modal -->
+  <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-6" id="infoModalLabel">Edit Story Info</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body bg-slight">
+          <small>Changes are saved automatically as you type them.</small>
+          <div class="mt-2 mb-3">
+
+            <div class="input-group input-group-sm mb-2">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Title</span>
+              <input oninput="setTitle(this.value);" id="newTitleInput" type="text" class="form-control">
+            </div>
+            <div class="input-group input-group-sm mb-2">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Description</span>
+              <input oninput="setDescription(this.value);" id="newDescriptionInput" type="text" class="form-control">
+            </div>
+            <div class="input-group input-group-sm mb-2">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Author</span>
+              <input placeholder="myself" oninput="setAuthor(this.value);" id="newAuthorInput" type="text"
+                class="form-control">
+            </div>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Patreon Username</span>
+              <input placeholder="mypatreonpage" oninput="setPatreonusername(this.value);" id="newPatreonusernameInput"
+                type="text" class="form-control">
+            </div>
+            <div class="form-text small mb-2 ms-3 text-end"><sup>If your patreon page is
+                <b>https://patreon.com/chatking/</b>, just put <b>chatking</b> above.</sup></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Done</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /Story Info modal-->
+
+  <!-- Pages Modal -->
+  <div class="modal fade" id="pageModal" tabindex="-1" aria-labelledby="pageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-6" id="pageModalLabel">Edit Pages</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body bg-slight">
+          <ul id="pageList" class="list-group">
+            <!-- Pages will be dynamically added here -->
+          </ul>
+          <div class="mb-2 mt-3">
+            <label for="newPageInput" class="form-label small">Add New Page:</label>
+            <input type="text" class="form-control form-control-sm" id="newPageInput">
+          </div>
+          <button id="addPageButton" class="btn btn-success btn-sm">Add Page</button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- / pages modal-->
+
+  <!-- Page Options Modal -->
+  <div class="modal fade" id="pageOptionsModal" tabindex="-1" aria-labelledby="pageOptionsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-6" id="pageOptionsModalLabel">Page '<span id="optionspagetitle"></span>' Options
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body bg-slight">
+          <span class="text-center d-block mb-2">What will happen at the end of page '<b
+              id="optionspagetitlealt"></b>'?</span>
+          <div class="btn-group btn-group-sm btn-toolbar" role="group" aria-label="Basic radio toggle button group">
+            <input onclick="pageOptionsMultiple(false);" type="radio" class="btn-check" name="sideradioX"
+              id="sideradio1" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="sideradio1">Go to page</label>
+            <input onclick="pageOptionsMultiple(true);" type="radio" class="btn-check" name="sideradioX" id="sideradio2"
+              autocomplete="off">
+            <label class="btn btn-outline-success" for="sideradio2">Multiple Options</label>
+          </div>
+          <div id="pagedirect">
+            <small>Story will continue from this page:</small>
+            <select id="pageSelect2" class="form-select form-select-sm mt-2">
+              <!-- page options will be dynamically added here -->
+            </select>
+          </div>
+          <div id="pagemultiple" style="display:none;">
+            <div id="pageoptionslist"></div>
+          </div>
+          <button onclick="savePageOptions();" id="saveOptionsButton"
+            class="btn btn-success btn-sm d-block mt-2 w-100">Save & Close</button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- / Page Options Modal -->
+
+  <!-- Characters Modal -->
+  <div class="modal fade" id="charactersModal" tabindex="-1" aria-labelledby="charactersModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-6" id="charactersModalLabel">Edit Characters</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body bg-slight">
+          <div class="mb-0 mt-3 row">
+            <div class="col-6 col-sm-4">
+              <div class="input-group input-group-sm mb-1">
+                <span class="input-group-text">Name</span>
+                <input placeholder="John"
+                  oninput="document.getElementById('newCharacterSlugInput').value=window.URLify(document.getElementById('newCharacterNameInput').value);"
+                  id="newCharacterNameInput" type="text" class="form-control">
               </div>
             </div>
-          </div><!-- /Story Info modal-->
-
-          <!-- Pages Modal -->
-          <div class="modal fade" id="pageModal" tabindex="-1" aria-labelledby="pageModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title fs-6" id="pageModalLabel">Edit Pages</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body bg-slight">
-                  <ul id="pageList" class="list-group">
-                    <!-- Pages will be dynamically added here -->
-                  </ul>
-                  <div class="mb-2 mt-3">
-                    <label for="newPageInput" class="form-label small">Add New Page:</label>
-                    <input type="text" class="form-control form-control-sm" id="newPageInput">
-                  </div>
-                  <button id="addPageButton" class="btn btn-success btn-sm">Add Page</button>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                </div>
+            <div class="col-6 col-sm-4">
+              <div class="input-group input-group-sm mb-1">
+                <span class="input-group-text">Color</span>
+                <select id="newCharacterColorInput" class="form-select">
+                  <option value="black">black</option>
+                  <option value="red">red</option>
+                  <option value="green">green</option>
+                  <option value="blue">blue</option>
+                  <option value="yellow">yellow</option>
+                  <option value="orange">orange</option>
+                  <option value="pink">pink</option>
+                  <option value="purple">purple</option>
+                  <option value="cyan">cyan</option>
+                  <option value="teal">teal</option>
+                  <option value="indigo">indigo</option>
+                  <option value="amber">amber</option>
+                  <option value="lime">lime</option>
+                  <option value="brown">brown</option>
+                  <option value="grey">grey</option>
+                </select>
               </div>
             </div>
-          </div><!-- / pages modal-->
-
-          <!-- Page Options Modal -->
-          <div class="modal fade" id="pageOptionsModal" tabindex="-1" aria-labelledby="pageOptionsModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title fs-6" id="pageOptionsModalLabel">Page '<span id="optionspagetitle"></span>' Options</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body bg-slight">
-                  <span class="text-center d-block mb-2">What will happen at the end of page '<b id="optionspagetitlealt"></b>'?</span>
-                  <div class="btn-group btn-group-sm btn-toolbar" role="group" aria-label="Basic radio toggle button group">
-                    <input onclick="pageOptionsMultiple(false);" type="radio" class="btn-check" name="sideradioX" id="sideradio1" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary" for="sideradio1">Go to page</label>
-                  
-                    <input onclick="pageOptionsMultiple(true);" type="radio" class="btn-check" name="sideradioX" id="sideradio2" autocomplete="off">
-                    <label class="btn btn-outline-success" for="sideradio2">Multiple Options</label>
-                  </div>
-                  <div id="pagedirect">
-                    <small>Story will continue from this page:</small>
-                    <select id="pageSelect2" class="form-select form-select-sm mt-2">
-                      <!-- page options will be dynamically added here -->
-                    </select>
-                  </div>
-                  <div id="pagemultiple" style="display:none;">
-                    <div id="pageoptionslist"></div>
-                  </div>
-                  <button onclick="savePageOptions();" id="saveOptionsButton" class="btn btn-success btn-sm d-block mt-2 w-100">Save & Close</button>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                </div>
+            <div class="col-6 col-sm-4">
+              <div class="input-group input-group-sm mb-1">
+                <span class="input-group-text">Slug</span>
+                <input data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Auto generated from 'Name'."
+                  readonly="readonly" disabled placeholder="john" id="newCharacterSlugInput" type="text"
+                  class="form-control">
               </div>
-            </div>
-          </div><!-- / Page Options Modal -->
 
-          <!-- Characters Modal -->
-          <div class="modal fade" id="charactersModal" tabindex="-1" aria-labelledby="charactersModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title fs-6" id="charactersModalLabel">Edit Characters</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body bg-slight">
-                  <div class="mb-0 mt-3 row">
-                    <div class="col-6 col-sm-4">
-                      <div class="input-group input-group-sm mb-1">
-                        <span class="input-group-text" >Name</span>
-                        <input placeholder="John" oninput="document.getElementById('newCharacterSlugInput').value=window.URLify(document.getElementById('newCharacterNameInput').value);" id="newCharacterNameInput" type="text" class="form-control">
-                      </div>
-                    </div>
-                    <div class="col-6 col-sm-4">
-                    <div class="input-group input-group-sm mb-1">
-                      <span class="input-group-text" >Color</span>
-                      <select id="newCharacterColorInput" class="form-select">
-                        <option value="black">black</option>
-                        <option value="red">red</option>
-                        <option value="green">green</option>
-                        <option value="blue">blue</option>
-                        <option value="yellow">yellow</option>
-                        <option value="orange">orange</option>
-                        <option value="pink">pink</option>
-                        <option value="purple">purple</option>
-                        <option value="cyan">cyan</option>
-                        <option value="teal">teal</option>
-                        <option value="indigo">indigo</option>
-                        <option value="amber">amber</option>
-                        <option value="lime">lime</option>
-                        <option value="brown">brown</option>
-                        <option value="grey">grey</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-6 col-sm-4">
-                    <div class="input-group input-group-sm mb-1">
-                      <span class="input-group-text" >Slug</span>
-                      <input data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Auto generated from 'Name'." readonly="readonly" disabled placeholder="john" id="newCharacterSlugInput" type="text" class="form-control">
-                    </div>
-
-                  </div>
-                  </div>
-                  <button onclick="setCharacter(document.getElementById('newCharacterSlugInput').value, document.getElementById('newCharacterNameInput').value, document.getElementById('newCharacterColorInput').value);" id="setCharacterButton" class="btn btn-success btn-sm w-100">Save as new</button>
-                  <ul id="charactersListInModal" class="list-group list-group-sm mt-3">
-                    <!-- Characters will be dynamically added here -->
-                  </ul>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                </div>
-              </div>
             </div>
-          </div><!-- / characters modal-->
+          </div>
+          <button
+            onclick="setCharacter(document.getElementById('newCharacterSlugInput').value, document.getElementById('newCharacterNameInput').value, document.getElementById('newCharacterColorInput').value);"
+            id="setCharacterButton" class="btn btn-success btn-sm w-100">Save as new</button>
+          <ul id="charactersListInModal" class="list-group list-group-sm mt-3">
+            <!-- Characters will be dynamically added here -->
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- / characters modal-->
 
 
   <!-- Full-page media library modal -->
-  <div class="modal fade" id="mediaLibraryModal" tabindex="-1" aria-labelledby="mediaLibraryModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="mediaLibraryModalLabel">Media Library</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <!-- List of media items with remove buttons -->
-                  <ul class="list-group" id="mediaList">
-                  </ul>
-              </div>
-              <div class="modal-footer">
-                  <!-- Button to open the "Add new media" modal -->
-                  <button type="button" class="btn btn-primary" onclick="showAddMedia();">Add New Media</button>
-              </div>
-          </div>
+  <div class="modal fade" id="mediaLibraryModal" tabindex="-1" aria-labelledby="mediaLibraryModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="mediaLibraryModalLabel">Media Library</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- List of media items with remove buttons -->
+          <ul class="list-group" id="mediaList">
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <!-- Button to open the "Add new media" modal -->
+          <button type="button" class="btn btn-primary" onclick="showAddMedia();">Add New Media</button>
+        </div>
       </div>
+    </div>
   </div>
 
   <!-- "Add new media" modal -->
   <div class="modal fade" id="addMediaModal" tabindex="-1" aria-labelledby="addMediaModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="addMediaModalLabel">Add New Media</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <!-- Add your form elements for adding media here -->
-                  <!-- For example, input fields for file upload -->
-                  <form id="mediaForm">
-                      <div class="mb-3">
-                          <label for="mediaFile" class="form-label">Select File:</label>
-                          <input type="file" class="form-control" id="mediaFile" accept="image/*,video/*" required>
-                      </div>
-                      <button type="submit" class="btn btn-primary">Add Media</button>
-                  </form>
-              </div>
-          </div>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addMediaModalLabel">Add New Media</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Add your form elements for adding media here -->
+          <!-- For example, input fields for file upload -->
+          <form id="mediaForm">
+            <div class="mb-3">
+              <label for="mediaFile" class="form-label">Select File:</label>
+              <input type="file" class="form-control" id="mediaFile" accept="image/*,video/*" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Media</button>
+          </form>
+        </div>
       </div>
+    </div>
   </div>
 
   <!-- "select media" modal -->
   <div class="modal fade" id="sendMediaModal" tabindex="-1" aria-labelledby="sendMediaModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="sendMediaModalLabel">Send Media</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <div class="p-2">Media from Media Library will show below.</div>
-                  <button type="button" class="btn btn-sm w-100 btn-primary" data-bs-toggle="modal" data-bs-target="#mediaLibraryModal">Open Media Library</button>
-                  <h6 class="ps-2 mt-2">Media List:</h6>
-                  <div id="selectMediaList" class="list-group">
-                    <center>No media yet.</center>
-                  </div>
-              </div>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="sendMediaModalLabel">Send Media</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="p-2">Media from Media Library will show below.</div>
+          <button type="button" class="btn btn-sm w-100 btn-primary" data-bs-toggle="modal"
+            data-bs-target="#mediaLibraryModal">Open Media Library</button>
+          <h6 class="ps-2 mt-2">Media List:</h6>
+          <div id="selectMediaList" class="list-group">
+            <center>No media yet.</center>
           </div>
+        </div>
       </div>
+    </div>
   </div>
 
-  
+
   <!-- "show code" modal -->
   <div class="modal fade" id="viewCodeModal" tabindex="-1" aria-labelledby="viewCodeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="viewCodeModalLabel">Show Chatfic Basic<span id="showCodeModalLabelFormat"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body bg-slight">
-              <textarea class="form-control w-100 small" id="viewCodeModalTextarea" readonly="readonly" style="overflow:hidden"></textarea>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewCodeModalLabel">Show Chatfic Basic<span id="showCodeModalLabelFormat"></span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body bg-slight">
+          <textarea class="form-control w-100 small" id="viewCodeModalTextarea" readonly="readonly"
+            style="overflow:hidden"></textarea>
+        </div>
+      </div>
     </div>
-</div>
-  
-  <div id="alertSave" class="fixed-bottom pe-3 d-none">
-  <div class="shadow float-end small alert alert-success mx-3" role="alert">
-    <b>Chatfic is saved to browser.</b><hr>Unfortunately, we <b class="text-danger">can't save images or videos</b> to the browser's local storage.
   </div>
-</div>
+
+  <div id="alertSave" class="fixed-bottom pe-3 d-none">
+    <div class="shadow float-end small alert alert-success mx-3" role="alert">
+      <b>Chatfic is saved to browser.</b>
+      <hr>Unfortunately, we <b class="text-danger">can't save images or videos</b> to the browser's local storage.
+    </div>
+  </div>
 
 
   <!-- "import code" modal -->
   <div class="modal fade" id="importCodeModal" tabindex="-1" aria-labelledby="importCodeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="importCodeModalLabel">Import Chatfic Basic JSON(v1)</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body bg-slight">
-              <script>
-                function checkImportCodeJson(){
-                  let importCodeModalTextarea = document.getElementById('importCodeModalTextarea');
-                  let iValid = document.getElementById('code-import-valid');
-                  let iInvalid = document.getElementById('code-import-invalid');
-                  try {
-                    if(importCodeModalTextarea.value.length < 2){
-                      throw "No input";
-                    }
-                    JSON.parse(importCodeModalTextarea.value);
-                    importCodeModalTextarea.classList.remove("is-invalid");
-                    iValid.classList.remove("d-none");
-                    iValid.classList.add("d-inline");
-                    iInvalid.classList.remove("d-inline");
-                    iInvalid.classList.add("d-none");
-                  } catch (error) {
-                    importCodeModalTextarea.classList.add("is-invalid");
-                    iInvalid.classList.remove("d-none");
-                    iInvalid.classList.add("d-inline");
-                    iValid.classList.remove("d-inline");
-                    iValid.classList.add("d-none");
-                  }
-                }
-              </script>
-              <textarea oninput="checkImportCodeJson();" class="form-control w-100 small is-invalid" id="importCodeModalTextarea"></textarea>
-              <div id="code-import-valid" class="valid-feedback d-none">
-                Looks like a valid JSON
-              </div>
-              <div id="code-import-invalid" class="invalid-feedback d-inline">
-                Invalid JSON
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button onclick="importChatficJson();" type="button" class="btn btn-primary">Import</button>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="importCodeModalLabel">Import Chatfic Basic JSON(v1)</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body bg-slight">
+          <script>
+            function checkImportCodeJson() {
+              let importCodeModalTextarea = document.getElementById('importCodeModalTextarea');
+              let iValid = document.getElementById('code-import-valid');
+              let iInvalid = document.getElementById('code-import-invalid');
+              try {
+                if (importCodeModalTextarea.value.length < 2) {
+                  throw "No input";
+                }
+                JSON.parse(importCodeModalTextarea.value);
+                importCodeModalTextarea.classList.remove("is-invalid");
+                iValid.classList.remove("d-none");
+                iValid.classList.add("d-inline");
+                iInvalid.classList.remove("d-inline");
+                iInvalid.classList.add("d-none");
+              } catch (error) {
+                importCodeModalTextarea.classList.add("is-invalid");
+                iInvalid.classList.remove("d-none");
+                iInvalid.classList.add("d-inline");
+                iValid.classList.remove("d-inline");
+                iValid.classList.add("d-none");
+              }
+            }
+          </script>
+          <textarea oninput="checkImportCodeJson();" class="form-control w-100 small is-invalid"
+            id="importCodeModalTextarea"></textarea>
+          <div id="code-import-valid" class="valid-feedback d-none">
+            Looks like a valid JSON
+          </div>
+          <div id="code-import-invalid" class="invalid-feedback d-inline">
+            Invalid JSON
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button onclick="importChatficJson();" type="button" class="btn btn-primary">Import</button>
+        </div>
+      </div>
     </div>
-</div>
-  
-  <div id="alertSave" class="fixed-bottom pe-3 d-none">
-  <div class="shadow float-end small alert alert-success mx-3" role="alert">
-    <b>Chatfic is saved to browser.</b><hr>Unfortunately, we <b class="text-danger">can't save images or videos</b> to the browser's local storage.
   </div>
-</div>
+
+  <div id="alertSave" class="fixed-bottom pe-3 d-none">
+    <div class="shadow float-end small alert alert-success mx-3" role="alert">
+      <b>Chatfic is saved to browser.</b>
+      <hr>Unfortunately, we <b class="text-danger">can't save images or videos</b> to the browser's local storage.
+    </div>
+  </div>
   <script src="urlify.js"></script>
   <script src="main.js"></script>
   <script src="media.js"></script>

@@ -1,10 +1,10 @@
 const mediaFiles = [];
 const mediaFileSrcList = {};
 let addMediaModal = null;
-function showAddMedia(){
+function showAddMedia() {
     addMediaModal.show();
 }
-function showImportCodeModal(){
+function showImportCodeModal() {
     importCodeModal.show();
 }
 document.addEventListener("DOMContentLoaded", function () {
@@ -21,7 +21,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Iterate over the mediaFiles array and add items to the list
         mediaFiles.forEach((mediaItem, index) => {
             const listItem = document.createElement("li");
-            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+            listItem.className =
+                "list-group-item d-flex justify-content-between align-items-center";
             listItem.innerHTML = `
                 ${mediaItem.name}
                 <button type="button" class="btn btn-danger btn-sm remove-button" data-index="${index}">Remove</button>
@@ -53,15 +54,20 @@ document.addEventListener("DOMContentLoaded", function () {
         if (file) {
             // Add the file to the mediaFiles array
             mediaFiles.push(file);
-            if(file.name.toLowerCase().endsWith('.mp4') == false && file.name.toLowerCase().endsWith('.webm') == false){
-                var fr=new FileReader();
-                fr.onload = function(e) { mediaFileSrcList[file.name] = this.result; };
+            if (
+                file.name.toLowerCase().endsWith(".mp4") == false &&
+                file.name.toLowerCase().endsWith(".webm") == false
+            ) {
+                var fr = new FileReader();
+                fr.onload = function (e) {
+                    mediaFileSrcList[file.name] = this.result;
+                };
                 fr.readAsDataURL(file);
             }
 
             updateMediaLibrary();
         }
-        fileInput.value=null;
+        fileInput.value = null;
         addMediaModal.hide();
     });
 
@@ -75,10 +81,11 @@ function getMediaByName(name) {
 // Function to access media files by name
 function refreshMediaList() {
     const selectMediaList = document.getElementById("selectMediaList");
-    selectMediaList.innerHTML='';
+    selectMediaList.innerHTML = "";
     mediaFiles.forEach((mediaItem, index) => {
         const listItem = document.createElement("li");
-        listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+        listItem.className =
+            "list-group-item d-flex justify-content-between align-items-center";
         listItem.innerHTML = `
             ${mediaItem.name}
             <button type="button" class="btn btn-primary btn-sm send-media-button" data-index="${index}">Send</button>
@@ -94,9 +101,11 @@ function refreshMediaList() {
     });
 }
 
-function showImage(fileObj,imageEl) {
-    var fr=new FileReader();
+function showImage(fileObj, imageEl) {
+    var fr = new FileReader();
     // when image is loaded, set the src of the image where you want to display it
-    fr.onload = function(e) { imageEl.src = this.result; };
+    fr.onload = function (e) {
+        imageEl.src = this.result;
+    };
     fr.readAsDataURL(fileObj);
-  }
+}
