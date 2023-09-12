@@ -50,6 +50,14 @@
     </g>
 
   </symbol>
+  <symbol id="photo" fill="#444444" width="24" height="24" viewBox="0 0 52 52">
+ <g>
+   <path d="M26,20c-4.4,0-8,3.6-8,8s3.6,8,8,8s8-3.6,8-8S30.4,20,26,20z"/>
+   <path d="M46,14h-5.2c-1.4,0-2.6-0.7-3.4-1.8l-2.3-3.5C34.4,7,32.7,6,30.9,6h-9.8c-1.8,0-3.5,1-4.3,2.7l-2.3,3.5
+     c-0.7,1.1-2,1.8-3.4,1.8H6c-2.2,0-4,1.8-4,4v24c0,2.2,1.8,4,4,4h40c2.2,0,4-1.8,4-4V18C50,15.8,48.2,14,46,14z M26,40
+     c-6.6,0-12-5.4-12-12s5.4-12,12-12s12,5.4,12,12S32.6,40,26,40z"/>
+ </g>
+  </symbol>
 
 </svg>
 
@@ -112,7 +120,8 @@
             </div>
             <b class="d-block mt-2">Page Links</b>
             </div>
-</div>
+</div> 
+
               <div class="flex-fill scrollable only-if-multiple-pages">
             <div class="mt-2">
                 <div id="page-options-lister"></div>
@@ -138,23 +147,29 @@
             <div class="d-flex flex-row align-middle only-if-multiple-pages">
               
               <div class="input-group input-group-sm mb-2">
-                <label class="input-group-text" for="chatroom">
+                <label class="input-group-text" for="pageSelect">
                   Page
                 </label>
-                <select id="pageSelect" class="form-select form-select-sm"></select>
+                <select onchange="refreshChat();" id="pageSelect" class="form-select form-select-sm"></select>
               </div>
             </div>
-            <div class="flex-grow-1 flex-fill scrollable chatscroll">
+            <div id="chatscroll" class="flex-grow-1 flex-fill scrollable chatscroll">
               <div id="chatscreen" class="chatscreen bg-white">
 
-                <div class="chat">
+                <script>
+                  /*
+
+                <div class="chat pb-0">
+
+
+
+                  <div class="sticky-top chatroom-header">
+                    aaa
+                  </div>
                   <div class="right messages">
                     <div class="message last">
                       Dude
                      </div>
-                  </div>
-                  <div class="sticky-top chatroom-header">
-                    aaa
                   </div>
                   <div data-index="5" tabindex="0" class="left messages">
                     <div class="message">
@@ -167,11 +182,11 @@
                       You there?
                     </div>
                   </div>
+                  <cursor onclick="setCursor(this);"></cursor>
                   
                   <div class="sticky-top chatroom-header">
                     bbb
                   </div>
-                  <cursor onclick="setCursor(this);"></cursor>
                   <div data-index="5" tabindex="0" class="left messages">
                     <div class="message last">
                       Hello, how's it going?
@@ -224,78 +239,80 @@
                   </div>
                 </div>
 
+                  */
+                </script>
               </div><!-- / chatscreen -->
             </div> <!-- /flex grow-1 -->
-            <div class="chatbar mt-2">
+            <div class="chatbar">
 
+              
+              <div class="btn-group my-2 btn-group-sm w-100" role="group">
+                <button type="button" class="btn btn-outline-secondary flex-grow-0 dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <input type="hidden" id="leftCharacterSlug" value="jessica">
+                <ul class="dropdown-menu shadow" id="weirdCharacterSelectLeft">
+                </ul>
+                <input value="0" type="radio" class="btn-check" name="sideradio" id="sideleft" autocomplete="off" checked/>
+                <label id="leftCharacterLabel" class="btn btn-outline-secondary" for="sideleft">
+                  Jessica
+                </label>
+                <input value="1" type="radio" class="btn-check" name="sideradio" id="sidemiddle" autocomplete="off"/>
+                <label class="btn btn-outline-dark" for="sidemiddle">Middle</label>
 
-              <div class="d-flex mb-2">
-                <div class="flex-grow-1">
-                  <div class="input-group input-group-sm">
-                    <label class="input-group-text" for="character">
-                      <svg width="16" height="16" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Character">
-                        <use xlink:href="#character"/>
-                      </svg>
-                    </label>
-                    <select class="form-select" id="characterSelectMain" aria-label="Example select with button addon">
-                      <!-- Options for characters -->
-                    </select>
-                    <button onclick="showCharactersModal();" class="btn btn-outline-secondary btn-xs-tx" type="button">
-                      <svg width="16" height="16">
-                        <use xlink:href="#edit"/>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-                <div class="ms-4">
-                  <div class="btn-group dropup">
-                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                      Other
-                    </button>
-                    <ul class="dropdown-menu shadow dropdown-menu-end col-width-80-percent bg-secondary text-white">
-                      
-                    <div class="form-check form-switch mx-1 mt-1 ms-3 ps-0 pe-2">
-                    <input onchange="if(this.checked){document.getElementById('customChatroomNameInput').value='';} document.getElementById('customchatroomname').classList.toggle('d-none');" class="form-check-input cpoint float-end" type="checkbox" value="" id="customChatroom">
-                    <label class="form-check-label small cpoint align-top" for="customChatroom">
-                        Group or Non-player chat?
-                    </label>
-                    </div>
-                    <div class="d-none" id="customchatroomname">
-                      <div class="mx-2">
-                        <div class="text-center"><small><b>Set Chatroom Name:</b></small></div>
-                        <div class="input-group input-group-sm">
-                          <input id="customChatroomNameInput" placeholder="Mike-Jessica or TheSquad" type="text" class="form-control">
-                        </div>
-                      </div>
-                    </div>
-                    </ul>
-                  </div>
-                  </div>
-                    
-              </div>
+                <input value="2" type="radio" class="btn-check" name="sideradio" id="sideright" autocomplete="off"/>
+                <label id="rightCharacterLabel" class="btn btn-outline-primary" for="sideright">John</label>
+                <button type="button" class="btn btn-outline-primary flex-grow-0 dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <input type="hidden" id="rightCharacterSlug" value="player">
+                <ul class="dropdown-menu dropdown-menu-end shadow" id="weirdCharacterSelectRight">
+                </ul>
+              </div><!-- / btn group radio -->
+
 
               <div class="d-flex">
+                <div class="flex-grow-0">
+                  <div class="cpoint" onclick="showSendMediaModal();">
+                    <svg class="me-2" width="24" height="24">
+                    <use xlink:href="#photo"/>
+                  </svg>
+                </div>
+                </div>
                 <div class="flex-grow-1">
-                  <input type="text" class="message-input" placeholder="Type here" id="message"/>
+                  <input type="text" autocomplete="off" class="message-input" placeholder="Type here" id="message"/>
                 </div>
                 <div class="flex-grow-0">
                   
-              <button class="btn btn-sm ms-2 btn-outline-danger border-ycircle" onclick="addMessage()">Send</button>
+              <div class="btn-group dropup">
+                <button class="btn btn-sm ms-2 btn-outline-danger border-ycircle" onclick="addMessage()">Send</button>
+                <button class="btn btn-outline-danger btn-sm dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                  
+                </button>
+                <ul class="dropdown-menu shadow dropdown-menu-end col-width-80-percent bg-danger text-white">
+                  
+                <div class="form-check form-switch mx-1 mt-1 ms-3 ps-0 pe-2">
+                <input onchange="if(!this.checked){document.getElementById('customChatroomNameInput').value='';} document.getElementById('customchatroomname').classList.toggle('d-none');" class="form-check-input cpoint float-end" type="checkbox" value="" id="customChatroom">
+                <label class="form-check-label small cpoint align-top" for="customChatroom">
+                    Group or Non-player chat?
+                </label>
+                </div>
+                <div class="d-none" id="customchatroomname">
+                  <div class="mx-2">
+                    <div class="text-center"><small><b>Set Chatroom Name:</b></small></div>
+                    <div class="input-group input-group-sm">
+                      <input id="customChatroomNameInput" placeholder="Mike-Jessica or TheSquad" type="text" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                </ul>
+              </div>
+
+
+
                 </div>
               </div>
-              
 
-
-              <div class="btn-group my-2 btn-group-sm w-100" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="btnradio" id="sideleft" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="sideleft">Left</label>
-
-                <input type="radio" class="btn-check" name="btnradio" id="sidemiddle" autocomplete="off">
-                <label class="btn btn-outline-primary" for="sidemiddle">Middle</label>
-
-                <input type="radio" class="btn-check" name="btnradio" id="sideright" autocomplete="off">
-                <label class="btn btn-outline-primary" for="sideright">Right</label></label>
-              </div><!-- / btn group radio -->
 
               <input type="hidden" id="position" value="0">
 
@@ -318,20 +335,42 @@
         <div class="accordion-body scrollable">
           <div class="cmw5h">
             <div class="my-2" style="font-weight:500;">
-              <small>Download or view</small>
+              <small>Save your work</small>
             </div>
-          <button class="btn btn-sm btn-primary mb-2 w-100">
+            <div class="btn-group btn-group-sm mb-2 w-100">
+            <button id="saveToBrowserButton" onclick="saveLocally();" class="btn btn-sm btn-warning">
+              Save to Browser
+            </button>
+            <button onclick="loadFromLocal();" class="btn btn-sm btn-secondary flex-grow-0">
+              Load
+            </button>
+            </div>
+          <button onclick="saveZip();" class="btn btn-sm btn-primary mb-2 w-100">
             Download Chatfic ZIP
           </button>
-          <button class="btn btn-sm btn-secondary mb-2 w-100">
-            Show Chatfic Basic Code
+            <div class="my-2" style="font-weight:500;">
+              <small>Chatfic Basic</small>
+            </div>
+          <div class="btn-group btn-group-sm mb-2 w-100">
+          <button onclick="showViewCodeModal();" class="btn btn-sm btn-outline-secondary">
+            Show Code
           </button>
-          <button class="btn btn-sm btn-secondary mb-2 w-100">
-            Show Chatfic JSON (v1)
+          <button style="opacity:0.5;" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Feature is in development." class="btn btn-sm btn-outline-secondary flex-grow-0">
+            Import
           </button>
+          </div>
+          <div class="btn-group btn-group-sm mb-2 w-100">
+          <button onclick="showViewCodeModal('json');" class="btn btn-sm btn-outline-secondary">
+            Show JSON (v1)
+          </button>
+          <button onclick="showImportCodeModal();" class="btn btn-sm btn-outline-secondary flex-grow-0">
+            Import
+          </button>
+          </div>
             <div class="my-2" style="font-weight:500;">
               <small>Ready to publish?</small>
             </div>
+          </button>
           <small>For regular stories:</small>
           <button class="btn btn-sm btn-secondary mb-2 mt-1 w-100">
             Send to Chatfic Lab.
@@ -440,11 +479,11 @@
                 <div class="modal-body bg-slight">
                   <span class="text-center d-block mb-2">What will happen at the end of page '<b id="optionspagetitlealt"></b>'?</span>
                   <div class="btn-group btn-group-sm btn-toolbar" role="group" aria-label="Basic radio toggle button group">
-                    <input onclick="pageOptionsMultiple(false);" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary" for="btnradio1">Go to page</label>
+                    <input onclick="pageOptionsMultiple(false);" type="radio" class="btn-check" name="sideradioX" id="sideradio1" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary" for="sideradio1">Go to page</label>
                   
-                    <input onclick="pageOptionsMultiple(true);" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                    <label class="btn btn-outline-success" for="btnradio2">Multiple Options</label>
+                    <input onclick="pageOptionsMultiple(true);" type="radio" class="btn-check" name="sideradioX" id="sideradio2" autocomplete="off">
+                    <label class="btn btn-outline-success" for="sideradio2">Multiple Options</label>
                   </div>
                   <div id="pagedirect">
                     <small>Story will continue from this page:</small>
@@ -522,12 +561,161 @@
             </div>
           </div><!-- / characters modal-->
 
+
+  <!-- Full-page media library modal -->
+  <div class="modal fade" id="mediaLibraryModal" tabindex="-1" aria-labelledby="mediaLibraryModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="mediaLibraryModalLabel">Media Library</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <!-- List of media items with remove buttons -->
+                  <ul class="list-group" id="mediaList">
+                  </ul>
+              </div>
+              <div class="modal-footer">
+                  <!-- Button to open the "Add new media" modal -->
+                  <button type="button" class="btn btn-primary" onclick="showAddMedia();">Add New Media</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- "Add new media" modal -->
+  <div class="modal fade" id="addMediaModal" tabindex="-1" aria-labelledby="addMediaModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="addMediaModalLabel">Add New Media</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <!-- Add your form elements for adding media here -->
+                  <!-- For example, input fields for file upload -->
+                  <form id="mediaForm">
+                      <div class="mb-3">
+                          <label for="mediaFile" class="form-label">Select File:</label>
+                          <input type="file" class="form-control" id="mediaFile" accept="image/*,video/*" required>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Add Media</button>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- "select media" modal -->
+  <div class="modal fade" id="sendMediaModal" tabindex="-1" aria-labelledby="sendMediaModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="sendMediaModalLabel">Send Media</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <div class="p-2">Media from Media Library will show below.</div>
+                  <button type="button" class="btn btn-sm w-100 btn-primary" data-bs-toggle="modal" data-bs-target="#mediaLibraryModal">Open Media Library</button>
+                  <h6 class="ps-2 mt-2">Media List:</h6>
+                  <div id="selectMediaList" class="list-group">
+                    <center>No media yet.</center>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  
+  <!-- "show code" modal -->
+  <div class="modal fade" id="viewCodeModal" tabindex="-1" aria-labelledby="viewCodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewCodeModalLabel">Show Chatfic Basic<span id="showCodeModalLabelFormat"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-slight">
+              <textarea class="form-control w-100 small" id="viewCodeModalTextarea" readonly="readonly" style="overflow:hidden"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+  
+  <div id="alertSave" class="fixed-bottom pe-3 d-none">
+  <div class="shadow float-end small alert alert-success mx-3" role="alert">
+    <b>Chatfic is saved to browser.</b><hr>Unfortunately, we <b class="text-danger">can't save images or videos</b> to the browser's local storage.
+  </div>
+</div>
+
+
+  <!-- "import code" modal -->
+  <div class="modal fade" id="importCodeModal" tabindex="-1" aria-labelledby="importCodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importCodeModalLabel">Import Chatfic Basic JSON(v1)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-slight">
+              <script>
+                function checkImportCodeJson(){
+                  let importCodeModalTextarea = document.getElementById('importCodeModalTextarea');
+                  let iValid = document.getElementById('code-import-valid');
+                  let iInvalid = document.getElementById('code-import-invalid');
+                  try {
+                    if(importCodeModalTextarea.value.length < 2){
+                      throw "No input";
+                    }
+                    JSON.parse(importCodeModalTextarea.value);
+                    importCodeModalTextarea.classList.remove("is-invalid");
+                    iValid.classList.remove("d-none");
+                    iValid.classList.add("d-inline");
+                    iInvalid.classList.remove("d-inline");
+                    iInvalid.classList.add("d-none");
+                  } catch (error) {
+                    importCodeModalTextarea.classList.add("is-invalid");
+                    iInvalid.classList.remove("d-none");
+                    iInvalid.classList.add("d-inline");
+                    iValid.classList.remove("d-inline");
+                    iValid.classList.add("d-none");
+                  }
+                }
+              </script>
+              <textarea oninput="checkImportCodeJson();" class="form-control w-100 small is-invalid" id="importCodeModalTextarea"></textarea>
+              <div id="code-import-valid" class="valid-feedback d-none">
+                Looks like a valid JSON
+              </div>
+              <div id="code-import-invalid" class="invalid-feedback d-inline">
+                Invalid JSON
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button onclick="importChatficJson();" type="button" class="btn btn-primary">Import</button>
+            </div>
+        </div>
+    </div>
+</div>
+  
+  <div id="alertSave" class="fixed-bottom pe-3 d-none">
+  <div class="shadow float-end small alert alert-success mx-3" role="alert">
+    <b>Chatfic is saved to browser.</b><hr>Unfortunately, we <b class="text-danger">can't save images or videos</b> to the browser's local storage.
+  </div>
+</div>
   <script src="urlify.js"></script>
   <script src="main.js"></script>
+  <script src="media.js"></script>
+  <script src="jszip.min.js"></script>
+  <script src="FileSaver.min.js"></script>
+  <script src="exporter.js"></script>
+
   <script>
     checkChatfic();
+    refreshChat();
     refreshCharacters();
     refreshPageOptionsList();
+    refreshChat();
   </script>
 </body>
 

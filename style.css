@@ -29,6 +29,9 @@ body {
 .scrollable {
   overflow-y: auto;
 }
+#chatscreen{
+  min-height: 100%;
+}
 .chatscroll{
   border: 1px solid #aaa;
 }
@@ -66,15 +69,19 @@ h2 small {
   box-sizing: border-box;
 }
 .border-ycircle{
-  border-radius: 50px !important;
+  border-top-left-radius: 50px !important;
+  border-bottom-left-radius: 50px !important;
 }
-
+#importCodeModalTextarea{height:60vh;}
 #character, #chatroom{
   font-size:12px;
   padding-right: 30px !important;
 }
-
+textarea.small{
+  font-size:0.8rem !important;
+}
 .chatroom-header{
+  font-weight: 500;
   background:linear-gradient(rgba(189, 204, 211, 255), rgba(220, 228, 231,255), rgba(236, 240, 242,255), rgba(255,255,255,0));
   padding: 4px;
   margin-top:8px;
@@ -83,10 +90,11 @@ h2 small {
   line-height:22px;
   height:28px;
   border-bottom:none;
+  z-index: 2 !important;
 }
 .chatroom-header::before{
   content:'Chatroom:';
-  font-weight: bold;
+  font-weight: 400 !important;
   opacity: 0.85;
 }
 
@@ -116,6 +124,24 @@ h2 small {
   display: inline-block;
   font-size:small;
 }
+.messages span.author{
+  position: absolute;
+  top:-17px;
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.7;
+  color:#212529;
+}
+.messages.left span.author{
+  left:9px;
+}
+.messages.right span.author{
+  right:9px;
+}
+.withAuthor{
+  margin-top:16px;
+}
+
 .message:has(img){
   border-radius: 10px;
   padding: 2px 2px;
@@ -126,11 +152,57 @@ h2 small {
   margin: 4px;
   border-radius: 6px;
 }
+.message .delete{
+  cursor: pointer;
+  position: absolute;
+  display: none;
+  width: 27px;
+  height: 27px;
+  line-height: 27px;
+  text-align: center;
+  color:black;
+  opacity: 0.8;
+}
+.messages:focus .message .delete, .messages:hover .message .delete{
+  display: block;
+}
+.messages.left .message .delete{
+  top: 0;
+  right: -24px;
+}
+.messages.right .message .delete{
+  top: 0;
+  left: -24px;
+}
+.messages.middle .message .delete{
+  left: 50%;
+  margin-left:-13px;
+  bottom:-15px;
+  border:1px solid #ccc;
+  border-top: 0;
 
+}
+.message .delete::before{
+  content:'\2715';
+}
+.message .delete:hover{
+  opacity: 1;
+}
 .left {
   align-items: flex-start;
 }
-
+.middle{
+  align-items: center;
+}
+.middle .message{
+  margin-left:auto;
+  margin-right:auto;
+  background-color: #fff;
+  font-weight: 500;
+  opacity: 0.6;
+  position: relative;
+  text-align: center;
+}
 .left .message {
   margin-left:8px;
   margin-right: 25%;
@@ -329,6 +401,12 @@ cursor.active::after{
   background-color: rgba(25, 135, 41, 0.2);
 }
 
+
+@media screen and (max-width: 575px) and (max-height: 700px) {
+.accordion-button{
+  padding: 12px !important;
+}
+}
 @media screen and (min-width: 576px) {
   .accordion-button {
     text-align: right;
@@ -402,9 +480,12 @@ cursor.active::after{
 }
   .accordion-collapse, .accordion-collapse.show {
     height: calc(39vw - 54px) !important;
+    transition: height 0.2s ease;
   }
   .accordion-body {
     width: calc(39vw - 54px);
+    transition: width 0.2s ease;
+
   }
   
   .col-width-80-percent{
@@ -412,11 +493,23 @@ cursor.active::after{
   }
   .accordion-button::after {display:none;}
 
+  body:not(.multiple) .accordion-item .accordion-collapse, body:not(.multiple) .accordion-item .accordion-collapse.show{
+    height: calc(48vw - 54px) !important;
+  }
+  body:not(.multiple) .accordion-item .accordion-body{
+    width: calc(48vw - 54px);
+  }
   .accordion-item:last-child .accordion-collapse, .accordion-item:last-child .accordion-collapse.show{
     height: calc(22vw - 54px) !important;
   }
   .accordion-item:last-child .accordion-body{
-    width: calc(22vw - 54px);
+    width: calc(22vw - 54px) !important;
   }
 
+  body:not(.multiple) .accordion-item:first-child .accordion-collapse, body:not(.multiple) .accordion-item:first-child .accordion-collapse.show{
+    height: calc(30vw - 54px) !important;
+  }
+  body:not(.multiple) .accordion-item:first-child .accordion-body{
+    width: calc(30vw - 54px);
+  }
 }

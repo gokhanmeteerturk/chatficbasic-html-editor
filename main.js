@@ -21,6 +21,9 @@ var chatfic = {
         player: {
             name: "John"
         },
+        app: {
+            name: "app"
+        },
         jessica: {
             name: "Jessica",
             color: "black"
@@ -30,7 +33,29 @@ var chatfic = {
 var storyInfoComplete = false;
 var storyInfoMistakes = [];
 
-let pages = [{id:1, name:'initial', messages:[], options:[]}];
+let pages = [{id:1, name:'initial', messages:[
+    {
+        message: "Hi John!",
+        from: "jessica",
+        side: 0,
+        multimedia: null,
+        chatroom:  "Jessica"
+    },
+    {
+        message: "Hi.",
+        from: "player",
+        side: 2,
+        multimedia: null,
+        chatroom:  "Jessica"
+    },
+    {
+        message: "You can remove these messages\n after hovering over or clicking on them.",
+        from: "app",
+        side: 1,
+        multimedia: null,
+        chatroom:  "Jessica"
+    }
+], options:[]}];
 let selectedPageId = 1;
 
 
@@ -90,12 +115,27 @@ function setCharacter(slug, name, color = null, avatar = null, replace=false) {
         alert('Character exists already');
         return;
     }
+    const oldName = chatfic.characters[slug]['name'];
     chatfic.characters[slug] = {};
     chatfic.characters[slug]['name'] = name.trim();
     color && color != "" ? chatfic.characters[slug]['color'] = color : null;
     avatar && avatar != "" ? chatfic.characters[slug]['avatar'] = avatar : null;
     refreshCharacters();
     checkChatfic();
+
+    try{
+        pages.forEach(page => {
+            page.messages.forEach(singleMessage => {
+                if(singleMessage.chatroom == oldName){
+                    singleMessage.chatroom=name.trim();
+                }
+            });
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+    refreshChat();
 }
 function checkChatfic() {
     storyInfoMistakes = [];
@@ -128,6 +168,15 @@ function checkChatfic() {
         document.getElementById('missingInfo').innerHTML=listText;
         document.getElementById('whatsmissingbutton').style.display='inline-block';
     }
+    activateSaveToBrowser();
+}
+function setLeftCharacter(slug){
+    document.getElementById('leftCharacterSlug').value=slug;
+    document.getElementById('leftCharacterLabel').innerText=chatfic.characters[slug].name;
+}
+function setRightCharacter(slug){
+    document.getElementById('rightCharacterSlug').value=slug;
+    document.getElementById('rightCharacterLabel').innerText=chatfic.characters[slug].name;
 }
 function refreshCharacters() {
     const charactersListInModal = document.getElementById('charactersListInModal');
@@ -140,7 +189,7 @@ function refreshCharacters() {
 
         const characterRow = document.createElement('div');
         characterRow.className='d-flex';
-        if(key != "player"){
+        if(key != "player" && key != "app"){
             const saveOverCell = document.createElement('div');
             saveOverCell.className='flex-grow-0';
             saveOverCell.innerHTML=`<button onclick="setCharacter('${key}', document.getElementById('newCharacterNameInput').value, document.getElementById('newCharacterColorInput').value, null, true)" class="btn btn-xs btn-success me-2 mt-1 mb-1">Save over this</button>`;
@@ -150,7 +199,7 @@ function refreshCharacters() {
         infoCell.className='flex-grow-1 mt-1 mb-1';
         infoCell.innerHTML=`<span class="d-sm-inline d-block"><b>Slug:</b> ${key}, </span><span class="d-sm-inline d-block"><b class="ms-sm-2">Name:</b> ${character.name}, </span><span class="d-sm-inline d-block"><b class="ms-sm-2">Color:</b> ${character.color ?? 'Not set'}</span>`;
         characterRow.appendChild(infoCell);
-        if(key != "player"){
+        if(key != "player" && key != "app"){
             const removeCell = document.createElement('div');
             removeCell.className='flex-grow-0';
             removeCell.innerHTML=`<button onclick="deleteCharacter('${key}')" class="btn btn-xs btn-danger pb-1 mt-1 mb-1">
@@ -170,28 +219,65 @@ function refreshCharacters() {
         charactersListInModal.appendChild(characterCard);
       }
 
-      const characterSelect = document.getElementById('characterSelectMain');
-      const oldSlug = characterSelect.value;
-      characterSelect.innerHTML='';
-      
+      const weirdCharacterSelectLeft = document.getElementById('weirdCharacterSelectLeft');
+      const leftCharacterSlug = document.getElementById('leftCharacterSlug');
+      const oldLeftSlug = leftCharacterSlug.value;
+      weirdCharacterSelectLeft.innerHTML='';
       for (let key in chatfic.characters) {
-          const character = chatfic.characters[key];
-          const newOption = document.createElement('option');
-          newOption.value=key;
-          if(key == 'player'){
-            newOption.innerText=character.name + " (player)";
-          }
-          else{
-            newOption.innerText=character.name;
-          }
-          characterSelect.appendChild(newOption);
-          if(key == oldSlug){
-            newOption.selected=true;
-            characterSelect.value=key;
-          }
+        if(key == "app"){
+            continue;
+        }
+        let character = chatfic.characters[key];
+        let newOption = document.createElement('li');
+        let newOptionA = document.createElement('a');
+        newOptionA.innerText =character.name;
+        newOptionA.className='dropdown-item small';
+        newOptionA.href="javascript:void(0)";
+        newOptionA.setAttribute('onclick','setLeftCharacter(\'' + key + '\')');
+        newOption.appendChild(newOptionA);
+        weirdCharacterSelectLeft.appendChild(newOption);
+        if(key == oldLeftSlug){
+            setLeftCharacter(key);
+        }
       }
+      const dividerLeft = document.createElement('li');
+      dividerLeft.innerHTML='<hr class="dropdown-divider"/>';
+      weirdCharacterSelectLeft.appendChild(dividerLeft);
+      const characterEditorLeft = document.createElement('li');
+      characterEditorLeft.innerHTML='<a class="dropdown-item small" href="javascript:void(0)" onclick="showCharactersModal();">Edit Characters</a>';
+      weirdCharacterSelectLeft.appendChild(characterEditorLeft);
+    
+
       
+      const weirdCharacterSelectRight = document.getElementById('weirdCharacterSelectRight');
+      const rightCharacterSlug = document.getElementById('rightCharacterSlug');
+      const oldRightSlug = rightCharacterSlug.value;
+      weirdCharacterSelectRight.innerHTML='';
+      for (let key in chatfic.characters) {
+        if(key == "app"){
+            continue;
+        }
+        let character = chatfic.characters[key];
+        let newOption = document.createElement('li');
+        let newOptionA = document.createElement('a');
+        newOptionA.innerText =character.name;
+        newOptionA.className='dropdown-item small';
+        newOptionA.href="javascript:void(0)";
+        newOptionA.setAttribute('onclick','setRightCharacter(\'' + key + '\')');
+        newOption.appendChild(newOptionA);
+        weirdCharacterSelectRight.appendChild(newOption);
+        if(key == oldRightSlug){
+            setRightCharacter(key);
+        }
+      }
+      const dividerRight = document.createElement('li');
+      dividerRight.innerHTML='<hr class="dropdown-divider"/>';
+      weirdCharacterSelectRight.appendChild(dividerRight);
+      const characterEditorRight = document.createElement('li');
+      characterEditorRight.innerHTML='<a class="dropdown-item small" href="javascript:void(0)" onclick="showCharactersModal();">Edit Characters</a>';
+      weirdCharacterSelectRight.appendChild(characterEditorRight);
       
+      activateSaveToBrowser();
 
 }
 function renamePlayer(){
@@ -211,8 +297,13 @@ function deleteCharacter(slug){
     refreshCharacters();
 }
 function checkCurrentMessagesForCharacter(slug){
-    // TODO: check
-    alert("check current characters TODO");
+    pages.forEach(page => {
+        page.messages.forEach(singleMessage => {
+            if(singleMessage.from == slug){
+                return false;
+            }
+        });
+    });
     return true;
 }
 function refreshPageOptionsList(){
@@ -262,6 +353,7 @@ function refreshPageOptionsList(){
     });
   let pageOptionsLister = document.getElementById('page-options-lister');
   pageOptionsLister.innerHTML=pageOptionsList;
+  activateSaveToBrowser();
 }
 
 const pageOptionsModal = new bootstrap.Modal(document.getElementById("pageOptionsModal"));
@@ -320,7 +412,7 @@ function savePageOptions(){
     let page = pages.find(x => x.id == saveOptionsButton.getAttribute('data-pageId'));
     
     page.options = [];
-    if(document.getElementById('btnradio1').checked){
+    if(document.getElementById('sideradio1').checked){
         // single option logic
         page.options.push({to: parseInt(pageSelect2.value)});
     }
@@ -384,35 +476,235 @@ const charactersModal = new bootstrap.Modal(document.getElementById("charactersM
 function showCharactersModal(){
     charactersModal.show();
 }
-
-
-function addMessage() {
+const sendMediaModal = new bootstrap.Modal(document.getElementById("sendMediaModal"));
+function showSendMediaModal(){
+    sendMediaModal.show();
+}
+function sendMedia(mediaName){
+    sendMediaModal.hide();
+    addMessage(mediaName);
+}
+function deleteMessage(mi){
+    if (confirm("Delete this message?") == true) {
+        let pageId = document.getElementById("pageSelect").value;
+        let page = pages.find(x => x.id == pageId);
+        page.messages.splice(mi, 1);
+      }
+      refreshChat();
+}
+function addMessage(multimedia=null) {
     // Fetch input values
-    var chatroom = document.getElementById("chatroom").value;
-    var character = document.getElementById("character").value;
-    var message = document.getElementById("message").value;
-    var side = document.getElementById("side").value;
-    var position = parseInt(document.getElementById("position").value);
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find(x => x.id == pageId);
+
+    let chatroom = document.getElementById("customChatroomNameInput").value;
+    let characterSlugLeft = document.getElementById("leftCharacterSlug").value;
+    let characterSlugRight = document.getElementById("rightCharacterSlug").value;
+
+
+    if(!chatroom && characterSlugLeft!="player" && characterSlugRight!="player"){
+        chatroom = chatfic.characters[characterSlugLeft].name + "-" + chatfic.characters[characterSlugRight].name
+    }
+
+    let characterSlug ="app";
+    let message = document.getElementById("message").value;
+    if((!message || message.length < 1) && !multimedia){
+        return;
+    }
+    let side = document.querySelector('input[name="sideradio"]:checked').value;
+    if(side == 0){
+        characterSlug = characterSlugLeft;
+    }
+    else if(side == 2){
+        characterSlug = characterSlugRight;
+    }
+    let position = parseInt(document.getElementById("position").value);
+
+    const pageLength = page.messages.length;
+    const isPageEmpty = pageLength == 0;
+    let previousMessageInPage = null;
+    let previousMessageIndex = -1;
+    let nextMessageInPage = null;
+    if(!isPageEmpty){
+        if(position != 0 && pageLength > position){
+            previousMessageInPage = page.messages[position-1];
+            previousMessageIndex = position-1;
+            if(pageLength > position+1){
+                nextMessageInPage = page.messages[position+1];
+            }
+        }
+        else if(position == 0){
+            previousMessageIndex = pageLength-1;
+            previousMessageInPage = page.messages[pageLength-1];
+        }
+    }
+    if(chatroom == null || chatroom == ""){
+        if(characterSlug != "player" && characterSlug != "app"){
+            chatroom = chatfic.characters[characterSlug].name;
+        }
+        else if(document.getElementById('leftCharacterSlug').value != "player"){
+            chatroom = chatfic.characters[document.getElementById('leftCharacterSlug').value].name;
+        }
+        else{ // characterSlug == "player" or characterSlug == "app"
+            
+            if(previousMessageInPage && previousMessageInPage.from != "player" && previousMessageInPage.from != "app"){
+                chatroom = chatfic.characters[previousMessageInPage.from].name;
+            }
+            else{
+                let tryMessageIndex = previousMessageIndex;
+                while (tryMessageIndex >= 0) {
+                    if(page.messages[tryMessageIndex].from != "player" && page.messages[tryMessageIndex].from != "app"){
+                        chatroom = chatfic.characters[page.messages[tryMessageIndex].from].name;
+                        break;
+                    }
+                    tryMessageIndex = tryMessageIndex - 1;
+                }
+            }
+            if(chatroom == null || chatroom == ""){
+                if(nextMessageInPage && nextMessageInPage.from != "player" && nextMessageInPage.from != "app"){
+                    chatroom = chatfic.characters[nextMessageInPage.from].name;
+                }
+                else{
+                    chatroom = prompt("Player is sending this message to:", Object.keys(chatfic.characters).length > 2 ?  chatfic.characters[Object.keys(chatfic.characters)[2]].name : "Jessica");
+                    if(chatroom == null || chatroom == ""){
+                        chatroom = "Unknown";
+                    }
+                }
+            }
+        }
+    }
 
     // Create message object
     var newMessage = {
-        chatroom: chatroom,
-        character: character,
         message: message,
-        side: side
+        from: characterSlug,
+        side: side,
+        multimedia: multimedia,
+        chatroom:  chatroom
     };
+    if(position==0){
+        page.messages.push(newMessage);
+    }
+    else{
+        page.messages.splice(position, 0, newMessage);
+        position = position+1;
+        document.getElementById("position").value=position;
+    }
+    refreshChat();
+}
 
-    // Add message to JSON result
-    // ...
+function refreshChat(){
+    const sides = ["left","middle","right"];
+    const pageId = document.getElementById("pageSelect").value;
+    const page = pages.find(x => x.id == pageId);
+    const position = parseInt(document.getElementById("position").value);
 
-    // Refresh JSON preview
-    // ...
+    const chatContainer = document.createElement('div');
+    chatContainer.className='chat pb-0';
 
-    // Refresh preview of messages on left side
-    // ...
+    const pageMessages = page.messages;
+    const pageMessagesLength = pageMessages.length;
+    
+    for (let i = 0; i < pageMessagesLength; i++) {
+        const messageObject = pageMessages[i];
+        const previousMessage = i == 0 ? null : pageMessages[i-1];
+        const nextMessage = i == pageMessagesLength-1 ? null : pageMessages[i+1];
+
+        // create cursor:
+        const cursor = document.createElement('cursor');
+        cursor.setAttribute('onclick','setCursor(this);');
+        if(position != 0 && position == i){
+            cursor.className="active";
+        }
+        chatContainer.appendChild(cursor);
+        
+
+        // create chatroom header if needed:
+        if(previousMessage == null || previousMessage.chatroom != messageObject.chatroom){
+            const chatroomHeader = document.createElement('div');
+            chatroomHeader.className='sticky-top chatroom-header';
+            chatroomHeader.innerText = messageObject.chatroom;
+            chatContainer.appendChild(chatroomHeader);
+        }
+        /*
+        Now we will create this using createElement:
+        <div data-index="5" tabindex="0" class="left messages">
+            <div class="message">
+                Hey!
+            </div>
+        </div>
+        */
+        const messageContainer = document.createElement('div');
+        messageContainer.className='messages';
+        messageContainer.setAttribute('data-index', i);
+        messageContainer.setAttribute('tabindex', 0);
+        messageContainer.className = sides[messageObject.side] + " messages";
+
+        
+        const messageDiv = document.createElement('div');
+        
+        let setAuthor = false;
+        if(previousMessage == null || previousMessage.chatroom != messageObject.chatroom || previousMessage.from != messageObject.from || previousMessage.side != messageObject.side){
+            setAuthor = true;
+        }
+        if(nextMessage == null || nextMessage.chatroom != messageObject.chatroom || nextMessage.from != messageObject.from || nextMessage.side != messageObject.side){
+            messageDiv.className='message last';
+        }
+        else{
+            messageDiv.className='message';
+        }
+        if(setAuthor && messageObject.side != 1 && (messageObject.from != "player" || messageObject.side != 2)){
+            const fromSpan = document.createElement('span');
+            fromSpan.innerText = chatfic.characters[messageObject.from].name;
+            fromSpan.className='author';
+            messageDiv.appendChild(fromSpan);
+            messageDiv.className = messageDiv.className + " withAuthor";
+        }
+
+        if(messageObject.multimedia){
+            if(messageObject.multimedia.toLowerCase().endsWith('.mp4') || messageObject.multimedia.toLowerCase().endsWith('.webm')){
+                const videoEl = document.createElement('span');
+                videoEl.innerText = `Video file: ${messageObject.multimedia}`;
+                messageDiv.appendChild(videoEl);
+            }
+            else{
+                const imageEl = document.createElement('img');
+                if(mediaFileSrcList.hasOwnProperty(messageObject.multimedia)){
+                    imageEl.src=mediaFileSrcList[messageObject.multimedia];
+                }
+                messageDiv.appendChild(imageEl);
+            }
+        }
+
+        const messageText = document.createElement('span');
+        messageText.innerText = messageObject.message;
+        messageDiv.appendChild(messageText);
+        
+        const messageDel = document.createElement('span');
+        messageDel.className='delete';
+        messageDel.setAttribute('onclick','deleteMessage('+i+')');
+        messageDiv.appendChild(messageDel);
+
+        messageContainer.appendChild(messageDiv);
+        chatContainer.appendChild(messageContainer);
+    }
+    document.getElementById('chatscreen').innerHTML='';
+    document.getElementById('chatscreen').appendChild(chatContainer);
+
+    if(position == 0){
+        const chatscroll = document.getElementById("chatscroll");
+        chatscroll.scrollTop = chatscroll.scrollHeight;
+    }
+    activateSaveToBrowser();
 }
 
 
+function activateSaveToBrowser(){
+    const sbb = document.getElementById("saveToBrowserButton");
+    sbb.classList.add('btn-warning');
+    sbb.classList.remove('btn-secondary');
+    sbb.removeAttribute('disabled');
+}
 
 
 const pageSelect = document.getElementById("pageSelect");
@@ -591,6 +883,7 @@ function toggleMultiplePages(){
     for (i = 0; i < stff.length; ++i) {
         stff[i].classList.toggle('multiple');
     }
+    document.body.classList.toggle('multiple');
 }
 
 
