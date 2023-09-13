@@ -145,7 +145,7 @@ function generateChatficBasicJson() {
     chatficForJson.pages.forEach((page) => {
         page.messages.forEach((message) => {
             if(message.multimedia && message.multimedia.length>1){
-                message.multimedia = "media/" + message.multimedia;
+                message.multimedia = "media/" + message.multimedia.replaceAll("media/","");
             }
         });
     });
