@@ -141,6 +141,14 @@ function generateChatficBasicJson() {
     const chatficForJson = JSON.parse(JSON.stringify(chatfic));
     chatficForJson.format = "chatficbasicjson";
     chatficForJson.pages = pages;
+
+    chatficForJson.pages.forEach((page) => {
+        page.messages.forEach((message) => {
+            if(message.multimedia && message.multimedia.length>1){
+                message.multimedia = "media/" + message.multimedia;
+            }
+        });
+    });
     return JSON.stringify(chatficForJson, null, 2);
 }
 
