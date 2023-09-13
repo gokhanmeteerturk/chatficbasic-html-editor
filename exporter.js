@@ -111,7 +111,7 @@ function saveZip() {
     pages.forEach((page) => {
         page.messages.forEach((singleMessage) => {
             if (singleMessage.multimedia) {
-                const mediaFile = getMediaByName(singleMessage.multimedia);
+                const mediaFile = getMediaByName(singleMessage.multimedia.replace("media/",""));
                 if (!mediaFile) {
                     alert("Media File Not In Library: " + singleMessage.multimedia);
                     return false;
