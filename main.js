@@ -134,7 +134,7 @@ function setCharacter(
         alert("Character exists already");
         return;
     }
-    const oldName = chatfic.characters[slug]["name"];
+    const oldName = chatfic.characters.hasOwnProperty(slug) ? chatfic.characters[slug]["name"] : "";
     chatfic.characters[slug] = {};
     chatfic.characters[slug]["name"] = name.trim();
     color && color != "" ? (chatfic.characters[slug]["color"] = color) : null;
