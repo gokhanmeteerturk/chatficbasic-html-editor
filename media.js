@@ -4,9 +4,6 @@ let addMediaModal = null;
 function showAddMedia() {
     addMediaModal.show();
 }
-function showImportCodeModal() {
-    importCodeModal.show();
-}
 document.addEventListener("DOMContentLoaded", function () {
     // Initialize the mediaFiles array to store media items
     addMediaModal = new bootstrap.Modal(document.getElementById("addMediaModal"));

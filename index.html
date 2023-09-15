@@ -288,8 +288,7 @@
               <button onclick="showViewCodeModal();" class="btn btn-sm btn-outline-secondary">
                 Show Code
               </button>
-              <button style="opacity:0.5;" data-bs-toggle="tooltip" data-bs-placement="left"
-                data-bs-title="Feature is in development." class="btn btn-sm btn-outline-secondary flex-grow-0">
+              <button onclick="showImportMarkdownModal();" class="btn btn-sm btn-outline-secondary flex-grow-0">
                 Import
               </button>
             </div>
@@ -595,13 +594,6 @@
     </div>
   </div>
 
-  <div id="alertSave" class="fixed-bottom pe-3 d-none">
-    <div class="shadow float-end small alert alert-success mx-3" role="alert">
-      <b>Chatfic is saved to browser.</b>
-      <hr>Unfortunately, we <b class="text-danger">can't save images or videos</b> to the browser's local storage.
-    </div>
-  </div>
-
 
   <!-- "import code" modal -->
   <div class="modal fade" id="importCodeModal" tabindex="-1" aria-labelledby="importCodeModalLabel" aria-hidden="true">
@@ -648,6 +640,26 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <button onclick="importChatficJson();" type="button" class="btn btn-primary">Import</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- "import markdown" modal -->
+  <div class="modal fade" id="importMarkdownModal" tabindex="-1" aria-labelledby="importMarkdownModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="importMarkdownModalLabel">Import Chatfic Basic Markdown(v1)</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body bg-slight">
+          <textarea class="form-control w-100 small is-invalid"
+            id="importMarkdownModalTextarea"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button onclick="importChatficMarkdown();" type="button" class="btn btn-primary">Import</button>
         </div>
       </div>
     </div>
