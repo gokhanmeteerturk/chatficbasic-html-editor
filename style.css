@@ -5,6 +5,7 @@ body {
 .accordion {
   margin-top: 36px;
   height: calc(100vh - 36px) !important;
+  height: calc(100svh - 36px) !important;
 }
 
 .bg-slight {
