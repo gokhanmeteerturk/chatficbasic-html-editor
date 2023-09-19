@@ -971,6 +971,6 @@ function toggleMultiplePages() {
 pageSelect.addEventListener("change", () => {
     selectedPageId = parseInt(pageSelect.value);
 });
-window.onbeforeunload = function () {
-    return "Are you sure you want to leave?";
-};
+// window.onbeforeunload = function () {
+//     return "Are you sure you want to leave?";
+// };

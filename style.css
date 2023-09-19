@@ -52,10 +52,34 @@ body {
   padding: 0.25rem 0.75rem;
 }
 
+
 .accordion-button {
   background-color: #ddd !important;
   font-weight: bold;
   border-top: 2px solid #aaa !important;
+}
+
+.highlight{
+  position:relative;
+  outline: 8px solid rgba(107, 224, 107, 0.521);
+}
+.highlight * {pointer-events: none;}
+.highlight::after{
+  content:'Dropping files here will add them to your media library';
+  display:block;
+  font-size: 18px;
+  font-weight: 500;
+  color:#3c5d3c;
+  position: absolute;
+  top: 50%;
+  left:50%;
+  margin-top:-80px;
+  margin-left:-100px;
+  width: 200px;
+  text-align: center;
+  z-index: 150;
+  padding: 18px;
+  background:rgb(202, 220, 202);
 }
 
 .setCustomChatroom {
