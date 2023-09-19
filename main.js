@@ -661,6 +661,54 @@ function addMessage(multimedia = null) {
     }
     refreshChat();
 }
+let editMessageModal;
+document.addEventListener("DOMContentLoaded", function () {
+    editMessageModal = new bootstrap.Modal(document.getElementById("editMessageModal"));
+
+    document.getElementById("saveMessageButton").addEventListener("click", function () {
+        // Get new values from the modal fields
+        let editMessageIndex = document.getElementById("editMessageIndex").value;
+        let newMessage = document.getElementById("messageInput").value;
+        let newFrom = document.getElementById("fromInput").value;
+        let newSide = document.getElementById("sideInput").value;
+        let newMultimedia = document.getElementById("multimediaInput").value;
+        let newChatroom = document.getElementById("chatroomInput").value;
+
+        let updatedMessage = {
+          message: newMessage || null,
+          from: newFrom || null,
+          side: newSide || null,
+          multimedia: newMultimedia || null,
+          chatroom: newChatroom || null,
+        };
+        // Update the page.messages array with the updated message
+        let pageId = document.getElementById("pageSelect").value;
+        let page = pages.find((x) => x.id == pageId);
+        page.messages[parseInt(editMessageIndex)] = updatedMessage;
+        // Step 5: Run the refreshChat function
+        refreshChat();
+        // Hide the modal after saving
+        editMessageModal.hide();
+      });
+});
+// Function to edit a message
+function editMessage(messageIndex) {
+    // Step 1: Detect current page object
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find((x) => x.id == pageId);
+    let message = page.messages[messageIndex];
+
+    // Show the modal
+    editMessageModal.show();
+
+    document.getElementById("editMessageIndex").value = messageIndex;
+    document.getElementById("messageInput").value = message.message;
+    document.getElementById("fromInput").value = message.from;
+    document.getElementById("sideInput").value = message.side;
+    document.getElementById("multimediaInput").value = message.multimedia;
+    document.getElementById("chatroomInput").value = message.chatroom;
+
+  }
 
 function refreshChat() {
     const sides = ["left", "middle", "right"];
@@ -770,6 +818,11 @@ function refreshChat() {
         messageDel.className = "delete";
         messageDel.setAttribute("onclick", "deleteMessage(" + i + ")");
         messageDiv.appendChild(messageDel);
+
+        const messageEdit = document.createElement("span");
+        messageEdit.className = "edit";
+        messageEdit.setAttribute("onclick", "editMessage(" + i + ")");
+        messageDiv.appendChild(messageEdit);
 
         messageContainer.appendChild(messageDiv);
         chatContainer.appendChild(messageContainer);

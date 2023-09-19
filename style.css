@@ -225,9 +225,24 @@ textarea.small {
   color: black;
   opacity: 0.8;
 }
+.message .edit {
+  cursor: pointer;
+  position: absolute;
+  display: none;
+  width: 27px;
+  height: 27px;
+  line-height: 27px;
+  text-align: center;
+  color: black;
+  opacity: 0.8;
+}
 
 .messages:focus .message .delete,
 .messages:hover .message .delete {
+  display: block;
+}
+.messages:focus .message .edit,
+.messages:hover .message .edit {
   display: block;
 }
 
@@ -235,11 +250,21 @@ textarea.small {
   top: 0;
   right: -24px;
 }
+.messages.left .message .edit {
+  top: 0;
+  right: -48px;
+}
 
 .messages.right .message .delete {
   top: 0;
   left: -24px;
 }
+.messages.right .message .edit {
+  top: 0;
+  left: -48px;
+}
+
+
 
 .messages.middle .message .delete {
   left: 50%;
@@ -249,8 +274,24 @@ textarea.small {
   border-top: 0;
 }
 
+.messages.middle .message .edit {
+  left: 50%;
+  margin-left: -37px;
+  bottom: -15px;
+  border: 1px solid #ccc;
+  border-top: 0;
+}
+
 .message .delete::before {
   content: "\2715";
+}
+.message .edit::before {
+  content: "\270E";
+  font-family: Arial, sans-serif;
+}
+
+.message .edit:hover {
+  opacity: 1;
 }
 
 .message .delete:hover {

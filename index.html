@@ -577,6 +577,53 @@
   </div>
 
 
+  <!-- "edit message" modal -->
+  <div class="modal fade" id="editMessageModal" tabindex="-1" aria-labelledby="editMessageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editMessageModalLabel">Edit Message</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="messageInput" class="form-label form-label-sm">Message</label>
+              <input type="text" class="form-control form-control-sm" id="messageInput">
+              <input type="hidden" id="editMessageIndex">
+            </div>
+            <div class="mb-3">
+              <label for="fromInput" class="form-label form-label-sm">From</label>
+              <input type="text" class="form-control form-control-sm" id="fromInput">
+            </div>
+            <div class="mb-3">
+              <label for="sideInput" class="form-label form-label-sm">Side</label>
+              <select class="form-control form-control-sm" id="sideInput" name="sideInput">
+                  <option value="0">Left</option>
+                  <option value="1">Middle</option>
+                  <option value="2">Right</option>
+              </select>
+              
+            </div>
+            <div class="mb-3">
+              <label for="multimediaInput" class="form-label form-label-sm">Multimedia</label>
+              <input type="text" class="form-control form-control-sm" id="multimediaInput">
+            </div>
+            <div class="mb-3">
+              <label for="chatroomInput" class="form-label form-label-sm">Chatroom</label>
+              <input type="text" class="form-control form-control-sm" id="chatroomInput">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="saveMessageButton">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
   <!-- "show code" modal -->
   <div class="modal fade" id="viewCodeModal" tabindex="-1" aria-labelledby="viewCodeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
