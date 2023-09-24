@@ -594,11 +594,13 @@
             </div>
             <div class="mb-3">
               <label for="fromInput" class="form-label form-label-sm">From</label>
-              <input type="text" class="form-control form-control-sm" id="fromInput">
+              <select size="4" onchange="if(this.value=='player'){try{document.getElementById('sideInput').value='2';}catch{}}" class="form-control form-control-sm" id="fromInput" name="fromInput">
+                
+              </select>
             </div>
             <div class="mb-3">
               <label for="sideInput" class="form-label form-label-sm">Side</label>
-              <select class="form-control form-control-sm" id="sideInput" name="sideInput">
+              <select size="3" class="form-control form-control-sm" id="sideInput" name="sideInput">
                   <option value="0">Left</option>
                   <option value="1">Middle</option>
                   <option value="2">Right</option>

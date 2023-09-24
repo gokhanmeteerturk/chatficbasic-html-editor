@@ -218,8 +218,18 @@ function refreshCharacters() {
         "charactersListInModal"
     );
     charactersListInModal.innerHTML = "";
+    const fromInput = document.getElementById(
+        "fromInput"
+    );
+    fromInput.innerHTML = "";
+
     for (let key in chatfic.characters) {
         const character = chatfic.characters[key];
+
+        const option = document.createElement("option");
+        option.innerText = character.name;
+        option.value = key;
+        fromInput.appendChild(option);
 
         const characterCard = document.createElement("li");
         characterCard.className = "list-group-item small";
@@ -787,6 +797,8 @@ function refreshChat() {
             (messageObject.from != "player" || messageObject.side != 2)
         ) {
             const fromSpan = document.createElement("span");
+            console.log(messageObject);
+            console.log(messageObject.from);
             fromSpan.innerText = chatfic.characters[messageObject.from].name;
             fromSpan.className = "author";
             messageDiv.appendChild(fromSpan);

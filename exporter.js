@@ -83,6 +83,20 @@ function importChatficJson() {
         delete chatficFromJson.format;
         delete chatficFromJson.pages;
         chatfic = chatficFromJson;
+        try{
+            // check each pages's .messages array if there is a message with a multimedia, if there is, remove "media/" from beginning of it:
+            pages.forEach((page) => {
+                page.messages.forEach((singleMessage) => {
+                    if (singleMessage.multimedia && singleMessage.multimedia.length > 6) {
+                        singleMessage.multimedia = singleMessage.multimedia.replace("media/", "");
+                    }
+                }
+                );
+            });
+        }
+        catch(err){
+
+        }
         importCodeModal.hide();
         checkChatfic();
         refreshChat();
