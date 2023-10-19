@@ -662,6 +662,8 @@ function addMessage(multimedia = null) {
         multimedia: multimedia,
         chatroom: chatroom,
     };
+    latestMessageAdded = message;
+    document.getElementById('message').value='';
     if (position == 0) {
         page.messages.push(newMessage);
     } else {
@@ -844,7 +846,9 @@ function refreshChat() {
 
     if (position == 0) {
         const chatscroll = document.getElementById("chatscroll");
-        chatscroll.scrollTop = chatscroll.scrollHeight;
+        if(chatscroll.scrollHeight - chatscroll.scrollTop < 200){
+            chatscroll.scrollTop = chatscroll.scrollHeight;
+        }
     }
     activateSaveToBrowser();
 }
@@ -866,10 +870,19 @@ const pageModal = new bootstrap.Modal(document.getElementById("pageModal"));
 const pageList = document.getElementById("pageList");
 const newPageInput = document.getElementById("newPageInput");
 const addPageButton = document.getElementById("addPageButton");
-
+let latestMessageAdded = "";
 editInfoButton.addEventListener("click", () => {
     infoModalShow();
 });
+function handleMessageKeyPress(e){
+ var key=e.keyCode || e.which;
+  if (key==13){
+    addMessage();
+  }
+  else if(key==38 && document.getElementById('message').value == ""){
+    document.getElementById('message').value = latestMessageAdded;
+  }
+}
 // Function to populate the select element with options from the "pages" array
 function populatePageSelect() {
     pageSelect.innerHTML = "";
