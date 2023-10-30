@@ -552,6 +552,13 @@ function deleteMessage(mi) {
     }
     refreshChat();
 }
+function moveMessageToRight(mi) {
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find((x) => x.id == pageId);
+    page.messages[mi]["from"]="player";
+    page.messages[mi]["side"]=2;
+    refreshChat();
+}
 function addMessage(multimedia = null) {
     // Fetch input values
     let pageId = document.getElementById("pageSelect").value;
@@ -832,6 +839,11 @@ function refreshChat() {
         messageDel.className = "delete";
         messageDel.setAttribute("onclick", "deleteMessage(" + i + ")");
         messageDiv.appendChild(messageDel);
+        const messageToRight = document.createElement("span");
+        messageToRight.className = "to-right";
+        messageToRight.setAttribute("onclick", "moveMessageToRight(" + i + ")");
+        messageDiv.appendChild(messageToRight);
+
 
         const messageEdit = document.createElement("span");
         messageEdit.className = "edit";

@@ -246,15 +246,27 @@ textarea.small {
   opacity: 0.8;
 }
 
-.messages:focus .message .delete,
-.messages:hover .message .delete {
-  display: block;
-}
-.messages:focus .message .edit,
-.messages:hover .message .edit {
-  display: block;
+.message .to-right {
+  cursor: pointer;
+  position: absolute;
+  display: none;
+  width: 27px;
+  height: 27px;
+  line-height: 27px;
+  text-align: center;
+  color: black;
+  opacity: 0.8;
 }
 
+
+.messages:focus .message .delete,
+.messages:hover .message .delete,
+.messages:focus .message .edit,
+.messages:hover .message .edit,
+.messages:focus .message .to-right,
+.messages:hover .message .to-right {
+  display: block;
+}
 .messages.left .message .delete {
   top: 0;
   right: -24px;
@@ -262,6 +274,10 @@ textarea.small {
 .messages.left .message .edit {
   top: 0;
   right: -48px;
+}
+.messages.left .message .to-right {
+  top: 0;
+  right: -72px;
 }
 
 .messages.right .message .delete {
@@ -271,6 +287,9 @@ textarea.small {
 .messages.right .message .edit {
   top: 0;
   left: -48px;
+}
+.messages.right .message .to-right, .messages.middle .message .to-right {
+  display:none;
 }
 
 
@@ -307,6 +326,14 @@ textarea.small {
   opacity: 1;
 }
 
+.message .to-right::before {
+  content: "\1F846";
+  font-family: Arial, sans-serif;
+}
+
+.message .to-right:hover {
+  opacity: 1;
+}
 .left {
   align-items: flex-start;
 }
