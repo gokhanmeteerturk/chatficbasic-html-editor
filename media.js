@@ -1,10 +1,36 @@
 const mediaFiles = [];
 var addMediaCounter = 0;
 const mediaFileSrcList = {};
+const mediaFileVideoThumbnailList = {};
 let addMediaModal = null;
 function showAddMedia() {
     addMediaModal.show();
 }
+
+function generateVideoThumbnail(file){
+    // function from:
+    // https://stackoverflow.com/a/69183556/2754871
+
+    return new Promise((resolve) => {
+      const canvas = document.createElement("canvas");
+      const video = document.createElement("video");
+
+      video.autoplay = true;
+      video.muted = true;
+      video.src = URL.createObjectURL(file);
+
+      video.onloadeddata = () => {
+        let ctx = canvas.getContext("2d");
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+        video.pause();
+        return resolve(canvas.toDataURL("image/png"));
+      };
+    });
+  };
 
 function loadFiles(files){
     if(files && files.length>0){
@@ -21,6 +47,9 @@ function loadFiles(files){
                         mediaFileSrcList[file.name] = this.result;
                     };
                     fr.readAsDataURL(file);
+                }
+                else{
+                    handleVideoThumbnail(file);
                 }
                 updateMediaLibrary();
             }
@@ -150,3 +179,14 @@ function showImage(fileObj, imageEl) {
     };
     fr.readAsDataURL(fileObj);
 }
+
+async function handleVideoThumbnail(file){
+    try{
+        const thumbnail =  await generateVideoThumbnail(file);
+        console.log(thumbnail)
+        mediaFileVideoThumbnailList[file.name] = thumbnail;
+    }
+    catch(err){
+        console.log(err);
+    }
+  }

@@ -222,7 +222,20 @@ textarea.small {
   margin: 4px;
   border-radius: 6px;
 }
-
+.message .video-container { position: relative; }
+.message .video-container span {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: block;
+  width: calc(100% - 8px);
+  text-align: center;
+  margin-top: -15px;
+  color: white;
+  margin-left: 4px;
+  background: rgba(0,0,0,0.5);
+  padding: 0px;
+}
 .message .delete {
   cursor: pointer;
   position: absolute;

@@ -819,9 +819,22 @@ function refreshChat() {
                 messageObject.multimedia.toLowerCase().endsWith(".mp4") ||
                 messageObject.multimedia.toLowerCase().endsWith(".webm")
             ) {
-                const videoEl = document.createElement("span");
-                videoEl.innerText = `Video file: ${messageObject.multimedia}`;
-                messageDiv.appendChild(videoEl);
+                if(mediaFileVideoThumbnailList.hasOwnProperty(messageObject.multimedia)){
+                    const videoContainerEl = document.createElement("div");
+                    videoContainerEl.className = "video-container";
+                    const videoEl = document.createElement("img");
+                    const videoSpanEl = document.createElement("span");
+                    videoSpanEl.innerText = `Video file: ${messageObject.multimedia}`;
+                    videoEl.src = mediaFileVideoThumbnailList[messageObject.multimedia];
+                    videoContainerEl.appendChild(videoEl);
+                    videoContainerEl.appendChild(videoSpanEl);
+                    messageDiv.appendChild(videoContainerEl);
+                }
+                else{
+                    const videoEl = document.createElement("span");
+                    videoEl.innerText = `Video file: ${messageObject.multimedia}`;
+                    messageDiv.appendChild(videoEl);
+                }
             } else {
                 const imageEl = document.createElement("img");
                 if (mediaFileSrcList.hasOwnProperty(messageObject.multimedia)) {
