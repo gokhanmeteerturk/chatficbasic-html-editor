@@ -552,12 +552,95 @@ function deleteMessage(mi) {
     }
     refreshChat();
 }
+var data = [1,2,3,4,5];
+
+function moveMessage(messages, from, to) {
+  var f = messages.splice(from, 1)[0];
+  messages.splice(to, 0, f);
+  return messages;
+}
+
+
+function moveMessageToUp(mi) {
+    if(mi < 1){return;}
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find((x) => x.id == pageId);
+    page.messages = moveMessage(page.messages, mi, mi-1);
+    refreshChat();
+}
+function moveMessageToDown(mi) {
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find((x) => x.id == pageId);
+    if(mi > page.messages.length-1){return;}
+    page.messages = moveMessage(page.messages, mi, mi+1);
+    refreshChat();
+}
 function moveMessageToRight(mi) {
     let pageId = document.getElementById("pageSelect").value;
     let page = pages.find((x) => x.id == pageId);
     page.messages[mi]["from"]="player";
     page.messages[mi]["side"]=2;
     refreshChat();
+}
+function moveMessageToLeft(mi) {
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find((x) => x.id == pageId);
+    let from = getMessageLeftFromByIndex(mi);
+    if(from == null){
+        editMessage(mi);
+    }
+    else{
+        page.messages[mi]["from"]=from;
+        page.messages[mi]["side"]=0;
+        refreshChat();
+    }
+}
+function getMessageLeftFromByIndex(mi){
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find((x) => x.id == pageId);
+    const pageLength = page.messages.length;
+    const isPageEmpty = pageLength == 0;
+    if(isPageEmpty){
+        return null;
+    }
+    else{
+        return getLeftFromsToBackRecursive(page.messages, mi);
+    }
+    
+}
+function chatroomOwnerOrNull(message){
+    let chatroom = message.chatroom;
+    for (let key in chatfic.characters) {
+        try{
+            if(chatroom == chatfic.characters[key].name){
+                return key;
+            }
+        }
+        catch(e){
+
+        }
+    }
+    return null;
+}
+function getLeftFromsToBackRecursive(messages, mi){
+    console.log("messages[mi]");
+    console.log(mi);
+    try{
+        if(messages[mi-1].chatroom != messages[mi].chatroom){
+            return chatroomOwnerOrNull(messages[mi]);
+        }
+
+        if(messages[mi-1].from == "player"){
+            return getLeftFromsToBackRecursive(messages, mi-1);
+        }
+        else{
+            return messages[mi-1].from;
+        }
+    }
+    catch(e){
+        return chatroomOwnerOrNull(messages[mi]);
+    }
+
 }
 function addMessage(multimedia = null) {
     // Fetch input values
@@ -852,11 +935,27 @@ function refreshChat() {
         messageDel.className = "delete";
         messageDel.setAttribute("onclick", "deleteMessage(" + i + ")");
         messageDiv.appendChild(messageDel);
+
+        
+        const messageToUp = document.createElement("span");
+        messageToUp.className = "to-up";
+        messageToUp.setAttribute("onclick", "moveMessageToUp(" + i + ")");
+        messageDiv.appendChild(messageToUp);
+
+        const messageToDown = document.createElement("span");
+        messageToDown.className = "to-down";
+        messageToDown.setAttribute("onclick", "moveMessageToDown(" + i + ")");
+        messageDiv.appendChild(messageToDown);
+        
+        const messageToLeft = document.createElement("span");
+        messageToLeft.className = "to-left";
+        messageToLeft.setAttribute("onclick", "moveMessageToLeft(" + i + ")");
+        messageDiv.appendChild(messageToLeft);
+
         const messageToRight = document.createElement("span");
         messageToRight.className = "to-right";
         messageToRight.setAttribute("onclick", "moveMessageToRight(" + i + ")");
         messageDiv.appendChild(messageToRight);
-
 
         const messageEdit = document.createElement("span");
         messageEdit.className = "edit";

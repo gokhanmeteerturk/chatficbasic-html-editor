@@ -161,7 +161,7 @@
                 <label class="input-group-text" for="pageSelect">
                   Page
                 </label>
-                <select onchange="refreshChat();" id="pageSelect" class="form-select form-select-sm"></select>
+                <select onchange='document.getElementById("position").value=0;refreshChat();' id="pageSelect" class="form-select form-select-sm"></select>
               </div>
             </div>
             <div id="chatscroll" class="flex-grow-1 flex-fill scrollable chatscroll">
