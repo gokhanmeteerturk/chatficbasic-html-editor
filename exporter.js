@@ -198,7 +198,7 @@ function saveZip() {
             if(chatfic.title.length < 2){
                 throw new Error("NO TITLE!");
             }
-            const filename = chatfic.title.replace(/[^a-z0-9]/gi, '_').replace(/_{2,}/g, '_');
+            const filename = chatfic.title.replace(/[^a-z0-9 ]/gi, '_').replace(/_{2,}/g, '_');
             saveAs(content, filename + ".zip");
         }
         catch (e){
