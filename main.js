@@ -118,6 +118,34 @@ function setPatreonusername(patreonusername) {
     }
     checkChatfic();
 }
+function updateMetaUI(chatfic){
+    try {
+    document.getElementById("cf-title").innerText = chatfic.title;
+    } catch (e){}
+    try {
+    document.getElementById("newTitleInput").value = chatfic.title;
+    } catch (e){}
+    try {
+    document.getElementById("cf-description").innerText = chatfic.description;
+    } catch (e){}
+    try {
+    document.getElementById("newDescriptionInput").value = chatfic.description;
+    } catch (e){}
+    try {
+    document.getElementById("cf-author").innerText = chatfic.author;
+    } catch (e){}
+    try {
+    document.getElementById("newAuthorInput").value = chatfic.author;
+    } catch (e){}
+    try {
+    document.getElementById("cf-patreonusername").innerText =
+        chatfic.patreonusername;
+    } catch (e){}
+    try {
+    document.getElementById("newPatreonusernameInput").value =
+        chatfic.patreonusername;
+    } catch (e){}
+}
 function setCharacter(
     slug,
     name,

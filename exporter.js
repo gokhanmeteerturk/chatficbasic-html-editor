@@ -99,6 +99,7 @@ function importChatficJson() {
         }
         importCodeModal.hide();
         checkChatfic();
+        updateMetaUI(chatfic);
         refreshChat();
         refreshCharacters();
         refreshPageOptionsList();
@@ -193,7 +194,16 @@ function saveZip() {
     });
     zip.generateAsync({ type: "blob" }).then(function (content) {
         // see FileSaver.js
-        saveAs(content, "example.zip");
+        try{
+            if(chatfic.title.length < 2){
+                throw new Error("NO TITLE!");
+            }
+            const filename = chatfic.title.replace(/[^a-z0-9]/gi, '_').replace(/_{2,}/g, '_');
+            saveAs(content, filename + ".zip");
+        }
+        catch (e){
+            saveAs(content, "example.zip");
+        }
     });
 }
 
