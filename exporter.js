@@ -234,7 +234,6 @@ function generateChatficBasic(chatficBasicJson) {
 > patreonusername: ${fic.patreonusername}
 > modified: ${fic.modified}
 > episode: ${fic.episode}
-> description: ${fic.description}
 `;
     for (let key in fic.characters) {
         const character = fic.characters[key];
