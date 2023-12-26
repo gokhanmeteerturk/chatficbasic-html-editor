@@ -589,7 +589,7 @@
           <form>
             <div class="mb-3">
               <label for="messageInput" class="form-label form-label-sm">Message</label>
-              <input type="text" class="form-control form-control-sm" id="messageInput">
+              <input onkeydown="handleEditMessageKeyPress(event);" type="text" class="form-control form-control-sm" id="messageInput">
               <input type="hidden" id="editMessageIndex">
             </div>
             <div class="mb-3">

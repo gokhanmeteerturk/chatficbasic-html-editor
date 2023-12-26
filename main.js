@@ -791,34 +791,37 @@ function addMessage(multimedia = null) {
     }
     refreshChat();
 }
+function saveMessageFromEditModal(){
+    // Get new values from the modal fields
+    let editMessageIndex = document.getElementById("editMessageIndex").value;
+    let newMessage = document.getElementById("messageInput").value;
+    let newFrom = document.getElementById("fromInput").value;
+    let newSide = document.getElementById("sideInput").value;
+    let newMultimedia = document.getElementById("multimediaInput").value;
+    let newChatroom = document.getElementById("chatroomInput").value;
+
+    let updatedMessage = {
+        message: newMessage || null,
+        from: newFrom || null,
+        side: newSide || null,
+        multimedia: newMultimedia || null,
+        chatroom: newChatroom || null,
+    };
+    // Update the page.messages array with the updated message
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find((x) => x.id == pageId);
+    page.messages[parseInt(editMessageIndex)] = updatedMessage;
+    // Step 5: Run the refreshChat function
+    refreshChat();
+    // Hide the modal after saving
+    editMessageModal.hide();
+}
 let editMessageModal;
 document.addEventListener("DOMContentLoaded", function () {
     editMessageModal = new bootstrap.Modal(document.getElementById("editMessageModal"));
 
     document.getElementById("saveMessageButton").addEventListener("click", function () {
-        // Get new values from the modal fields
-        let editMessageIndex = document.getElementById("editMessageIndex").value;
-        let newMessage = document.getElementById("messageInput").value;
-        let newFrom = document.getElementById("fromInput").value;
-        let newSide = document.getElementById("sideInput").value;
-        let newMultimedia = document.getElementById("multimediaInput").value;
-        let newChatroom = document.getElementById("chatroomInput").value;
-
-        let updatedMessage = {
-          message: newMessage || null,
-          from: newFrom || null,
-          side: newSide || null,
-          multimedia: newMultimedia || null,
-          chatroom: newChatroom || null,
-        };
-        // Update the page.messages array with the updated message
-        let pageId = document.getElementById("pageSelect").value;
-        let page = pages.find((x) => x.id == pageId);
-        page.messages[parseInt(editMessageIndex)] = updatedMessage;
-        // Step 5: Run the refreshChat function
-        refreshChat();
-        // Hide the modal after saving
-        editMessageModal.hide();
+        saveMessageFromEditModal();
       });
 });
 // Function to edit a message
@@ -1033,6 +1036,12 @@ function handleMessageKeyPress(e){
   }
   else if(key==38 && document.getElementById('message').value == ""){
     document.getElementById('message').value = latestMessageAdded;
+  }
+}
+function handleEditMessageKeyPress(e){
+ var key=e.keyCode || e.which;
+  if (key==13){
+      document.getElementById("saveMessageButton").click();
   }
 }
 // Function to populate the select element with options from the "pages" array
