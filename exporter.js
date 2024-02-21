@@ -231,10 +231,13 @@ function generateChatficBasic(chatficBasicJson) {
 > title: ${fic.title}
 > description: ${fic.description}
 > author: ${fic.author}
-> patreonusername: ${fic.patreonusername}
 > modified: ${fic.modified}
 > episode: ${fic.episode}
 `;
+    for (let key in fic.handles){
+        const handle = fic.handles[key];
+        chatficbasic += "> handles/" + key + ": " + handle + "\n";
+    }
     for (let key in fic.characters) {
         const character = fic.characters[key];
         chatficbasic += "> characters/" + key + "/name : " + character.name + "\n";
@@ -309,19 +312,23 @@ var chatficToAdd = {
     characters: {},
 };
 
+function trimTrailingSlash(str){
+  return str.replace(/^\/*$/g, '');
+}
 function convertChatficFromMdToJSON(chatficbasicCode) {
     chatficConversionResult = {
         format: "chatficbasicjson",
     };
     chatficToAdd = {
         pages: [],
+        handles: {},
         characters: {},
+        variables: {}
     };
     const metadataKeys = [
         "title",
         "description",
         "author",
-        "patreonusername",
         "modified",
         "episode",
     ];
@@ -337,21 +344,88 @@ function convertChatficFromMdToJSON(chatficbasicCode) {
             continue;
         }
         if (trimmedLine.startsWith("> ")) {
-            if (trimmedLine.startsWith("> characters/")) {
+             if (trimmedLine.startsWith("> patreonusername:")){
+                 let myValue = trimTrailingSlash(trimmedLine.slice(18).trim()).split("/");
+                 myValue = myValue[myValue.length-1];
+                 chatficToAdd.handles["patreon"] = myValue;
+                 console.log("handles");
+                 console.log(chatficToAdd.handles);
+
+             }
+             if (trimmedLine.startsWith("> handles/")) {
                 const parts = trimmedLine
-                    .slice(13)
-                    .replace(" : ", "/")
-                    .replace(" :", "/")
-                    .replace(": ", "/")
+                    .slice(10)
+                    .replace(" : ", ":")
+                    .replace(" :", ":")
+                    .replace(": ", ":")
+                    .replace(":", "/")
+                    .split("/");
+                if (parts.length === 2) {
+                    const handleType = parts[0].trim();
+                    const handleValue = parts[1].trim();
+
+                    chatficToAdd.handles[handleType] = handleValue;
+                }
+            }
+            if (trimmedLine.startsWith("> variables/")) {
+                const parts = trimmedLine
+                    .slice(12)
+                    .replace(" : ", ":")
+                    .replace(" :", ":")
+                    .replace(": ", ":")
+                    .replace(":", "/")
                     .split("/");
                 if (parts.length >= 3) {
-                    const character = parts[0];
-                    const attribute = parts[1];
-                    const value = parts[2];
-                    if (!chatficToAdd.characters[character]) {
+                    const character = parts[0].trim();
+                    const attribute = parts[1].trim();
+                    const value = parts[2].trim();
+                    if (!chatficToAdd.characters.hasOwnProperty(character)) {
                         chatficToAdd.characters[character] = {};
                     }
                     chatficToAdd.characters[character][attribute] = value;
+                }
+            }
+            if (trimmedLine.startsWith("> characters/")) {
+                const parts = trimmedLine
+                    .slice(13)
+                    .replace(" : ", ":")
+                    .replace(" :", ":")
+                    .replace(": ", ":")
+                    .replace(":", "/")
+                    .split("/");
+
+                        console.log("parts");
+                        console.log(parts);
+                const partsCount = parts.length;
+                if (partsCount >= 3) {
+                    const character = parts[0].trim();
+                    const attribute = parts[1].trim();
+
+                    if (partsCount >= 4 && attribute === "model") {
+                        const modelAttribute = parts[2].trim();
+                        if (!chatficToAdd.characters[character].hasOwnProperty("model")) {
+                            chatficToAdd.characters[character]["model"] = {};
+                        }
+                        if (partsCount === 4 && modelAttribute !== "handles") {
+                            const value = parts[3].trim();
+                            chatficToAdd.characters[character].model[modelAttribute] = value;
+                        } else if (partsCount === 5 && modelAttribute === "handles") {
+                            const handleAttribute = parts[3].trim();
+                            const value = parts[4].trim();
+
+                            if (!chatficToAdd.characters[character].model.hasOwnProperty("handles")) {
+                                chatficToAdd.characters[character].model["handles"] = {};
+                            }
+
+                            chatficToAdd.characters[character].model["handles"][handleAttribute] = value;
+                        }
+                    } else {
+                        const value = parts[2].trim();
+                        if (!chatficToAdd.characters.hasOwnProperty(character)) {
+                            chatficToAdd.characters[character] = {};
+                        }
+                        chatficToAdd.characters[character][attribute] = value;
+                    }
                 }
             }
             for (const metadataKey of metadataKeys) {
@@ -391,6 +465,9 @@ function convertChatficFromMdToJSON(chatficbasicCode) {
         }
     }
 
+    chatficConversionResult.handles = chatficToAdd.handles;
+    chatficConversionResult.version = "1";
+    chatficConversionResult.variables = chatficToAdd.variables;
     chatficConversionResult.characters = chatficToAdd.characters;
     chatficConversionResult.pages = chatficToAdd.pages;
 

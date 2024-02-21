@@ -109,6 +109,13 @@ h2 small {
   width: 100%;
   box-sizing: border-box;
 }
+.text-tiny{
+  font-size:12px;
+  opacity: 0.7;
+  margin-top:-5px;
+  margin-left:12px;
+  margin-bottom:12px;
+}
 
 .border-ycircle {
   border-top-left-radius: 50px !important;

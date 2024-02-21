@@ -9,7 +9,7 @@ function setTooltips() {
 
 var defaultTitle = "My Chatfic Story";
 var defaultAuthor = "/u/myself";
-var defaultPatreonusername = "mypatreonusername";
+var defaultHandles = {};
 var defaultDescription =
     "Welcome to My Chatfic Story, a story of love, lust, and several other things.";
 var chatfic = {
@@ -18,9 +18,8 @@ var chatfic = {
     title: defaultTitle,
     description: defaultDescription,
     author: defaultAuthor,
-    patreonusername: defaultPatreonusername,
+    handles: defaultHandles,
     modified: 0,
-    episodes: 1,
     episode: 1,
     characters: {
         player: {
@@ -37,7 +36,6 @@ var chatfic = {
 };
 var storyInfoComplete = false;
 var storyInfoMistakes = [];
-
 let pages = [
     {
         id: 1,
@@ -86,11 +84,7 @@ function setEpisode(episode) {
     }
     checkChatfic();
 }
-function setEpisodes(episodes) {
-    chatfic.episodes = episodes;
-    document.getElementById("cf-episodes").innerText = chatfic.episodes;
-    checkChatfic();
-}
+
 function setTitle(title) {
     chatfic.title = title;
     document.getElementById("cf-title").innerText = chatfic.title;
@@ -110,12 +104,17 @@ function setAuthor(author) {
     }
     checkChatfic();
 }
-function setPatreonusername(patreonusername) {
-    chatfic.patreonusername = patreonusername;
-    if (document.getElementById("cf-patreonusername")) {
-        document.getElementById("cf-patreonusername").innerText =
-            chatfic.patreonusername;
+function trimTrailingSlash(str){
+  return str.replace(/^\/*$/g, '');
+}
+function setHandle(value, handleSlug){
+    if(value === undefined || value === null || value === ""){
+        delete chatfic.handles[handleSlug];
+        return;
     }
+    value = trimTrailingSlash(value);
+    value = value.split("/").pop();
+    chatfic.handles[handleSlug] = value;
     checkChatfic();
 }
 function updateMetaUI(chatfic){
@@ -136,14 +135,6 @@ function updateMetaUI(chatfic){
     } catch (e){}
     try {
     document.getElementById("newAuthorInput").value = chatfic.author;
-    } catch (e){}
-    try {
-    document.getElementById("cf-patreonusername").innerText =
-        chatfic.patreonusername;
-    } catch (e){}
-    try {
-    document.getElementById("newPatreonusernameInput").value =
-        chatfic.patreonusername;
     } catch (e){}
 }
 function setCharacter(
@@ -194,10 +185,7 @@ function checkChatfic() {
         );
     if (chatfic.author == defaultAuthor)
         storyInfoMistakes.push("Author: you didn't change the default author");
-    if (chatfic.patreonusername == defaultPatreonusername)
-        storyInfoMistakes.push(
-            "Patreon Username: you didn't change the default patreon username"
-        );
+
     if (chatfic.title.length < 3)
         storyInfoMistakes.push("Title: should be at least 3 characters long.");
     if (chatfic.description.length < 3)
@@ -206,10 +194,7 @@ function checkChatfic() {
         );
     if (chatfic.author.length < 3)
         storyInfoMistakes.push("Author: should be at least 3 characters long.");
-    if (chatfic.patreonusername.length < 3)
-        storyInfoMistakes.push(
-            "Patreon Username: should be at least 3 characters long."
-        );
+
 
     document.getElementById("missingInfo").innerHTML = "";
     if (storyInfoMistakes.length == 0) {

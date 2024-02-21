@@ -107,6 +107,11 @@
                 <button id="editInfoButton" class="btn btn-primary float-end btn-sm ml-2 mt-2">Edit Info</button>
                 <div class="clearfix"></div>
 
+                <button type="button" class="btn btn-sm float-end ml-2 mt-2 btn-danger" data-bs-toggle="modal" data-bs-target="#handlesModal">
+                  Add Author Handles
+                </button>
+                <div class="clearfix"></div>
+
                 <div class="card bg-secondary mt-2 py-1 px-2">
                   <div class="form-check form-switch ps-0">
                     <input onchange="toggleMultiplePages();" class="form-check-input float-end cpoint" type="checkbox"
@@ -352,25 +357,21 @@
           <div class="mt-2 mb-3">
 
             <div class="input-group input-group-sm mb-2">
-              <span class="input-group-text" id="inputGroup-sizing-sm">Title</span>
+              <span class="input-group-text inputGroup-sizing-sm">Title</span>
               <input oninput="setTitle(this.value);" id="newTitleInput" type="text" class="form-control">
             </div>
             <div class="input-group input-group-sm mb-2">
-              <span class="input-group-text" id="inputGroup-sizing-sm">Description</span>
+              <span class="input-group-text inputGroup-sizing-sm">Description</span>
               <input oninput="setDescription(this.value);" id="newDescriptionInput" type="text" class="form-control">
             </div>
             <div class="input-group input-group-sm mb-2">
-              <span class="input-group-text" id="inputGroup-sizing-sm">Author</span>
+              <span class="input-group-text inputGroup-sizing-sm">Author</span>
               <input placeholder="myself" oninput="setAuthor(this.value);" id="newAuthorInput" type="text"
                 class="form-control">
             </div>
-            <div class="input-group input-group-sm">
-              <span class="input-group-text" id="inputGroup-sizing-sm">Patreon Username</span>
-              <input placeholder="mypatreonpage" oninput="setPatreonusername(this.value);" id="newPatreonusernameInput"
-                type="text" class="form-control">
-            </div>
-            <div class="form-text small mb-2 ms-3 text-end"><sup>If your patreon page is
-                <b>https://patreon.com/chatking/</b>, just put <b>chatking</b> above.</sup></div>
+
+
+
           </div>
         </div>
         <div class="modal-footer">
@@ -713,6 +714,60 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="handlesModal" tabindex="-1" aria-labelledby="handlesModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="handlesModalLabel">Author Handles</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body bg-slight">
+          <small>Changes are saved automatically as you type them.</small>
+          <small>You can leave some of these empty. But PLEASE add at least one. So your readers can support you!</small>
+          <div class="mt-2 mb-3">
+            <div class="input-group input-group-sm mb-2">
+              <span class="input-group-text inputGroup-sizing-sm">patreon.com/</span>
+              <input oninput="setHandle(this.value, 'patreon');" id="patreonHandleInput" type="text" class="form-control">
+            </div>
+              <div class="text-tiny lh-1">If your link is patreon.com/HelloBob, just type HelloBob above.</div>
+
+
+            <div class="input-group input-group-sm mb-2">
+              <span class="input-group-text inputGroup-sizing-sm">subscribestar.adult/</span>
+              <input oninput="setHandle(this.value, 'subscribestar');" id="subscribestarHandleInput" type="text" class="form-control">
+            </div>
+              <div class="text-tiny lh-1">If your link is subscribestar.adult/HelloBob, just type HelloBob above.</div>
+
+            <div class="input-group input-group-sm mb-2">
+              <span class="input-group-text inputGroup-sizing-sm">ko-fi.com/</span>
+              <input oninput="setHandle(this.value, 'kofi');" id="kofiHandleInput" type="text" class="form-control">
+            </div>
+              <div class="text-tiny lh-1">If your link is ko-fi.com/hellobob, just type hellobob above.</div>
+
+            <div class="input-group input-group-sm mb-2">
+              <span class="input-group-text inputGroup-sizing-sm">buymeacoffee.com/</span>
+              <input oninput="setHandle(this.value, 'buymeacoffee');" id="buymeacoffeeHandleInput" type="text" class="form-control">
+            </div>
+              <div class="text-tiny lh-1">If your link is buymeacoffee.com/HelloBob, just type HelloBob above.</div>
+
+            <div class="input-group input-group-sm mb-2">
+              <input oninput="setHandle(this.value, 'gumroad');" id="gumroadHandleInput" type="text" class="form-control">
+              <span class="input-group-text inputGroup-sizing-sm">.gumroad.com</span>
+            </div>
+              <div class="text-tiny lh-1">If your link is hellobob.gumroad.com, just type hellobob above.</div>
+
+
+          </div>
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save handles</button>
+      </div>
+    </div>
+  </div>
+</div>
 
   <div id="alertSave" class="fixed-bottom pe-3 d-none">
     <div class="shadow float-end small alert alert-success mx-3" role="alert">
