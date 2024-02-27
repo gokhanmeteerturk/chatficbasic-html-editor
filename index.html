@@ -836,16 +836,17 @@
     </div>
   </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="newsModal" tabindex="-1" aria-labelledby="newsModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">NEW: Chatfic v1.0.0</h1>
+        <h1 class="modal-title fs-5" id="newsModalLabel">NEW: Chatfic v1.0.0</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        You can now add multiple author links(handles) and global variables to your story.<br/><br/>
+        You can now add multiple author links(handles), global variables and model attribution to your stories!<br/><br/>
         <a href="https://gokhanmeteerturk.github.io/chatfic-format/#/?id=handles" target="_blank"><small>Learn more about the handles</small></a>
+        <br/>
         <a href="https://gokhanmeteerturk.github.io/chatfic-format/#/?id=variables" target="_blank"><small>Learn more about the variables</small></a>
       </div>
       <div class="modal-footer">
@@ -860,7 +861,18 @@
   <script src="jszip.min.js"></script>
   <script src="FileSaver.min.js"></script>
   <script src="exporter.js?v=2"></script>
+  <script>
+    // dom content loader event listener:
 
+
+document.addEventListener('DOMContentLoaded', function() {
+  const newsModal = new bootstrap.Modal(
+      document.getElementById("newsModal")
+  );
+  newsModal.show();
+}, false);
+
+  </script>
   <script>
     checkChatfic();
     refreshChat();
