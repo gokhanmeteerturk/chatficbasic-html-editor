@@ -38,10 +38,19 @@ function importChatficMarkdown(){
     const basic = importMarkdownModalTextarea.value;
     if(basic.length < 100){
         return;
+        return;
     }
     try {
         const importCode = convertChatficFromMdToJSON(basic);
         let chatficFromJson = importCode;
+        if(chatficFromJson.hasOwnProperty("variables") && Object.keys(chatficFromJson.variables).length > 0){
+            storyVariablesToInclude = JSON.parse(JSON.stringify(chatficFromJson["variables"]));
+            chatficFromJson["variables"] = {};
+        }
+        else{
+            chatficFromJson["variables"] = {};
+            storyVariablesToInclude = defaultStoryVariablesToInclude;
+        }
         pages = JSON.parse(JSON.stringify(chatficFromJson.pages));
         delete chatficFromJson.format;
         delete chatficFromJson.pages;
@@ -78,6 +87,14 @@ function importChatficJson() {
     const oldChatfic = chatfic;
     try {
         let chatficFromJson = JSON.parse(importCode);
+        if(chatficFromJson.hasOwnProperty("variables") && Object.keys(chatficFromJson.variables).length > 0){
+            storyVariablesToInclude = JSON.parse(JSON.stringify(chatficFromJson["variables"]));
+            chatficFromJson["variables"] = {};
+        }
+        else{
+            chatficFromJson["variables"] = {};
+            storyVariablesToInclude = defaultStoryVariablesToInclude;
+        }
         pages = JSON.parse(JSON.stringify(chatficFromJson.pages));
 
         delete chatficFromJson.format;
@@ -140,6 +157,7 @@ function saveLocally() {
     }
     localStorage.setItem("chatfic", JSON.stringify(chatfic));
     localStorage.setItem("pages", JSON.stringify(pages));
+    localStorage.setItem("storyVariablesToInclude", JSON.stringify(storyVariablesToInclude));
     deactivateSaveToBrowser();
     const alertSave = document.getElementById("alertSave");
     alertSave.classList.remove("d-none");
@@ -154,6 +172,12 @@ function loadFromLocal() {
     if (localStorage.getItem("chatfic") && localStorage.getItem("pages")) {
         chatfic = JSON.parse(localStorage.getItem("chatfic"));
         pages = JSON.parse(localStorage.getItem("pages"));
+        try{
+            storyVariablesToInclude = JSON.parse(localStorage.getItem("storyVariablesToInclude"));
+        }
+        catch(err){
+            storyVariablesToInclude = defaultStoryVariablesToInclude;
+        }
     } else {
         alert("No story found in local storage!");
     }
@@ -184,7 +208,8 @@ function saveZip() {
         });
     });
 
-    const chatficBasicJson = generateChatficBasicJson();
+    const chatficBasicJson = generateChatficBasicJson(true);
+
     var zip = new JSZip();
     zip.file("storybasic.json", chatficBasicJson);
     zip.file("storybasic.md", generateChatficBasic(chatficBasicJson));
@@ -207,12 +232,11 @@ function saveZip() {
     });
 }
 
-function generateChatficBasicJson() {
+function generateChatficBasicJson(filterUnusedVariables = false) {
     //create deep copy first:
     const chatficForJson = JSON.parse(JSON.stringify(chatfic));
     chatficForJson.format = "chatficbasicjson";
     chatficForJson.pages = pages;
-
     chatficForJson.pages.forEach((page) => {
         page.messages.forEach((message) => {
             if(message.multimedia && message.multimedia.length>1){
@@ -220,6 +244,39 @@ function generateChatficBasicJson() {
             }
         });
     });
+    let tempVariables = {...storyVariablesToInclude};
+    if(filterUnusedVariables){
+        try{
+            let keysToKeep = [];
+            const detectRegex = getExistingVariablesCheckerRegex();
+            const allMessagesString = chatficForJson.pages.map((page) => page.messages.map((message) => message.hasOwnProperty("message") && message.message ? message.message : "").join(" ")).join(" ");
+
+            let m;
+            while ((m = detectRegex.exec(allMessagesString)) !== null) {
+                // This is necessary to avoid infinite loops with zero-width matches
+                if (m.index === detectRegex.lastIndex) {
+                    detectRegex.lastIndex++;
+                }
+
+                m.forEach((match, groupIndex) => {
+                    if(groupIndex === 1 && tempVariables.hasOwnProperty(match.slice(1))){
+                        keysToKeep.push(match.slice(1));
+                    }
+                });
+            }
+
+            for(let key in tempVariables){
+                if(!keysToKeep.includes(key)){
+                    delete tempVariables[key];
+                }
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    chatficForJson.variables = tempVariables;
     return JSON.stringify(chatficForJson, null, 2);
 }
 

@@ -10,6 +10,22 @@ function setTooltips() {
 var defaultTitle = "My Chatfic Story";
 var defaultAuthor = "/u/myself";
 var defaultHandles = {};
+var defaultVariables = {};
+var defaultStoryVariablesToInclude = {
+    "roommateFemale":{"value":"roommate"},
+    "roommateFemaleShort":{"value":"roomie"},
+    "roommateMale":{"value":"roommate"},
+    "roommateMaleShort":{"value":"roomie"},
+    "landlady":{"value":"landlady"},
+    "landladyShort":{"value":"landlady"},
+    "landladyCute":{"value":"m'lady"},
+    "landlord":{"value":"landlord"},
+    "landlordShort":{"value":"landlord"},
+    "landlordCute":{"value":"m'lord"},
+    "tenantFemale":{"value":"tenant"},
+    "tenantMale":{"value":"tenant"},
+    "familyFriendOldLady":{"value":"mrs"},
+};
 var defaultDescription =
     "Welcome to My Chatfic Story, a story of love, lust, and several other things.";
 var chatfic = {
@@ -19,6 +35,7 @@ var chatfic = {
     description: defaultDescription,
     author: defaultAuthor,
     handles: defaultHandles,
+    variables: defaultVariables,
     modified: 0,
     episode: 1,
     characters: {
@@ -34,6 +51,39 @@ var chatfic = {
         },
     },
 };
+var storyVariablesToInclude = defaultStoryVariablesToInclude;
+
+var variableSuggestions = {
+    "sister":{"slug":"roommateFemale"},
+    "sis":{"slug":"roommateFemaleShort"},
+    "brother":{"slug":"roommateMale"},
+    "bro":{"slug":"roommateMaleShort"},
+    "mother":{"slug":"landlady"},
+    "mom":{"slug":"landladyShort"},
+    "mommy":{"slug":"landladyCute"},
+    "father":{"slug":"landlord"},
+    "dad":{"slug":"landlordShort"},
+    "daddy":{"slug":"landlordCute"},
+    "daughter":{"slug":"tenantFemale"},
+    "son":{"slug":"tenantMale"},
+    "aunt":{"slug":"familyFriendOldLady"},
+}
+function escapeRegex(string) {
+    return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+function getExistingVariablesCheckerRegex(){
+    return RegExp("(" + Object.keys(storyVariablesToInclude).map(u => "\\\$"+escapeRegex(u)).join('|') + ")\\b", "gm");
+}
+function getSuggestionCheckerRegex(){
+    return RegExp("\\b(" + Object.values(Object.entries(variableSuggestions).filter(([key, obj]) => storyVariablesToInclude.hasOwnProperty(obj.slug))).map(u => escapeRegex(u[0])).join('|') + ")\\b", "gmi");
+}
+function getExistingVariableSuggestions(){
+    return Object.fromEntries(Object.entries(variableSuggestions).filter(([key, obj]) => storyVariablesToInclude.hasOwnProperty(obj.slug)).map(([key, obj]) => [key, { reg: new RegExp("\\b" + escapeRegex(key) + "\\b", "gmi"), slug:obj.slug, value:storyVariablesToInclude[obj.slug].value }]));
+}
+function getVariableSuggestions(){
+    return Object.fromEntries(Object.entries(stuff).map(([key, value]) => [key + "abc", { name: new RegExp("\\b" + wordForRegex + "\\b", "gm") }]));
+}
+updateVariablesUI();
 var storyInfoComplete = false;
 var storyInfoMistakes = [];
 let pages = [
@@ -107,9 +157,176 @@ function setAuthor(author) {
 function trimTrailingSlash(str){
   return str.replace(/^\/*$/g, '');
 }
+
+function deleteVariable(key, value) {
+    if (!confirm("Are you sure you want to delete this variable?\n\nWe will replace every '$" + String(key) + "'\nwith the default value '" + String(value) + "'.")) {
+        return;
+    }
+    delete storyVariablesToInclude[key];
+    try {
+        pages.forEach((page) => {
+            page.messages.forEach((singleMessage) => {
+                if (singleMessage.message && typeof singleMessage.message == "string" && singleMessage.message.includes("$" + String(key))) {
+                    singleMessage.message = singleMessage.message.replace("$" + String(key), String(value));
+                }
+            });
+        });
+    } catch (error) {
+        console.log(error);
+    }
+    updateVariablesUI();
+}
+
+function updateVariablesUI(){
+    document.getElementById("insertVariablesUI").innerHTML='';
+    let containerDiv = document.createElement("div");
+    containerDiv.className = "variablesContainer";
+    // loop through Object.entries for storyVariablesToInclude object:
+    Object.entries(storyVariablesToInclude).forEach(([key, value]) => {
+        let rowDiv = document.createElement("div");
+        rowDiv.className = "variableRow d-flex";
+        let keyDiv = document.createElement("div");
+        keyDiv.className = "keyDiv flex-fill w-50 text-miny";
+
+        let keySpan = document.createElement("span");
+        keySpan.className = "align-top fake-input";
+        keySpan.innerText = "Hi ";
+        let keySpanBold = document.createElement("b");
+        keySpanBold.innerText = "$"+key;
+        keySpan.appendChild(keySpanBold);
+        keySpan.appendChild(document.createTextNode(" !"));
+        let keyEditButton = document.createElement("a");
+        keyEditButton.innerHTML = "<svg class=\"me-2\" width=\"24\" height=\"24\"><use xlink:href=\"#edit\" /></svg>";
+        keyEditButton.className = "edit-key ms-2 align-middle float-end";
+        keyEditButton.onclick = function(){
+            let newKey = prompt("Enter new name for $"+String(key), key);
+            if(newKey && newKey !== key && newKey !== "$"+key){
+                if(newKey.slice(0,1)==="$"){
+                    newKey = newKey.slice(1);
+                }
+                try{
+                    pages.forEach((page) => {
+                        page.messages.forEach((singleMessage) => {
+                            if (singleMessage.message && typeof singleMessage.message == "string" && singleMessage.message.includes("$" + String(key))) {
+                                singleMessage.message = singleMessage.message.replace("$" + String(key), "$" + String(newKey));
+                            }
+                        });
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }
+        keyDiv.appendChild(keyEditButton);
+        keyDiv.appendChild(keySpan);
+
+        const actualValue = value.value;
+        let valueDiv = document.createElement("div");
+        valueDiv.className = "valueDiv flex-fill w-50 text-miny position-relative";
+        let valueEditButton = document.createElement("a");
+        valueEditButton.innerHTML = "<svg class=\"me-2\" width=\"24\" height=\"24\"><use xlink:href=\"#edit\" /></svg>";
+        valueEditButton.className = "edit-val align-middle mt-1";
+        valueEditButton.onclick = function(){
+            let newValue = prompt("Enter new value for $"+String(key), actualValue);
+            if(newValue && newValue !== actualValue){
+                setVariable(key, newValue);
+            }
+        }
+        let valueSpan = document.createElement("span");
+        valueSpan.className = "align-top fake-message";
+        valueSpan.innerText = "Hi " + actualValue + " !";
+        valueDiv.appendChild(valueEditButton);
+        valueDiv.appendChild(valueSpan);
+        rowDiv.appendChild(keyDiv);
+        rowDiv.appendChild(valueDiv);
+
+        let deleteDiv = document.createElement("div");
+        deleteDiv.className = "deleteDiv flex-grow ms-2";
+        let deleteVariableButton = document.createElement("a");
+        deleteVariableButton.innerHTML = "<svg width=\"15\" height=\"17\"><use xlink:href=\"#delete\" /></svg>";
+        deleteVariableButton.className = "delete-val btn btn-xs btn-danger align-middle";
+        deleteVariableButton.onclick = function(){
+            deleteVariable(key, value);
+        }
+        rowDiv.appendChild(deleteVariableButton);
+        rowDiv.appendChild(deleteDiv);
+
+        containerDiv.appendChild(rowDiv);
+        const clearDiv = document.createElement("div");
+        clearDiv.className = "clearfix";
+        containerDiv.appendChild(clearDiv);
+        const myHr = document.createElement("hr");
+        containerDiv.appendChild(myHr);
+        document.getElementById("insertVariablesUI").appendChild(containerDiv);
+
+    });
+}
+function validateVariableKeyInput(inputEl){
+    const oldValue = inputEl.value;
+    const newValue = oldValue.replace(/[\W]+/g,"");
+    if(newValue !== oldValue){
+        inputEl.value = newValue;
+    }
+}
+function variableNameIsSus(variableName){
+    const susNames = [
+        "mother","mom","mommy","father","dad","daddy","bro","brother","sis","sister","aunt","son","daughter"
+    ];
+    return susNames.includes(variableName) || susNames.includes("step " + variableName) || susNames.includes("step-" + variableName);
+}
+function addNewVariable(){
+    const variableName = document.getElementById("variablekeyinput").value;
+    const variableValue = document.getElementById("variablevalueinput").value;
+    if(!variableName || variableName.length < 3){
+        alert("Please enter a name that is at least 3 characters.");
+        return;
+    }
+    if(!variableValue || variableValue.length < 2){
+        alert("Please enter a value that is at least 2 characters.");
+        return;
+    }
+    if(storyVariablesToInclude.hasOwnProperty(variableName)){
+        alert("Variable with same name already exists");
+        return;
+    }
+    if(variableNameIsSus(variableValue)){
+        alert("If your story is NSFW, using this value can be illegal in some jurisdictions. \nIt is still added, but we recommend using a different default value. Remember, readers can always change it to this value if they want to.");
+    }
+    storyVariablesToInclude[variableName] = {"value": variableValue};
+    document.getElementById("variablekeyinput").value = "";
+    document.getElementById("variablevalueinput").value = "";
+    updateVariablesUI();
+}
+function setVariable(variableSlug, variableDefaultValue){
+    /**
+     * Add or Remove a global variable
+     *
+     * @param {string} variableSlug - The slug of the variable
+     * @param {string} variableDefaultValue - Leave "" to remove
+     * @return {void}
+     */
+    if(variableSlug === ""){
+        // invalid operation
+        return;
+    }
+    if(variableDefaultValue === ""){
+        if(storyVariablesToInclude.hasOwnProperty(variableSlug)){
+            delete storyVariablesToInclude[variableSlug];
+        }
+        checkChatfic();
+        return;
+    }
+    storyVariablesToInclude[variableSlug] = {"value": variableDefaultValue};
+    checkChatfic();
+    updateVariablesUI();
+    refreshChat();
+}
 function setHandle(value, handleSlug){
     if(value === undefined || value === null || value === ""){
-        delete chatfic.handles[handleSlug];
+        if(chatfic.handles.hasOwnProperty(handleSlug)) {
+            delete chatfic.handles[handleSlug];
+            checkChatfic();
+        }
         return;
     }
     value = trimTrailingSlash(value);
@@ -226,11 +443,41 @@ function setRightCharacter(slug) {
     document.getElementById("rightCharacterLabel").innerText =
         chatfic.characters[slug].name;
 }
+function setModelName(slug){
+    let tempModelName = '';
+    if(chatfic.characters.hasOwnProperty(slug)){
+        if(chatfic.characters[slug].hasOwnProperty('model')){
+            if(chatfic.characters[slug]['model'].hasOwnProperty('name')){
+                const currentModelName = chatfic.characters[slug]['model']['name'];
+                if(currentModelName && currentModelName.length > 0){
+                    tempModelName = currentModelName;
+                }
+            }
+        }
+        else{
+            chatfic.characters[slug]['model'] = {};
+        }
+        // show prompt
+        const newModelName = window.prompt(`Enter model name for ${String(slug)}`, tempModelName);
+        if(newModelName && newModelName.length > 0){
+            chatfic.characters[slug]['model']['name'] = newModelName;
+            refreshCharacters();
+        }
+        else{
+            delete chatfic.characters[slug]['model']['name'];
+            refreshCharacters();
+        }
+    }
+}
 function refreshCharacters() {
     const charactersListInModal = document.getElementById(
         "charactersListInModal"
     );
     charactersListInModal.innerHTML = "";
+    const charactersListAttributionInModal = document.getElementById(
+        "charactersListAttributionInModal"
+    );
+    charactersListAttributionInModal.innerHTML = "";
     const fromInput = document.getElementById(
         "fromInput"
     );
@@ -258,8 +505,8 @@ function refreshCharacters() {
         const infoCell = document.createElement("div");
         infoCell.className = "flex-grow-1 mt-1 mb-1";
         infoCell.innerHTML = `<span class="d-sm-inline d-block"><b>Slug:</b> ${key}, </span><span class="d-sm-inline d-block"><b class="ms-sm-2">Name:</b> ${character.name
-            }, </span><span class="d-sm-inline d-block"><b class="ms-sm-2">Color:</b> ${character.color ?? "Not set"
-            }</span>`;
+        }, </span><span class="d-sm-inline d-block"><b class="ms-sm-2">Color:</b> ${character.color ?? "Not set"
+        }</span>`;
         characterRow.appendChild(infoCell);
         if (key != "player" && key != "app") {
             const removeCell = document.createElement("div");
@@ -278,6 +525,30 @@ function refreshCharacters() {
         }
         characterCard.appendChild(characterRow);
         charactersListInModal.appendChild(characterCard);
+
+        if(key !== "app"){
+            const characterCardForAttribution = document.createElement("li");
+            characterCardForAttribution.className = "list-group-item small";
+
+            const characterRowAttribution = document.createElement("div");
+            characterRowAttribution.className = "d-flex";
+
+            const infoCellAttribution = document.createElement("div");
+            infoCellAttribution.className = "flex-grow-1 mt-1 mb-1";
+            infoCellAttribution.innerHTML = `<span class="d-sm-inline d-block"><b>Slug:</b> ${key}, </span><span class="d-sm-inline d-block"><b class="ms-sm-2">Name:</b> ${character.name
+            }, </span><br/>
+            <span class="d-sm-inline d-block"><b>Model Name:</b> ${character.model?.name ?? "Not set"}</span>`;
+            characterRowAttribution.appendChild(infoCellAttribution);
+
+            const modelNameCell = document.createElement("div");
+            modelNameCell.className = "flex-grow-0";
+            modelNameCell.innerHTML = `<button onclick="setModelName('${String(key.replace(/'/g, '').replace(/"/g, ''))}')" class="btn btn-xs btn-primary  mt-1 mb-1">Edit Model Name</button><br/><button onclick="alert('Work in progress');" class="btn btn-xs btn-primary  mt-1 mb-1">Edit Model Handles</button>`;
+            characterRowAttribution.appendChild(modelNameCell);
+
+            characterCardForAttribution.appendChild(characterRowAttribution);
+            charactersListAttributionInModal.appendChild(characterCardForAttribution);
+        }
+
     }
 
     const weirdCharacterSelectLeft = document.getElementById(
@@ -680,6 +951,22 @@ function addMessage(multimedia = null) {
     if ((!message || message.length < 1) && !multimedia) {
         return;
     }
+
+    if(message && message.length > 1){
+        const checker = getSuggestionCheckerRegex();
+        if(checker.test(message)){
+            const vars = getExistingVariableSuggestions();
+            for (const [key, obj] of Object.entries(vars)) {
+                if(obj.reg.test(message)){
+                    if(confirm("Variable detected.\nReplace '"+key+"' with '"+obj.value+"'?")) {
+                        message = message.replace(obj.reg, "$" + obj.slug);
+                    }
+                }
+            }
+        }
+    }
+
+
     let side = document.querySelector('input[name="sideradio"]:checked').value;
     if (side == 0) {
         characterSlug = characterSlugLeft;
@@ -944,7 +1231,57 @@ function refreshChat() {
         }
 
         const messageText = document.createElement("span");
-        messageText.innerText = messageObject.message;
+        // messageText.innerText = messageObject.message;
+        messageText.className='message-text';
+
+        const regex = /\$\w*\b/gm;
+
+        let m;
+
+        let previousLastIndex = 0;
+        while ((m = regex.exec(messageObject.message)) !== null) {
+            console.log("m.index");
+            console.log(m.index);
+            console.log("regex.lastIndex");
+            console.log(regex.lastIndex);
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (m.index === regex.lastIndex) {
+                regex.lastIndex++;
+            }
+            const variableSlugWithDollar = messageObject.message.substring(m.index,regex.lastIndex); // probably m[0]
+
+            if(m.index > previousLastIndex){
+                const textNode = document.createTextNode(messageObject.message.substring(previousLastIndex, m.index));
+                messageText.appendChild(textNode);
+            }
+            const variableSlug = variableSlugWithDollar.substring(1);
+            const variableSpan = document.createElement("span");
+
+            if(storyVariablesToInclude.hasOwnProperty(variableSlug)){
+                variableSpan.className = "variable";
+                variableSpan.innerText = storyVariablesToInclude[variableSlug].value;
+                const infoSpan = document.createElement("span");
+                infoSpan.className='info';
+                infoSpan.innerText = "Variable: " + String(variableSlugWithDollar);
+                variableSpan.appendChild(infoSpan);
+            }
+            else{
+                variableSpan.className = "variable unknown";
+                variableSpan.innerText = variableSlugWithDollar;
+            }
+
+
+            messageText.appendChild(variableSpan);
+            previousLastIndex = regex.lastIndex;
+
+        }
+
+        if(previousLastIndex < messageObject.message.length){
+            const textNode = document.createTextNode(messageObject.message.substring(previousLastIndex));
+            messageText.appendChild(textNode);
+        }
+
+
         messageDiv.appendChild(messageText);
 
         const messageDel = document.createElement("span");
@@ -993,6 +1330,37 @@ function refreshChat() {
     activateSaveToBrowser();
 }
 
+function getSuggestedReplace(str){
+    const afterLastSpace = str.split(" ").pop();
+    if(afterLastSpace.length > 1 && afterLastSpace.substring(0,1) === "$"){
+        const matchingKeys = Object.keys(storyVariablesToInclude).filter(key => (key.startsWith(afterLastSpace.slice(1)) && key !== afterLastSpace.slice(1)));
+        if(matchingKeys.length > 0){
+            return {"replaceThis":afterLastSpace,"withThis":"$"+matchingKeys[0]};
+        }
+        else{
+            return null;
+        }
+    }
+    return null;
+}
+
+function suggestVariable(inputEl){
+    const tabHint = document.getElementById("tabHint");
+    const afterLastSpace = inputEl.value.split(" ").pop();
+    if(afterLastSpace.length > 1 && afterLastSpace.substring(0,1) === "$"){
+        const matchingKeys = Object.keys(storyVariablesToInclude).filter(key => (key.startsWith(afterLastSpace.slice(1)) && key !== afterLastSpace.slice(1)));
+        if(matchingKeys.length > 0){
+            tabHint.innerText = "Press TAB or tap above to add variable: " + matchingKeys[0];
+        }
+        else{
+            tabHint.innerText = "";
+        }
+    }
+    else{
+        tabHint.innerText = "";
+    }
+}
+
 function activateSaveToBrowser() {
     const sbb = document.getElementById("saveToBrowserButton");
     sbb.classList.add("btn-warning");
@@ -1014,10 +1382,23 @@ let latestMessageAdded = "";
 editInfoButton.addEventListener("click", () => {
     infoModalShow();
 });
+function checkVariableSuggestions(el, e = null){
+    const res = getSuggestedReplace(el.value);
+    if(res !== null){
+        if(e){e.preventDefault();}
+        const valList = el.value.split(" ");
+        const lastOne = valList.pop().replace(res.replaceThis,res.withThis);
+        valList.push(lastOne);
+        el.value = valList.join(" ");
+    }
+}
 function handleMessageKeyPress(e){
  var key=e.keyCode || e.which;
   if (key==13){
     addMessage();
+  }
+  else if (key==9){
+    checkVariableSuggestions(e.target, e);
   }
   else if(key==38 && document.getElementById('message').value == ""){
     document.getElementById('message').value = latestMessageAdded;

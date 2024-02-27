@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress ALL -->
 <html>
 
 <head>
@@ -36,6 +37,15 @@
       </g>
     </symbol>
 
+    <symbol id="characterwhite" height="16px" width="16px" viewBox="0 0 512 512">
+      <g>
+        <path class="st0" fill="#ffffff" d="M458.159,404.216c-18.93-33.65-49.934-71.764-100.409-93.431c-28.868,20.196-63.938,32.087-101.745,32.087
+      c-37.828,0-72.898-11.89-101.767-32.087c-50.474,21.667-81.479,59.782-100.398,93.431C28.731,448.848,48.417,512,91.842,512
+      c43.426,0,164.164,0,164.164,0s120.726,0,164.153,0C463.583,512,483.269,448.848,458.159,404.216z" />
+        <path class="st0" fill="#ffffff" d="M256.005,300.641c74.144,0,134.231-60.108,134.231-134.242v-32.158C390.236,60.108,330.149,0,256.005,0
+      c-74.155,0-134.252,60.108-134.252,134.242V166.4C121.753,240.533,181.851,300.641,256.005,300.641z" />
+      </g>
+    </symbol>
     <symbol id="edit" height="16px" width="16px" viewBox="0 0 24 24">
 
       <path fill-rule="evenodd" clip-rule="evenodd"
@@ -107,8 +117,11 @@
                 <button id="editInfoButton" class="btn btn-primary float-end btn-sm ml-2 mt-2">Edit Info</button>
                 <div class="clearfix"></div>
 
-                <button type="button" class="btn btn-sm float-end ml-2 mt-2 btn-danger" data-bs-toggle="modal" data-bs-target="#handlesModal">
+                <button type="button" class="btn btn-xs float-end ml-2 mt-2 btn-danger" data-bs-toggle="modal" data-bs-target="#handlesModal">
                   Add Author Handles
+                </button>
+
+                <button type="button" class="btn btn-xs float-start ml-2 mt-2 btn-primary position-relative" data-bs-toggle="modal" data-bs-target="#variablesModal">Edit Variables<span style="position:absolute;top:-9px;right:-15px;" class="badge badge-danger bg-danger">NEW</span>
                 </button>
                 <div class="clearfix"></div>
 
@@ -213,7 +226,7 @@
                   </div>
                 </div>
                 <div class="flex-grow-1">
-                  <input onkeydown="handleMessageKeyPress(event);" type="text" autocomplete="off" class="message-input" placeholder="Type here" id="message" />
+                  <input onclick="checkVariableSuggestions(this);" oninput="suggestVariable(this);" onkeydown="handleMessageKeyPress(event);" type="text" autocomplete="off" class="message-input" placeholder="Type here" id="message" />
                 </div>
                 <div class="flex-grow-0">
 
@@ -257,7 +270,7 @@
             </div><!-- /chatbar -->
 
           </div><!-- /d-flex -->
-
+<span id="tabHint"></span>
         </div> <!-- /accordion body 2 -->
       </div> <!-- /accordion collapse 2 -->
     </div> <!-- /accordion item 2 -->
@@ -308,7 +321,6 @@
             <div class="my-2" style="font-weight:500;">
               <small>Ready to publish?</small>
             </div>
-            </button>
             <small>For regular stories:</small>
             <a target="_blank" href="https://chatficlab.com/submit" class="btn btn-sm btn-secondary mb-2 mt-1 w-100">
               Send to Chatfic Lab.
@@ -336,7 +348,7 @@
         <div class="modal-body bg-slight">
           <ul id="missingInfo"></ul>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer p-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
@@ -374,7 +386,7 @@
 
           </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer p-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Done</button>
         </div>
       </div>
@@ -399,7 +411,7 @@
           </div>
           <button id="addPageButton" class="btn btn-success btn-sm">Add Page</button>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer p-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
@@ -439,7 +451,7 @@
           <button onclick="savePageOptions();" id="saveOptionsButton"
             class="btn btn-success btn-sm d-block mt-2 w-100">Save & Close</button>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer p-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
@@ -451,10 +463,11 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title fs-6" id="charactersModalLabel">Edit Characters</h5>
+          <h5 class="modal-title fs-6" id="charactersModalLabel">Characters</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body bg-slight">
+          <h2 class="fs-6">Edit Characters</h2>
           <div class="mb-0 mt-3 row">
             <div class="col-6 col-sm-4">
               <div class="input-group input-group-sm mb-1">
@@ -502,8 +515,14 @@
           <ul id="charactersListInModal" class="list-group list-group-sm mt-3">
             <!-- Characters will be dynamically added here -->
           </ul>
+          <h2 class="fs-6 mt-3">Add Model Info (Optional)</h2>
+          <div class="mb-0 mt-2 row px-3 text-small">
+            <ul id="charactersListAttributionInModal" class="list-group list-group-sm mt-3">
+            <!-- Characters will be dynamically added here -->
+          </ul>
+          </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer p-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
@@ -525,9 +544,9 @@
           <ul class="list-group" id="mediaList">
           </ul>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer p-2">
           <!-- Button to open the "Add new media" modal -->
-          <button type="button" class="btn btn-primary" onclick="showAddMedia();">Add New Media</button>
+          <button type="button" class="btn btn-sm btn-primary" onclick="showAddMedia();">Add New Media</button>
         </div>
       </div>
     </div>
@@ -618,9 +637,9 @@
             </div>
           </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="saveMessageButton">Save Changes</button>
+        <div class="modal-footer p-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary btn-sm" id="saveMessageButton">Save Changes</button>
         </div>
       </div>
     </div>
@@ -687,9 +706,9 @@
             Invalid JSON
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button onclick="importChatficJson();" type="button" class="btn btn-primary">Import</button>
+        <div class="modal-footer p-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <button onclick="importChatficJson();" type="button" class="btn btn-primary btn-sm">Import</button>
         </div>
       </div>
     </div>
@@ -707,13 +726,56 @@
           <textarea class="form-control w-100 small is-invalid"
             id="importMarkdownModalTextarea"></textarea>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button onclick="importChatficMarkdown();" type="button" class="btn btn-primary">Import</button>
+        <div class="modal-footer p-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <button onclick="importChatficMarkdown();" type="button" class="btn btn-primary btn-sm">Import</button>
         </div>
       </div>
     </div>
   </div>
+
+<div class="modal fade" id="variablesModal" tabindex="-1" aria-labelledby="variablesModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="variablesModalLabel">Create "customizable words"</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body bg-slight mb-0 pb-1">
+          <small class="text-small">At the story's start, readers will decide if they want to change these. For example, they can replace all <b>$roommateFemaleShort</b> usages with the word "step-sis".<br><br>We've added some defaults for you. Feel free to remove them or add yours.</small>
+          <div class="mt-2">
+            <div>
+              <!-- flex with two 50% wide divs: -->
+             <div id="variablesUIColNames" class="d-flex bd-highlight mb-2  me-3">
+              <div class="p-1 pe-5 ps-0 flex-fill text-center w-50 bd-highlight">When you use this:</div>
+              <div class="p-1 pe-5 ps-0 text-center flex-fill w-50 bd-highlight">Readers will see this:</div>
+            </div>
+              <div id="insertVariablesUI">
+
+              </div>
+
+            </div>
+
+            <div class="input-group input-group-sm mb-2">
+              <span class="input-group-text inputGroup-sizing-sm">Variable name: $</span>
+              <input id="variablekeyinput" value="roommateShort" oninput="validateVariableKeyInput(this);" type="text" class="form-control">
+              <span class="input-group-text inputGroup-sizing-sm">Value:</span>
+              <input id="variablevalueinput" value="roomie" oninput="setHandle(this.value, 'patreon');" type="text" class="form-control">
+              <button onclick="addNewVariable();" class="btn btn-sm btn-primary">Add</button>
+            </div>
+            <div class="text-tiny ms-0 mt-2 mb-0">
+              <small>You can use this feature to let users change anything in your story like ages, occupations, genders, locations etc.</small>&nbsp;<a
+                    href="https://gokhanmeteerturk.github.io/chatfic-format/#/?id=variables" target="_blank"><small>Learn more</small></a>
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer p-2">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
   <div class="modal fade" id="handlesModal" tabindex="-1" aria-labelledby="handlesModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -759,11 +821,9 @@
 
 
           </div>
-        ...
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save handles</button>
+      <div class="modal-footer p-2">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -775,6 +835,25 @@
       <hr>Unfortunately, we <b class="text-danger">can't save images or videos</b> to the browser's local storage.
     </div>
   </div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">NEW: Chatfic v1.0.0</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        You can now add multiple author links(handles) and global variables to your story.<br/><br/>
+        <a href="https://gokhanmeteerturk.github.io/chatfic-format/#/?id=handles" target="_blank"><small>Learn more about the handles</small></a>
+        <a href="https://gokhanmeteerturk.github.io/chatfic-format/#/?id=variables" target="_blank"><small>Learn more about the variables</small></a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
   <script src="urlify.js"></script>
   <script src="main.js"></script>
   <script src="media.js"></script>

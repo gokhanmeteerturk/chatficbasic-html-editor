@@ -38,7 +38,25 @@ body {
 .scrollable {
   overflow-y: auto;
 }
-
+.btn-xs-icon{
+  padding-top: 0px !important;
+  line-height: 19px !important;
+}
+#flush-collapseTwo .accordion-body{
+  position:relative;
+}
+#tabHint{
+  position: absolute;
+  display:block;
+  height:15px;
+  font-size:13px;
+  line-height:15px;
+  opacity: 0.8;
+  bottom: 0;
+  left: 60px;
+  width: calc(100% - 80px);
+  z-index: 99;
+}
 #chatscreen {
   min-height: 100%;
 }
@@ -109,6 +127,26 @@ h2 small {
   width: 100%;
   box-sizing: border-box;
 }
+.edit-key{
+    margin-top: 4px;
+}
+.variablesContainer hr {
+    margin: 0px 0px 8px 0px;
+    opacity: 0.15;
+}
+span.fake-input {
+    display: block;
+    border: 1px solid #aaa;
+    border-radius: 13px;
+    padding: 4px 2px 4px 5px;
+    background: #fff;
+    width: auto;
+    margin-right: 35px;
+    line-height: 17.6px;
+}
+.text-small{
+  font-size: 13px;
+}
 .text-tiny{
   font-size:12px;
   opacity: 0.7;
@@ -116,7 +154,103 @@ h2 small {
   margin-left:12px;
   margin-bottom:12px;
 }
+.text-miny{
+  font-size: 11px;
+}
+.fake-message{
+    color: white;
+    margin-right: 32px;
+    margin-left: 4px;
+    background: #0085d1;
+    position: relative;
+    margin-bottom: 8px;
+    z-index: 2;
+    border-radius: 20px;
+    padding: 4px 8px;
+    margin-top: 0px;
+    display: block;
+    font-size: small;
+}
+.fake-message:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    bottom: 0;
+    right: -8px;
+    height: 13px;
+    width: 20px;
+    background: #0085d1;
+    border-bottom-left-radius: 15px;
+}
+.edit-val, .edit-key{
+  display:inline-block;
+  cursor:pointer;
+}
+.delete-val{
+  height:26px !important;
+}
+.edit-val{
+  position:absolute;
+  top:0;
+  right:12px;
+  height: 24px;
+  z-index:3;
+  width:18px !important;
+  overflow: hidden;
+}
+.message span.variable{
+  font-weight: bold;
+  color: #052c65;
+}
 
+.message-text{
+  display:inline-block;
+}
+.message-text span.variable{
+  position:relative;
+  display:inline-block;
+}
+.message-text span.variable .info{
+  position: absolute;
+  bottom: -15px;
+  font-size: 11px;
+  opacity: 0.75;
+  background: #052c65;
+  height: 15px;
+  line-height: 15px;
+  border-radius: 3px;
+  color: white !important;
+  display:none;
+  padding:0 4px;
+  white-space: nowrap;
+}
+.message-text span.variable:focus .info, .message-text span.variable:hover .info{
+  display:inline-block;
+}
+.left .message-text span.variable .info{
+  left: 0;
+}
+.right .message-text span.variable .info{
+  right: 0;
+}
+.message span.variable.unknown{
+  font-weight: bold;
+  color: #66052f;
+}
+.message-text span.variable:not(.unknown){
+  cursor:pointer;
+}
+.fake-message:after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    right: -10px;
+    width: 10px;
+    height: 13px;
+    background: #f2f2f2 !important;
+    border-bottom-left-radius: 10px;
+}
 .border-ycircle {
   border-top-left-radius: 50px !important;
   border-bottom-left-radius: 50px !important;
