@@ -926,6 +926,147 @@ function getLeftFromsToBackRecursive(messages, mi){
     }
 
 }
+
+
+function addMessageCustom(side = 0, message= "", refresh= false, multimedia = null) {
+    // Fetch input values
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find((x) => x.id == pageId);
+
+    let chatroom = document.getElementById("customChatroomNameInput").value;
+    let characterSlugLeft = document.getElementById("leftCharacterSlug").value;
+    let characterSlugRight = document.getElementById("rightCharacterSlug").value;
+
+    if (
+        !chatroom &&
+        characterSlugLeft != "player" &&
+        characterSlugRight != "player"
+    ) {
+        chatroom =
+            chatfic.characters[characterSlugLeft].name +
+            "-" +
+            chatfic.characters[characterSlugRight].name;
+    }
+
+    let characterSlug = "app";
+
+    if ((!message || message.length < 1) && !multimedia) {
+        return;
+    }
+
+    if(message && message.length > 1){
+        const checker = getSuggestionCheckerRegex();
+        if(checker.test(message)){
+            const vars = getExistingVariableSuggestions();
+            for (const [key, obj] of Object.entries(vars)) {
+                if(obj.reg.test(message)){
+                    if(confirm("Variable detected.\nReplace '"+key+"' with '"+obj.value+"'?")) {
+                        message = message.replace(obj.reg, "$" + obj.slug);
+                    }
+                }
+            }
+        }
+    }
+
+    if (side === 0) {
+        characterSlug = characterSlugLeft;
+    } else if (side === 2) {
+        characterSlug = characterSlugRight;
+    }
+    let position = parseInt(document.getElementById("position").value);
+
+    const pageLength = page.messages.length;
+    const isPageEmpty = pageLength == 0;
+    let previousMessageInPage = null;
+    let previousMessageIndex = -1;
+    let nextMessageInPage = null;
+    if (!isPageEmpty) {
+        if (position != 0 && pageLength > position) {
+            previousMessageInPage = page.messages[position - 1];
+            previousMessageIndex = position - 1;
+            if (pageLength > position + 1) {
+                nextMessageInPage = page.messages[position + 1];
+            }
+        } else if (position == 0) {
+            previousMessageIndex = pageLength - 1;
+            previousMessageInPage = page.messages[pageLength - 1];
+        }
+    }
+    if (chatroom == null || chatroom == "") {
+        if (characterSlug != "player" && characterSlug != "app") {
+            chatroom = chatfic.characters[characterSlug].name;
+        } else if (document.getElementById("leftCharacterSlug").value != "player") {
+            chatroom =
+                chatfic.characters[document.getElementById("leftCharacterSlug").value]
+                    .name;
+        } else {
+            // characterSlug == "player" or characterSlug == "app"
+
+            if (
+                previousMessageInPage &&
+                previousMessageInPage.from != "player" &&
+                previousMessageInPage.from != "app"
+            ) {
+                chatroom = chatfic.characters[previousMessageInPage.from].name;
+            } else {
+                let tryMessageIndex = previousMessageIndex;
+                while (tryMessageIndex >= 0) {
+                    if (
+                        page.messages[tryMessageIndex].from != "player" &&
+                        page.messages[tryMessageIndex].from != "app"
+                    ) {
+                        chatroom =
+                            chatfic.characters[page.messages[tryMessageIndex].from].name;
+                        break;
+                    }
+                    tryMessageIndex = tryMessageIndex - 1;
+                }
+            }
+            if (chatroom == null || chatroom == "") {
+                if (
+                    nextMessageInPage &&
+                    nextMessageInPage.from != "player" &&
+                    nextMessageInPage.from != "app"
+                ) {
+                    chatroom = chatfic.characters[nextMessageInPage.from].name;
+                } else {
+                    chatroom = prompt(
+                        "Player is sending this message to:",
+                        Object.keys(chatfic.characters).length > 2
+                            ? chatfic.characters[Object.keys(chatfic.characters)[2]].name
+                            : "Jessica"
+                    );
+                    if (chatroom == null || chatroom == "") {
+                        chatroom = "Unknown";
+                    }
+                }
+            }
+        }
+    }
+
+    // Create message object
+    var newMessage = {
+        message: message,
+        from: characterSlug,
+        side: side,
+        multimedia: multimedia,
+        chatroom: chatroom,
+    };
+    latestMessageAdded = message;
+    document.getElementById('message').value='';
+    if (position == 0) {
+        page.messages.push(newMessage);
+    } else {
+        page.messages.splice(position, 0, newMessage);
+        position = position + 1;
+        document.getElementById("position").value = position;
+    }
+    if(refresh){
+        refreshChat();
+    }
+}
+
+
 function addMessage(multimedia = null) {
     // Fetch input values
     let pageId = document.getElementById("pageSelect").value;
@@ -1192,8 +1333,8 @@ function refreshChat() {
             (messageObject.from != "player" || messageObject.side != 2)
         ) {
             const fromSpan = document.createElement("span");
-            console.log(messageObject);
-            console.log(messageObject.from);
+            // console.log(messageObject);
+            // console.log(messageObject.from);
             fromSpan.innerText = chatfic.characters[messageObject.from].name;
             fromSpan.className = "author";
             messageDiv.appendChild(fromSpan);
@@ -1240,10 +1381,10 @@ function refreshChat() {
 
         let previousLastIndex = 0;
         while ((m = regex.exec(messageObject.message)) !== null) {
-            console.log("m.index");
-            console.log(m.index);
-            console.log("regex.lastIndex");
-            console.log(regex.lastIndex);
+            // console.log("m.index");
+            // console.log(m.index);
+            // console.log("regex.lastIndex");
+            // console.log(regex.lastIndex);
             // This is necessary to avoid infinite loops with zero-width matches
             if (m.index === regex.lastIndex) {
                 regex.lastIndex++;

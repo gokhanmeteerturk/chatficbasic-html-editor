@@ -909,3 +909,39 @@ cursor.active::after {
     width: calc(30vw - 54px);
   }
 }
+
+.dropzone {
+  border: 2px dashed #72D3DA;
+  background-color: #D9F0F2;
+  color: #499A9E;
+  min-height: 200px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropzone h1 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.dropzone p {
+  font-size: 14px;
+  font-weight: 500;
+
+}
+
+.dropzone p.text-success {
+  color: #28a745;
+  font-size:18px;
+}
+
+#screenshotInput {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
