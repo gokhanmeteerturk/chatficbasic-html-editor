@@ -587,9 +587,12 @@
               </div>
               <button
                 onclick="showImportScreenshotsModal();"
-                class="btn btn-sm btn-outline-secondary mb-2 w-100"
+                class="btn btn-sm btn-outline-secondary mb-2 w-100 position-relative"
               >
-                Import Screenshots
+                Import Screenshots<span
+                      style="position: absolute; top: -9px; right: -15px"
+                      class="badge badge-danger bg-danger"
+                      >NEW</span>
               </button>
               <div class="btn-group btn-group-sm mb-2 w-100">
                 <button
@@ -1692,10 +1695,11 @@
           <div class="modal-body">
             <div class="w-100">
               <div class="dropzone" id="dropzone">
-                <svg class="mb-4" width="64" height="64">
+                <svg class="mb-4 mt-2" width="64" height="64">
                   <use xlink:href="#upload" />
                 </svg>
-                <h1 class="text-center">Drop files here to upload</h1>
+                <h1 class="text-center">Drop screenshots here to import</h1>
+                <p class="text-center">Supported files: jpg, png</p>
                 <p class="text-center" id="screenshotStatus"></p>
                 <input
                   type="file"
@@ -1715,6 +1719,7 @@
     <script src="jszip.min.js"></script>
     <script src="FileSaver.min.js"></script>
     <script src="exporter.js?v=2"></script>
+    <script src="ocr-helpers.js?v=2"></script>
     <script src="ocr.js?v=2"></script>
     <script>
       // dom content loader event listener:

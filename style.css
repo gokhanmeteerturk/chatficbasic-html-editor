@@ -933,6 +933,11 @@ cursor.active::after {
 
 }
 
+.dropzone p.text-success {
+  color: #28a745;
+  font-size:18px;
+}
+
 #screenshotInput {
   opacity: 0;
   position: absolute;

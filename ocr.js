@@ -21,6 +21,7 @@ const showImportScreenshotsModal = async () => {
   importScreenshots.show();
   document.getElementById("screenshotStatus").innerText =
     "Files are not uploaded, just processed by your browser.";
+  document.getElementById("screenshotStatus").className = "text-center";
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -54,10 +55,8 @@ const onImageUploadOCR = async (files) => {
         document.getElementById(
           "screenshotStatus"
         ).innerText = `Processing ${currentIndex}/${filteredFiles.length} files.`;
-        console.log(
-          `Processing ${currentIndex}/${filteredFiles.length} files.`,
-          file.name
-        );
+
+        document.getElementById("screenshotStatus").className = "text-center";
         await processImage(img, canvas, ctx);
         resolve();
       };
@@ -65,6 +64,7 @@ const onImageUploadOCR = async (files) => {
   }
 
   document.getElementById("screenshotStatus").innerText = "Files processed.";
+  document.getElementById("screenshotStatus").className='text-success text-center';
 };
 function calculateMedian(image) {
   const values = [];
@@ -136,27 +136,42 @@ const processImage = async (img, canvas, ctx) => {
     cv.RETR_EXTERNAL,
     cv.CHAIN_APPROX_SIMPLE
   );
-  const rectengles = groupRectangles(
+  const rectangles = groupRectangles(
     await findRectangles(contours, mat),
     mat.cols
   ).reverse();
 
-  displayRectangles(rectengles, ctx);
+  displayRectangles(rectangles, ctx);
 
   // recognize text
   const texts = [];
 
-  for await (const rect of rectengles) {
-    const text = await recognizeText(img, rect);
+  for await (const rect of rectangles) {
+
+    let text = await recognizeText(img, rect, mat);
+    if(text.message && text.message.length > 6 && checkIfFullyGibberish(text.message)){
+      continue;
+    }
+    text.message = replaceCommons(text.message);
+    text.message = fixGibberish(text.message);
     texts.push(text);
   }
-
-  console.log(texts);
 
   mat.delete();
   edges.delete();
   contours.delete();
   hierarchy.delete();
+
+  for (const text of texts) {
+    if(text.message.length>0 && (text.side === "LEFT" || text.side === "RIGHT")){
+        addMessageCustom(
+            text.side === "LEFT" ? 0 : 2,
+            text.message
+        );
+    }
+  }
+  refreshChat();
+
 };
 const findRectangles = async (contours, mat) => {
   const rectangles = [];
@@ -359,10 +374,6 @@ function calculateDominantColor(roi) {
 
 const groupRectangles = (rectangles, width) => {
   const scaleFactor = width / 150;
-  console.log(scaleFactor);
-  console.log(X_THRESHOLD_FOR_GROUPING);
-  console.log(X_THRESHOLD_FOR_GROUPING * scaleFactor);
-  console.log("------------");
 
   return rectangles.map((rect) => ({
     ...rect,
@@ -400,15 +411,81 @@ const displayRectangles = (rectangles, ctx) => {
   });
 };
 
-const recognizeText = async (img, rect) => {
+const recognizeText = async (img, rect, mat) => {
+    const roi = mat.roi(rect);
+
+    let padding = 12
+    padding = Math.round(padding * Math.round(mat.cols) / 1000)
+
+    const x1 = padding * 2
+    const y1 = Math.round(padding * 1.5)
+
+    const x2 = roi.cols - Math.round(padding * 2.5)
+    const y2 = roi.rows - padding
+
+    const rect2 = {
+      x: x1,
+      y: y1,
+      width: x2 - x1,
+      height: y2 - y1,
+    };
+
+  const croppedRoi = new cv.Mat();
+  // Create a new cv.Mat object for the padded image
+  roi.roi(new cv.Rect(rect2.x, rect2.y, rect2.width, rect2.height)).copyTo(croppedRoi);
+
+
+  const colorAtCoordinate = croppedRoi.ucharPtr(4, 2);
+
+  // Extract the BGR values
+  const red = colorAtCoordinate[0];
+  const green = colorAtCoordinate[1];
+  const blue = colorAtCoordinate[2];
+
+
+  const paddedRoi = new cv.Mat();
+
+  // Fill the paddedRoi with blue color
+  paddedRoi.setTo(new cv.Scalar(red, green, blue, 255));
+
+  // Define the border type (here, we use a constant border color)
+  const borderType = cv.BORDER_CONSTANT;
+
+  // Define the color of the border (blue)
+  const borderColor = new cv.Scalar(red, green, blue, 255)
+
+  // Add padding to the croppedRoi using cv.copyMakeBorder
+  cv.copyMakeBorder(
+      croppedRoi, // Source image (croppedRoi)
+      paddedRoi, // Destination image (paddedRoi)
+      30,30,30,30,
+      borderType, // Border type
+      borderColor // Border color
+  );
+
+
+  let tempCanvas = document.createElement("canvas");
+  cv.imshow(tempCanvas,paddedRoi)
+  let b64image = tempCanvas.toDataURL();
+
+  const paddedWidth = paddedRoi.cols;
+  const paddedHeight = paddedRoi.rows;
+  // Release Mats to free memory
+  roi.delete();
+  croppedRoi.delete();
+  paddedRoi.delete();
+
+  // Remove temporary canvas element from DOM
+  tempCanvas.remove();
+
   const {
     data: { text },
-  } = await worker.recognize(img, {
+  } = await worker.recognize(b64image, {
     rectangle: {
-      top: rect.y,
-      left: rect.x,
-      width: rect.width,
-      height: rect.height,
+      top: 10,
+      left: 10,
+      width: paddedWidth - 20,
+      height: paddedHeight - 20,
     },
   });
 
