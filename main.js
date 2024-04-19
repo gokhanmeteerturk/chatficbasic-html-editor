@@ -962,7 +962,7 @@ function getLeftFromsToBackRecursive(messages, mi){
 }
 
 
-function addMessageCustom(side = 0, message= "", refresh= false, multimedia = null) {
+function addMessageCustom(side = 0, message= "", cleaned = false, refresh= false, multimedia = null) {
     // Fetch input values
     let pageId = document.getElementById("pageSelect").value;
     let page = pages.find((x) => x.id == pageId);
@@ -1085,6 +1085,7 @@ function addMessageCustom(side = 0, message= "", refresh= false, multimedia = nu
         side: side,
         multimedia: multimedia,
         chatroom: chatroom,
+        isCleaned: cleaned
     };
     latestMessageAdded = message;
     document.getElementById('message').value='';
@@ -1278,6 +1279,14 @@ function editMessage(messageIndex) {
     let page = pages.find((x) => x.id == pageId);
     let message = page.messages[messageIndex];
 
+    try{
+        delete page.messages[messageIndex]["isCleaned"];
+        refreshChat();
+    }
+    catch(e){
+        // skip
+    }
+
     // Show the modal
     editMessageModal.show();
 
@@ -1458,6 +1467,10 @@ function refreshChat() {
 
 
         messageDiv.appendChild(messageText);
+
+        if(messageObject.hasOwnProperty("isCleaned") && messageObject.isCleaned){
+            messageDiv.className = messageDiv.className + " cleaned";
+        }
 
         const messageDel = document.createElement("span");
         messageDel.className = "delete";

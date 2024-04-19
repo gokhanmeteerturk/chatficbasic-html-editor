@@ -58,3 +58,7 @@ function fixSpecialCharacters(text){
 
     return text;
 }
+
+function isCleaned(oldText, newText){
+    return oldText.replace(/\s/g, "").length !== newText.replace(/\s/g, "").length;
+}
