@@ -1566,6 +1566,7 @@ const pageModal = new bootstrap.Modal(document.getElementById("pageModal"));
 const pageList = document.getElementById("pageList");
 const newPageInput = document.getElementById("newPageInput");
 const addPageButton = document.getElementById("addPageButton");
+const addPageBySplitButton = document.getElementById("addPageButtonBySplit");
 let latestMessageAdded = "";
 editInfoButton.addEventListener("click", () => {
     infoModalShow();
@@ -1724,6 +1725,40 @@ addPageButton.addEventListener("click", () => {
         refreshPageOptionsList();
         //pageModal.hide();
         pagesModalShow();
+    }
+});
+
+
+// Function to add a new page
+addPageBySplitButton.addEventListener("click", () => {
+    const newPageName = newPageInput.value.trim();
+    if (newPageName !== "") {
+        const position = parseInt(document.getElementById("position").value);
+        if(!position || position < 1){
+            alert("You should set a 'new messages position' first!");
+            return;
+        }
+
+        const newPage = {
+            id: pages[pages.length - 1].id + 1,
+            name: newPageName,
+            messages: [],
+            options: [],
+        };
+        pages.push(newPage);
+        newPageInput.value = "";
+
+
+        let m1 = pages[pages.length - 2].messages.slice(0,position);
+        let m2 = pages[pages.length - 2].messages.slice(position);
+        pages[pages.length - 2].messages = m1;
+        pages[pages.length - 1].messages = m2;
+
+        updatePageSelect();
+        refreshPageOptionsList();
+        //pageModal.hide();
+        pagesModalShow();
+        refreshChat();
     }
 });
 
