@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="UTF-8" />
 
-    <link rel="stylesheet" href="style.css?v=2" />
+    <link rel="stylesheet" href="style.css?v=3" />
     <link href="bs/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Bootstrap JS CDN script -->
@@ -1164,6 +1164,41 @@
                   id="messageInput"
                 />
                 <input type="hidden" id="editMessageIndex" />
+                <div class="quick-emoji-picker noselect">
+                  <span onclick="quickEmoji(this.innerText);">😲</span>
+                  <span onclick="quickEmoji(this.innerText);">😊</span>
+                  <span onclick="quickEmoji(this.innerText);">😁</span>
+                  <span onclick="quickEmoji(this.innerText);">😄</span>
+                  <span onclick="quickEmoji(this.innerText);">😂</span>
+                  <span onclick="quickEmoji(this.innerText);">🤤</span>
+                  <span onclick="quickEmoji(this.innerText);">🥳</span>
+                  <span onclick="quickEmoji(this.innerText);">🙈</span>
+                  <span onclick="quickEmoji(this.innerText);">😝</span>
+                  <span onclick="quickEmoji(this.innerText);">😜</span>
+                  <span onclick="quickEmoji(this.innerText);">😉</span>
+                  <span onclick="quickEmoji(this.innerText);">😘</span>
+                  <span onclick="quickEmoji(this.innerText);">🥰</span>
+                  <span onclick="quickEmoji(this.innerText);">😍</span>
+                  <span onclick="quickEmoji(this.innerText);">❤️</span>
+                  <span onclick="quickEmoji(this.innerText);">😔</span>
+                  <span onclick="quickEmoji(this.innerText);">😫</span>
+                  <span onclick="quickEmoji(this.innerText);">😭</span>
+                  <span onclick="quickEmoji(this.innerText);">🤮</span>
+                </div>
+                <script>
+                  function quickEmoji(emoji) {
+                    const messageEl = document.getElementById("messageInput");
+                    const selectionStart = messageEl.selectionStart;
+                    if(selectionStart || selectionStart === 0){
+                      messageEl.value = messageEl.value.substring(0, selectionStart) + emoji + messageEl.value.substring(selectionStart, messageEl.value.length);
+                      setCaretPosition(messageEl, selectionStart + emoji.length);
+                    }
+                    else{
+                       messageEl.value += emoji;
+                       setCaretPosition(messageEl, messageEl.value.length);
+                    }
+                  }
+                </script>
               </div>
               <div class="mb-3">
                 <label for="fromInput" class="form-label form-label-sm"
@@ -1714,13 +1749,13 @@
       </div>
     </div>
     <script src="urlify.js"></script>
-    <script src="main.js?v=2"></script>
-    <script src="media.js?v=2"></script>
+    <script src="main.js?v=3"></script>
+    <script src="media.js?v=3"></script>
     <script src="jszip.min.js"></script>
     <script src="FileSaver.min.js"></script>
-    <script src="exporter.js?v=2"></script>
-    <script src="ocr-helpers.js?v=2"></script>
-    <script src="ocr.js?v=2"></script>
+    <script src="exporter.js?v=3"></script>
+    <script src="ocr-helpers.js?v=3"></script>
+    <script src="ocr.js?v=3"></script>
     <script>
       // dom content loader event listener:
       document.addEventListener(
