@@ -1,4 +1,5 @@
 function replaceCommons(text){
+    // 1. direct replaces
     const replaceDict = {
         "|":"I",
         "\n":" ",
@@ -6,17 +7,40 @@ function replaceCommons(text){
     for (const [key, value] of Object.entries(replaceDict)) {
         text = text.replaceAll(key, value);
     }
+
+    // 2. regex replaces
+    const replaceRegexDict = {
+        "\\bitis\\b": "it is",
+        "\\b(?:\\s)*[@%#&,'^)(\\[\\]\\|\\/`\"+{}]+$": "",
+        "^[@%#&,'^)(\\[\\]\\|\\/`\"+{}]+(?:\\s)*\\b": ""
+    }
+    for (const [key, value] of Object.entries(replaceRegexDict)) {
+        text = text.replaceAll(new RegExp(key, "g"), value);
+    }
+
+
     return text.trim();
 }
 
 function fixGibberish(text){
     text = fixSingleLetterWords(text);
     text = fixSpecialCharacters(text);
+    text = fixSideEffects(text);
     return text;
 }
 
 function checkIfFullyGibberish(text){
     return text.replaceAll('!','').replaceAll('?','').match(/[A-Za-z09]/g).length / text.length < 0.5;
+}
+
+function fixSideEffects(text){
+    const replaceDict = {
+        "n' ":"n't ",
+    }
+    for (const [key, value] of Object.entries(replaceDict)) {
+        text = text.replaceAll(key, value);
+    }
+    return text;
 }
 
 
