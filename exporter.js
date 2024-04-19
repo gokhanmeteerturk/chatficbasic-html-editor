@@ -239,6 +239,7 @@ function generateChatficBasicJson(filterUnusedVariables = false) {
     chatficForJson.pages = pages;
     chatficForJson.pages.forEach((page) => {
         page.messages.forEach((message) => {
+            if(message.hasOwnProperty("isCleaned")){delete message["isCleaned"];}
             if(message.multimedia && message.multimedia.length>1){
                 message.multimedia = "media/" + message.multimedia.replaceAll("media/","");
             }
@@ -322,6 +323,7 @@ function generateChatficBasic(chatficBasicJson) {
 
         let latestChatroom = "";
         page.messages.forEach((message) => {
+            if(message.hasOwnProperty("isCleaned")){delete message["isCleaned"];}
             const povText =
                 message.from != "player" && message.side == 2 ? "(pov)" : "";
             const chatroomText =

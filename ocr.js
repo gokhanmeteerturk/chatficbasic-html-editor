@@ -149,12 +149,21 @@ const processImage = async (img, canvas, ctx) => {
   for await (const rect of rectangles) {
 
     let text = await recognizeText(img, rect, mat);
-    if(text.message && text.message.length > 6 && checkIfFullyGibberish(text.message)){
-      continue;
+    if(text && text.message !== null && text.message.length > 0){
+      const tempOriginal = text.message;
+      if(text.message && text.message.length > 6 && checkIfFullyGibberish(text.message)){
+        continue;
+      }
+      text.message = replaceCommons(text.message);
+      text.message = fixGibberish(text.message);
+
+      if(isCleaned(tempOriginal, text.message)){
+        text.cleaned = true;
+      }
+
+      texts.push(text);
     }
-    text.message = replaceCommons(text.message);
-    text.message = fixGibberish(text.message);
-    texts.push(text);
+
   }
 
   mat.delete();
@@ -166,7 +175,8 @@ const processImage = async (img, canvas, ctx) => {
     if(text.message.length>0 && (text.side === "LEFT" || text.side === "RIGHT")){
         addMessageCustom(
             text.side === "LEFT" ? 0 : 2,
-            text.message
+            text.message,
+            text.cleaned
         );
     }
   }
@@ -492,6 +502,7 @@ const recognizeText = async (img, rect, mat) => {
   return {
     message: text,
     side: rect.group,
+    cleaned: false
   };
 };
 

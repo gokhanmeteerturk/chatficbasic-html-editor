@@ -579,6 +579,7 @@ textarea.small {
   position: relative;
 }
 
+
 .left .message.last:before {
   position: relative;
   content: "";
@@ -592,6 +593,9 @@ textarea.small {
   border-bottom-right-radius: 15px;
 }
 
+.left .message.cleaned, .left .message.cleaned.last:before{
+  background-color: #cfa465;
+}
 .left .message.last:after {
   position: relative;
   content: "";
@@ -604,6 +608,8 @@ textarea.small {
   background: white;
   border-bottom-right-radius: 10px;
 }
+
+
 
 .right {
   align-items: flex-end;
@@ -678,6 +684,9 @@ cursor.active::after {
   border-bottom-left-radius: 15px;
 }
 
+.right .message.cleaned, .right .message.cleaned.last:before{
+  background-color: #ff9800;
+}
 .right .message.last:after {
   position: relative;
   content: "";
