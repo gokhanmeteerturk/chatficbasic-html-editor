@@ -945,3 +945,34 @@ cursor.active::after {
   height: 100%;
   cursor: pointer;
 }
+.quick-emoji-picker {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px;
+    margin-top: 4px;
+}
+.quick-emoji-picker span {
+    display: inline-block;
+    min-width: 40px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    background: #d8dde4;
+    font-size: 18px;
+    flex: 1;
+    flex-shrink: 0 !important;
+    border-radius: 4px;
+    cursor:pointer;
+}
+.quick-emoji-picker span:hover{
+    cursor:pointer;
+}
+.noselect, .noselect * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
