@@ -8,6 +8,8 @@ function replaceCommons(text){
         text = text.replaceAll(key, value);
     }
 
+    text = text.trim();
+
     // 2. regex replaces
     const replaceRegexDict = {
         "\\bitis\\b": "it is",
