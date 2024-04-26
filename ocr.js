@@ -12,6 +12,29 @@ let worker;
 let importScreenshots;
 let debugMode = false;
 
+let lastTexts = [];
+
+function discardDuplicates(texts) {
+  if(!lastTexts) return texts;
+
+  try {
+    const messages_old = lastTexts.map((lastText) => lastText.message);
+    const messages_new = texts.map((text) => text.message);
+
+    const [intersection, startIndex] = checkIntersection(messages_old, messages_new);
+
+    if (intersection && startIndex > 0) {
+        lastTexts = texts;
+        return texts.slice(messages_old.length - startIndex);
+    } else {
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  lastTexts = texts;
+  return texts;
+}
+
 const initWorker = async () => {
   worker = await Tesseract.createWorker();
   await worker.setParameters();
@@ -171,7 +194,9 @@ const processImage = async (img, canvas, ctx) => {
   contours.delete();
   hierarchy.delete();
 
-  for (const text of texts) {
+  const textsWithNoDuplicates = discardDuplicates(texts);
+
+  for (const text of textsWithNoDuplicates) {
     if(text.message.length>0 && (text.side === "LEFT" || text.side === "RIGHT")){
         addMessageCustom(
             text.side === "LEFT" ? 0 : 2,
