@@ -1244,7 +1244,11 @@ function saveMessageFromEditModal(){
     let editMessageIndex = document.getElementById("editMessageIndex").value;
     let newMessage = document.getElementById("messageInput").value;
     let newFrom = document.getElementById("fromInput").value;
-    let newSide = document.getElementById("sideInput").value;
+    let newSide = null;
+    let selector = document.querySelector('input[name="sideInputS"]:checked');
+    if(selector){
+         newSide = selector.value;
+    }
     let newMultimedia = document.getElementById("multimediaInput").value;
     let newChatroom = document.getElementById("chatroomInput").value;
 
@@ -1293,7 +1297,15 @@ function editMessage(messageIndex) {
     document.getElementById("editMessageIndex").value = messageIndex;
     document.getElementById("messageInput").value = message.message;
     document.getElementById("fromInput").value = message.from;
-    document.getElementById("sideInput").value = message.side;
+    if(message.side === 0 || message.side === "0"){
+        document.getElementById("editSide0").checked = true;
+    }
+    else if(message.side === 1 || message.side === "1"){
+        document.getElementById("editSide1").checked = true;
+    }
+    else if(message.side === 2 || message.side === "2"){
+        document.getElementById("editSide2").checked = true;
+    }
     document.getElementById("multimediaInput").value = message.multimedia;
     document.getElementById("chatroomInput").value = message.chatroom;
 
