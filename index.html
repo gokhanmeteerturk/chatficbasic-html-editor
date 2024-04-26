@@ -1213,46 +1213,35 @@
                 >
                 <select
                   size="4"
-                  onchange="if(this.value=='player'){try{document.getElementById('sideInput').value='2';}catch{}}"
+                  onchange="if(this.value=='player'){try{document.getElementById('editSide2').checked = true;}catch{}}else if(this.value=='app'){try{document.getElementById('editSide1').checked = true;}catch{}}"
                   class="form-control form-control-sm"
                   id="fromInput"
                   name="fromInput"
                 ></select>
               </div>
               <div class="mb-3">
-                <label for="sideInput" class="form-label form-label-sm"
-                  >Side</label
-                >
-                <select
-                  size="3"
-                  class="form-control form-control-sm"
-                  id="sideInput"
-                  name="sideInput"
-                >
-                  <option value="0">Left</option>
-                  <option value="1">Middle</option>
-                  <option value="2">Right</option>
-                </select>
+                <label class="form-label form-label-sm"
+                  >Side</label>
+                <div>
+                  <div class="btn-group btn-group-sm w-100" role="group">
+                    <input value="0" type="radio" class="btn-check" name="sideInputS" id="editSide0" autocomplete="off" checked>
+                    <label class="btn btn-outline-secondary" for="editSide0">Left</label>
+
+                    <input value="1" type="radio" class="btn-check" name="sideInputS" id="editSide1" autocomplete="off">
+                    <label class="btn btn-outline-dark" for="editSide1">Middle</label>
+
+                    <input value="2" type="radio" class="btn-check" name="sideInputS" id="editSide2" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="editSide2">Right</label>
+                  </div>
+                </div>
               </div>
-              <div class="mb-3">
-                <label for="multimediaInput" class="form-label form-label-sm"
-                  >Multimedia</label
-                >
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  id="multimediaInput"
-                />
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Multimedia</span>
+                <input type="text" id="multimediaInput" class="form-control form-control-sm">
               </div>
-              <div class="mb-3">
-                <label for="chatroomInput" class="form-label form-label-sm"
-                  >Chatroom</label
-                >
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  id="chatroomInput"
-                />
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Chatroom</span>
+                <input type="text" id="chatroomInput" class="form-control form-control-sm">
               </div>
             </form>
           </div>
@@ -1756,7 +1745,7 @@
       </div>
     </div>
     <script src="urlify.js"></script>
-    <script src="main.js?v=5"></script>
+    <script src="main.js?v=6"></script>
     <script src="media.js?v=4"></script>
     <script src="jszip.min.js"></script>
     <script src="FileSaver.min.js"></script>
