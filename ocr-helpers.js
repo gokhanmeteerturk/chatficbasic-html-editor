@@ -14,7 +14,8 @@ function replaceCommons(text){
     const replaceRegexDict = {
         "\\bitis\\b": "it is",
         "\\b(?:\\s)*[@%#&,'^)(\\[\\]\\|\\/`\"+{}]+$": "",
-        "^[@%#&,'^)(\\[\\]\\|\\/`\"+{}]+(?:\\s)*\\b": ""
+        "^[@%#&,'^)(\\[\\]\\|\\/`\"+{}]+(?:\\s)*\\b": "",
+        "\ba$": ""
     }
     for (const [key, value] of Object.entries(replaceRegexDict)) {
         text = text.replaceAll(new RegExp(key, "g"), value);
@@ -47,14 +48,15 @@ function fixSideEffects(text){
 
 
 function fixSingleLetterWords(text){
-    return text.replace(/(\b(B|C|D|E|G|H|J|L|N|P|T|V|W)\b)/gi, "");
+    return text.replace(/((?!'|`|\.)(?:.{1}|^)\b(B|C|D|E|G|H|J|L|N|P|T|V|W)\b)/gi, "");
 }
 
 function fixSpecialCharacters(text){
     // fix special-only words:
     text = text.replace(/\b(\s*[-._!"`'#%&,:;<>¢£¥·=@{}~\$\*\+\/\\\?\[\]\^]{2,10}\s*)+\b/g, " ");
 
-    // fix special
+    // fix single specials:
+    text = text.replace(/(?:\b|^)(\s*[\s\_#%&>¢£¥·=@{}~\*\+\/\\\[\]\^]{2,10}\s*)+(?:\b|$)/g, " ");
 
     return text;
 }
@@ -72,7 +74,18 @@ function indexesOf(lst, element) {
         }
         else{
             try {
-                if(stringSimilarity(lst[i], element) >= 0.78) ind.push(i);
+                if(stringSimilarity(lst[i], element) >= 0.78){
+                    ind.push(i);
+                }
+                else{
+                    // We can always do better :)
+                    const len1 = lst[i].length;
+                    const len2 = element.length;
+                    if(len2 > 10 && len1 > 11 && stringSimilarity(lst[i].slice(len2), element) >= 0.78){
+                        // there is a very good chance that lst[i].endsWith(element) (with similarity)
+                        ind.push(i);
+                    }
+                }
             }
             catch(e) {
             }
@@ -89,9 +102,9 @@ function checkIntersection(list_1, list_2) {
     if(list_1_length < 1 || list_2_max_index < 0) return [false, null];
     const firstItemFromList2 = list_2[0];
 
-    if (list_1.includes(firstItemFromList2)) {
+    const messageIndices = indexesOf(list_1, firstItemFromList2);
+    if (messageIndices.length > 0 ) {
         let lastCheckedStartIndex = null;
-        const messageIndices = indexesOf(list_1, firstItemFromList2);
         let fullSuccess = false;
 
         for (const lcsi of messageIndices) {
