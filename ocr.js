@@ -174,12 +174,15 @@ const processImage = async (img, canvas, ctx) => {
     let text = await recognizeText(img, rect, mat);
     if(text && text.message !== null && text.message.length > 0){
       const tempOriginal = text.message;
-      if(text.message && text.message.length > 6 && checkIfFullyGibberish(text.message)){
+      if(text.message && checkIfShortGibberish(text.message)){
+      }
+      if(text.message && ((text.message.length > 6 && checkIfFullyGibberish(text.message)) || checkIfShortGibberish(text.message))){
         continue;
       }
       text.message = replaceCommons(text.message);
       text.message = fixGibberish(text.message);
 
+      text.message = replaceCommonFinals(text.message);
       if(isCleaned(tempOriginal, text.message)){
         text.cleaned = true;
       }

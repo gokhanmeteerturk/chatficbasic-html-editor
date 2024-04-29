@@ -3,6 +3,20 @@ function replaceCommons(text){
     const replaceDict = {
         "|":"I",
         "\n":" ",
+        "Iam":"I am",
+        "Ido ": "I do ",
+        "understanc": "understand",
+        "agair": "again",
+        "doinc":"doing",
+        "T'll": "I'll",
+        "Tll": "I'll",
+        "Tt ": "It ",
+        " tc ": " to ",
+        " j ": " ",
+        " td ": " to ",
+        " vou ": " you ",
+        " hir ": " him ",
+        " ther ": " then ",
     }
     for (const [key, value] of Object.entries(replaceDict)) {
         text = text.replaceAll(key, value);
@@ -21,10 +35,25 @@ function replaceCommons(text){
         text = text.replaceAll(new RegExp(key, "g"), value);
     }
 
+    const qMarkRegex = /((?=[27]*[\?])(?=[\?]*[27])(?:[27\?]{2,8})[72?]*)/gm;
+    const match = qMarkRegex.exec(text);
+    const qMarkLength = match ? match[1].length : 2;
+    text = text.replaceAll(qMarkRegex, "?".repeat(qMarkLength));
+
 
     return text.trim();
 }
 
+function replaceCommonFinals(text) {
+    const replaceFullDict = {
+        "fo": "lol"
+    }
+    if (replaceFullDict.hasOwnProperty(text)) {
+        return replaceFullDict[text];
+    }
+
+    return text;
+}
 function fixGibberish(text){
     text = fixSingleLetterWords(text);
     text = fixSpecialCharacters(text);
@@ -35,7 +64,12 @@ function fixGibberish(text){
 function checkIfFullyGibberish(text){
     return text.replaceAll('!','').replaceAll('?','').match(/[A-Za-z09]/g).length / text.length < 0.5;
 }
-
+function checkIfShortGibberish(text){
+    const shortGibberishList = [
+        "¥", "¢"
+    ];
+    return shortGibberishList.includes(text.trim());
+}
 function fixSideEffects(text){
     const replaceDict = {
         "n' ":"n't ",
@@ -53,10 +87,10 @@ function fixSingleLetterWords(text){
 
 function fixSpecialCharacters(text){
     // fix special-only words:
-    text = text.replace(/\b(\s*[-._!"`'#%&,:;<>¢£¥·=@{}~\$\*\+\/\\\?\[\]\^]{2,10}\s*)+\b/g, " ");
+    text = text.replace(/\b(\s*[-._!"`'#%&,:;<>¢£¥·=@®©{}~\$\*\+\/\\\?\[\]\^]{2,10}\s*)+\b/g, " ");
 
     // fix single specials:
-    text = text.replace(/(?:\b|^)(\s*[\s\_#%&>¢£¥·=@{}~\*\+\/\\\[\]\^]{2,10}\s*)+(?:\b|$)/g, " ");
+    text = text.replace(/(?:\b|^|\s)(\s*[\s\_#%&>¢£¥·=®©@{}~\*\+\/\\\[\]\^]{2,10}\s*)+(?:\b|$|\s)/g, " ");
 
     return text;
 }
