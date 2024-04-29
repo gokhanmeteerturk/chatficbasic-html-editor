@@ -575,6 +575,13 @@
                 >
                   Load
                 </button>
+                <div class="btn-group btn-group-sm" role="group">
+                  <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                  <ul class="dropdown-menu dropdown-menu-sm-end" aria-labelledby="btnGroupDrop1">
+                    <li><a class="dropdown-item small" href="javascript:void(0)" onclick="loadFromLocal();">Load Entire Story</a></li>
+                    <li><a class="dropdown-item small" href="javascript:void(0)" onclick="loadFromLocalNoPages();">Load Without Messages</a></li>
+                  </ul>
+                </div>
               </div>
               <button
                 onclick="saveZip();"
@@ -1749,7 +1756,7 @@
     <script src="media.js?v=4"></script>
     <script src="jszip.min.js"></script>
     <script src="FileSaver.min.js"></script>
-    <script src="exporter.js?v=4"></script>
+    <script src="exporter.js?v=5"></script>
     <script src="ocr-helpers.js?v=6"></script>
     <script src="ocr.js?v=5"></script>
     <script>

@@ -166,18 +166,29 @@ function saveLocally() {
     }, 2000);
 }
 function loadFromLocal() {
+    loadFromLocalCustom(true);
+}
+function loadFromLocalNoPages() {
+    loadFromLocalCustom(false);
+}
+
+function loadFromLocalCustom(loadPages=false) {
     if (confirm("Load the story back from last time?") == false) {
         return;
     }
     if (localStorage.getItem("chatfic") && localStorage.getItem("pages")) {
         chatfic = JSON.parse(localStorage.getItem("chatfic"));
-        pages = JSON.parse(localStorage.getItem("pages"));
+        if(loadPages){
+            pages = JSON.parse(localStorage.getItem("pages"));
+        }
+        updateMetaUI(chatfic);
         try{
             storyVariablesToInclude = JSON.parse(localStorage.getItem("storyVariablesToInclude"));
         }
         catch(err){
             storyVariablesToInclude = defaultStoryVariablesToInclude;
         }
+
     } else {
         alert("No story found in local storage!");
     }
@@ -187,7 +198,6 @@ function loadFromLocal() {
     refreshPageOptionsList();
     updatePageSelect();
 }
-
 function saveZip() {
     if (!storyInfoComplete) {
         alert("Complete story info first.");
