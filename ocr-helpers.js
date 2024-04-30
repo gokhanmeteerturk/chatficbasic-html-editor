@@ -2,13 +2,19 @@ function replaceCommons(text){
     // 1. direct replaces
     const replaceDict = {
         "|":"I",
+        " |\n":" ",
+        " 1\n":" ",
+        " l\n":" ",
+        " I\n":" ",
         "\n":" ",
         "Iam":"I am",
         "Ido ": "I do ",
         "understanc": "understand",
         "agair": "again",
         "doinc":"doing",
-        "T'll": "I'll",
+        "T'": "I'",
+        "l'": "I'",
+        "1'": "I'",
         "Tll": "I'll",
         "Tt ": "It ",
         " tc ": " to ",
@@ -41,10 +47,33 @@ function replaceCommons(text){
     text = text.replaceAll(qMarkRegex, "?".repeat(qMarkLength));
 
     text = replaceEnd(text.trim());
+    text = replaceStart(text.trim());
 
     return text;
 }
 
+function replaceStart(text){
+    const replace_dict = {
+        "’": "?",
+        ";": "",
+        ",": "",
+        ":": "",
+        "}": "",
+        "{": "",
+        "'": "",
+        "j ": "",
+        "1 ": "I ",
+        "| ": "I ",
+    }
+
+    for (const [key, value] of Object.entries(replace_dict)) {
+        if (text.startsWith(key)) {
+            text = value + text.slice(key.length);
+        }
+    }
+
+    return text;
+}
 function replaceEnd(text){
     const replace_dict = {
         "’’": "??",
@@ -64,10 +93,12 @@ function replaceEnd(text){
         " i": "",
         " I": "",
         " l": "",
-        " l!": "!!",
-        " !l": "!!",
-        " !I": "!!",
-        " I!": "!!",
+        " l!": " !!",
+        " !l": " !!",
+        " !I": " !!",
+        " I!": " !!",
+        " 1!": " !!",
+        " !1": " !!",
         " |": "",
         "®": "🥰",
         " lo": " lol",
