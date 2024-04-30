@@ -40,13 +40,53 @@ function replaceCommons(text){
     const qMarkLength = match ? match[1].length : 2;
     text = text.replaceAll(qMarkRegex, "?".repeat(qMarkLength));
 
+    text = replaceEnd(text.trim());
 
-    return text.trim();
+    return text;
+}
+
+function replaceEnd(text){
+    const replace_dict = {
+        "’’": "??",
+        "Ido": "I do",
+        "Iam": "I am",
+        "lam": "I am",
+        "Isee": "I see",
+        "lsee": "I see",
+        "’": "?",
+        ";": "",
+        ",": "",
+        ":": "",
+        "}": "",
+        "{": "",
+        "'": "",
+        " j": "",
+        " i": "",
+        " I": "",
+        " l": "",
+        " l!": "!!",
+        " !l": "!!",
+        " !I": "!!",
+        " I!": "!!",
+        " |": "",
+        "®": "🥰",
+        " lo": " lol",
+        " sc": " so",
+        " tc": " to",
+        " ther": " then",
+    }
+
+    for (const [key, value] of Object.entries(replace_dict)) {
+        if (text.endsWith(key)) {
+            return text.slice(0, -key.length) + value;
+        }
+    }
 }
 
 function replaceCommonFinals(text) {
     const replaceFullDict = {
-        "fo": "lol"
+        "fo": "lol",
+        "lo": "lol",
     }
     if (replaceFullDict.hasOwnProperty(text)) {
         return replaceFullDict[text];
