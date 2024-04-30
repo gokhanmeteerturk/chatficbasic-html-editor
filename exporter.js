@@ -181,6 +181,16 @@ function loadFromLocalCustom(loadPages=false) {
         if(loadPages){
             pages = JSON.parse(localStorage.getItem("pages"));
         }
+        else{
+            pages = [
+                        {
+                            id: 1,
+                            name: "initial",
+                            messages: [],
+                            options: [],
+                        },
+                    ];
+        }
         updateMetaUI(chatfic);
         try{
             storyVariablesToInclude = JSON.parse(localStorage.getItem("storyVariablesToInclude"));
