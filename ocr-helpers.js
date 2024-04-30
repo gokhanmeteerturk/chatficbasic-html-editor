@@ -87,7 +87,7 @@ function fixSingleLetterWords(text){
 
 function fixSpecialCharacters(text){
     // fix special-only words:
-    text = text.replace(/\b(\s*[-._!"`'#%&,:;<>¢£¥·=@®©{}~\$\*\+\/\\\?\[\]\^]{2,10}\s*)+\b/g, " ");
+    text = text.replace(/\b(\s*[-_!"`'#%&,:;<>¢£¥·=@®©{}~\$\*\+\/\\\?\[\]\^]{2,10}\s*)+\b/g, " ");
 
     // fix single specials:
     text = text.replace(/(?:\b|^|\s)(\s*[\s\_#%&>¢£¥·=®©@{}~\*\+\/\\\[\]\^]{2,10}\s*)+(?:\b|$|\s)/g, " ");
