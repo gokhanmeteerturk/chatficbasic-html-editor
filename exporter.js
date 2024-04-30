@@ -197,6 +197,7 @@ function loadFromLocalCustom(loadPages=false) {
     refreshCharacters();
     refreshPageOptionsList();
     updatePageSelect();
+    updateVariablesUI();
 }
 function saveZip() {
     if (!storyInfoComplete) {
