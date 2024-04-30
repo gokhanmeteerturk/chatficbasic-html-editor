@@ -81,6 +81,8 @@ function replaceEnd(text){
             return text.slice(0, -key.length) + value;
         }
     }
+
+    return text;
 }
 
 function replaceCommonFinals(text) {
