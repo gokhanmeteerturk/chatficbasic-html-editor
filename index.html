@@ -1659,7 +1659,14 @@
       </div>
     </div>
 
-    <div id="alertSave" class="fixed-bottom pe-3 d-none">
+    <div id="alertMissingMedia" onclick="this.classList.add('d-none')" class="fixed-bottom pe-3 d-none">
+      <div class="shadow float-end small alert alert-danger mx-3" role="alert">
+        <b>Some media files are missing</b>
+        <hr />
+        You will need to <b class="text-danger">drag & drop them</b>  into the chat.
+      </div>
+    </div>
+    <div id="alertSave" onclick="this.classList.add('d-none')" class="fixed-bottom pe-3 d-none">
       <div class="shadow float-end small alert alert-success mx-3" role="alert">
         <b>Chatfic is saved to browser.</b>
         <hr />
@@ -1759,11 +1766,11 @@
       </div>
     </div>
     <script src="urlify.js"></script>
-    <script src="main.js?v=6"></script>
-    <script src="media.js?v=4"></script>
+    <script src="main.js?v=7"></script>
+    <script src="media.js?v=5"></script>
     <script src="jszip.min.js"></script>
     <script src="FileSaver.min.js"></script>
-    <script src="exporter.js?v=7"></script>
+    <script src="exporter.js?v=8"></script>
     <script src="ocr-helpers.js?v=11"></script>
     <script src="ocr.js?v=7"></script>
     <script>

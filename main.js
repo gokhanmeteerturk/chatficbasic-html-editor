@@ -1422,6 +1422,9 @@ function refreshChat() {
                 if (mediaFileSrcList.hasOwnProperty(messageObject.multimedia)) {
                     imageEl.src = mediaFileSrcList[messageObject.multimedia];
                 }
+                else{
+                    imageEl.src = createPlaceholderSrc("Missing media:\n" + messageObject.multimedia + "\nPlease drop the\nactual media here", 15);
+                }
                 messageDiv.appendChild(imageEl);
             }
         }

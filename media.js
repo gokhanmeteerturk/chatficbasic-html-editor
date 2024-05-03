@@ -7,6 +7,30 @@ function showAddMedia() {
     addMediaModal.show();
 }
 
+function createPlaceholderSrc(text, size=14){
+    const canvas = document.createElement('canvas');
+    canvas.width = 220;
+    canvas.height = 130;
+    const ctx = canvas.getContext("2d");
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "red";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#ffffff";
+
+    ctx.font = 'bold ' + size.toString() + 'px Tahoma';
+
+    const x = 10;
+    const y = 20;
+    const lineHeight = Math.round(size*1.5);
+    const lines = text.split('\n');
+
+    for (let i = 0; i<lines.length; i++){
+        ctx.fillText(lines[i], x, y + (i*lineHeight));
+    }
+
+    return canvas.toDataURL("image/png");
+}
+
 function generateVideoThumbnail(file){
     // function from:
     // https://stackoverflow.com/a/69183556/2754871
@@ -44,7 +68,7 @@ function loadFiles(files){
                 ) {
                     var fr = new FileReader();
                     fr.onload = function (e) {
-                        mediaFileSrcList[file.name] = this.result;
+                        mediaFileSrcList[file.name] = this.result;refreshChat();
                     };
                     fr.readAsDataURL(file);
                 }
@@ -142,6 +166,7 @@ function setDropToAdd(){
         addMediaCounter = 0;
         fileDropZone.classList.remove('highlight');
         loadFiles(e.dataTransfer.files);
+        refreshChat();
     });
 }
 // Function to access media files by name
@@ -169,6 +194,7 @@ function refreshMediaList() {
             sendMedia(mediaFiles[indexToSend].name);
         });
     });
+    refreshChat();
 }
 
 function showImage(fileObj, imageEl) {
