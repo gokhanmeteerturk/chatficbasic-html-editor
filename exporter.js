@@ -126,12 +126,9 @@ function importChatficJson() {
         refreshPageOptionsList();
         updatePageSelect();
         if (anyMissingMedia) {
-            const alertMissingMedia = document.getElementById("alertMissingMedia");
-            alertMissingMedia.classList.remove("d-none");
-            setTimeout(() => {
-                alertMissingMedia.classList.add("d-none");
-            }, 3500);
+            alertMissingMedia();
         }
+        fixLeftCharacterAfterLoad();
     } catch (error) {
         pages = oldPages;
         chatfic = oldChatfic;
@@ -210,6 +207,24 @@ function loadFromLocalCustom(loadPages=false) {
             storyVariablesToInclude = defaultStoryVariablesToInclude;
         }
 
+        let anyMissingMedia = false;
+            try{
+                // check each pages's .messages array if there is a message with a multimedia, if there is, remove "media/" from beginning of it:
+                pages.forEach((page) => {
+                    page.messages.forEach((singleMessage) => {
+                        if (!mediaFileSrcList.hasOwnProperty(singleMessage.multimedia)) {
+                            anyMissingMedia = true;
+                        }
+                    });
+                });
+            }
+            catch(err){
+
+            }
+        if (anyMissingMedia) {
+            alertMissingMedia();
+        }
+
     } else {
         alert("No story found in local storage!");
     }
@@ -219,6 +234,7 @@ function loadFromLocalCustom(loadPages=false) {
     refreshPageOptionsList();
     updatePageSelect();
     updateVariablesUI();
+    fixLeftCharacterAfterLoad();
 }
 function saveZip() {
     if (!storyInfoComplete) {

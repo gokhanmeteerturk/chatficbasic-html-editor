@@ -1670,6 +1670,15 @@ function infoModalShow() {
     infoModal.show();
 }
 
+function fixLeftCharacterAfterLoad(){
+    for (let key in chatfic.characters) {
+        if(key !== "app" && key !== "player"){
+            setLeftCharacter(key);
+            break;
+        }
+    }
+}
+
 function pagesModalShow() {
     // Populate the modal with pages for editing
     pageList.innerHTML = "";
