@@ -7,6 +7,14 @@ function showAddMedia() {
     addMediaModal.show();
 }
 
+function alertMissingMedia(){
+    const alertMissingMedia = document.getElementById("alertMissingMedia");
+    alertMissingMedia.classList.remove("d-none");
+    setTimeout(() => {
+        alertMissingMedia.classList.add("d-none");
+    }, 3500);
+}
+
 function createPlaceholderSrc(text, size=14){
     const canvas = document.createElement('canvas');
     canvas.width = 220;
