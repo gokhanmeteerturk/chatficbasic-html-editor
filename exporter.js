@@ -100,12 +100,16 @@ function importChatficJson() {
         delete chatficFromJson.format;
         delete chatficFromJson.pages;
         chatfic = chatficFromJson;
+        let anyMissingMedia = false;
         try{
             // check each pages's .messages array if there is a message with a multimedia, if there is, remove "media/" from beginning of it:
             pages.forEach((page) => {
                 page.messages.forEach((singleMessage) => {
                     if (singleMessage.multimedia && singleMessage.multimedia.length > 6) {
                         singleMessage.multimedia = singleMessage.multimedia.replace("media/", "");
+                        if (!mediaFileSrcList.hasOwnProperty(singleMessage.multimedia)) {
+                            anyMissingMedia = true;
+                        }
                     }
                 }
                 );
@@ -121,6 +125,13 @@ function importChatficJson() {
         refreshCharacters();
         refreshPageOptionsList();
         updatePageSelect();
+        if (anyMissingMedia) {
+            const alertMissingMedia = document.getElementById("alertMissingMedia");
+            alertMissingMedia.classList.remove("d-none");
+            setTimeout(() => {
+                alertMissingMedia.classList.add("d-none");
+            }, 3500);
+        }
     } catch (error) {
         pages = oldPages;
         chatfic = oldChatfic;
