@@ -1308,7 +1308,7 @@ function editMessage(messageIndex) {
     }
     document.getElementById("multimediaInput").value = message.multimedia;
     document.getElementById("chatroomInput").value = message.chatroom;
-
+    auto_height(document.getElementById("messageInput"));
   }
 
 function refreshChat() {
@@ -1608,9 +1608,19 @@ function handleMessageKeyPress(e){
     document.getElementById('message').value = latestMessageAdded;
   }
 }
+function auto_height(elem) {
+    console.log(elem.value);
+    const singleLine = elem.value.replace(/[\r\n]+/g," ");
+    if(singleLine !== elem.value){
+        elem.value = singleLine;
+    }
+    elem.style.height = '1px';
+    elem.style.height = `${elem.scrollHeight}px`;
+}
 function handleEditMessageKeyPress(e){
  var key=e.keyCode || e.which;
   if (key==13){
+      auto_height(e.target);
       document.getElementById("saveMessageButton").click();
   }
 }
