@@ -356,12 +356,60 @@ function generateChatficBasic(chatficBasicJson) {
                 "> characters/" + key + "/color : " + character.color + "\n";
         }
         if (
-            character.hasOwnProperty("avatar") &&
-            character.avatar &&
-            character.avatar.length > 1
+            character.hasOwnProperty("gender") &&
+            character.gender &&
+            character.gender.length > 1
         ) {
             chatficbasic +=
-                "> characters/" + key + "/avatar : " + character.avatar + "\n";
+                "> characters/" + key + "/gender : " + character.gender + "\n";
+        }
+        if (
+            character.hasOwnProperty("skin") &&
+            character.skin &&
+            character.skin.length > 1
+        ) {
+            chatficbasic +=
+                "> characters/" + key + "/skin : " + character.skin + "\n";
+        }
+        if (
+            character.hasOwnProperty("eyes") &&
+            character.eyes &&
+            character.eyes.hasOwnProperty("color") &&
+            character.eyes.color &&
+            character.eyes.color.length > 1
+        ) {
+            chatficbasic +=
+                "> characters/" + key + "/eyes/color : " + character.eyes.color + "\n";
+        }
+        if (
+            character.hasOwnProperty("hair") &&
+            character.hair &&
+            character.hair.hasOwnProperty("color") &&
+            character.hair.color &&
+            character.hair.color.length > 1
+        ) {
+            chatficbasic +=
+                "> characters/" + key + "/hair/color : " + character.hair.color + "\n";
+        }
+        if (
+            character.hasOwnProperty("hair") &&
+            character.hair &&
+            character.hair.hasOwnProperty("style") &&
+            character.hair.style &&
+            character.hair.style.length > 1
+        ) {
+            chatficbasic +=
+                "> characters/" + key + "/hair/style : " + character.hair.style + "\n";
+        }
+        if (
+            character.hasOwnProperty("dress") &&
+            character.dress &&
+            character.dress.hasOwnProperty("size") &&
+            character.dress.size &&
+            character.dress.size.length > 1
+        ) {
+            chatficbasic +=
+                "> characters/" + key + "/dress/size : " + character.dress.size + "\n";
         }
     }
 
@@ -526,7 +574,19 @@ function convertChatficFromMdToJSON(chatficbasicCode) {
 
                             chatficToAdd.characters[character].model["handles"][handleAttribute] = value;
                         }
-                    } else {
+                    }
+                    else if(partsCount >= 4) {
+                        const innerKey = parts[2].trim();
+                        const innerValue = parts[3].trim();
+                        if (!chatficToAdd.characters.hasOwnProperty(character)) {
+                            chatficToAdd.characters[character] = {};
+                        }
+                        if (!chatficToAdd.characters[character].hasOwnProperty(attribute)) {
+                            chatficToAdd.characters[character][attribute] = {};
+                        }
+                        chatficToAdd.characters[character][attribute][innerKey] = innerValue;
+                    }
+                    else {
                         const value = parts[2].trim();
                         if (!chatficToAdd.characters.hasOwnProperty(character)) {
                             chatficToAdd.characters[character] = {};

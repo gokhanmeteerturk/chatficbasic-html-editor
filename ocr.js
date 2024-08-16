@@ -46,14 +46,16 @@ const showImportScreenshotsModal = async () => {
     "Files are not uploaded, just processed by your browser.";
   document.getElementById("screenshotStatus").className = "text-center";
 };
-
-document.addEventListener("DOMContentLoaded", async () => {
+async function onOpenCvReady(){
   await initWorker();
 
   importScreenshots = new bootstrap.Modal(
     document.getElementById("importScreenshotsModal")
   );
-});
+}
+// document.addEventListener("DOMContentLoaded", async () => {
+//   onOpenCvReady();
+// });
 
 const onImageUploadOCR = async (files) => {
   const filteredFiles = Array.from(files)

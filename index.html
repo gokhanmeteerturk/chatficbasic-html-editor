@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="UTF-8" />
 
-    <link rel="stylesheet" href="style.css?v=5" />
+    <link rel="stylesheet" href="style.css?v=6" />
     <link href="bs/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Bootstrap JS CDN script -->
@@ -35,7 +35,9 @@
     </style>
 
     <!-- OpenCV Script -->
-    <script src="https://docs.opencv.org/4.5.0/opencv.js"></script>
+    <script src="ocr-helpers.js?v=12"></script>
+    <script src="ocr.js?v=8"></script>
+    <script async src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
     <script src="bs/js/bootstrap.bundle.min.js"></script>
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
       <symbol
@@ -938,11 +940,11 @@
             ></button>
           </div>
           <div class="modal-body bg-slight">
-            <h2 class="fs-6">Edit Characters</h2>
+            <h2 class="fs-6">Create New Character</h2>
             <div class="mb-0 mt-3 row">
-              <div class="col-6 col-sm-4">
+              <div class="col-6 col-sm-6">
                 <div class="input-group input-group-sm mb-1">
-                  <span class="input-group-text">Name</span>
+                  <span class="input-group-text">Name<sup style="color: red;">*</sup></span>
                   <input
                     placeholder="John"
                     oninput="document.getElementById('newCharacterSlugInput').value=window.URLify(document.getElementById('newCharacterNameInput').value);"
@@ -952,7 +954,7 @@
                   />
                 </div>
               </div>
-              <div class="col-6 col-sm-4">
+              <div style="max-width:1px !important;height:1px !important;overflow:hidden;opacity:0;position:absolute;top:-100px;left:-200px;" class="col-6 col-sm-3">
                 <div class="input-group input-group-sm mb-1">
                   <span class="input-group-text">Color</span>
                   <select id="newCharacterColorInput" class="form-select">
@@ -974,7 +976,7 @@
                   </select>
                 </div>
               </div>
-              <div class="col-6 col-sm-4">
+              <div class="col-6 col-sm-6">
                 <div class="input-group input-group-sm mb-1">
                   <span class="input-group-text">Slug</span>
                   <input
@@ -991,13 +993,85 @@
                 </div>
               </div>
             </div>
+            <div class="mb-0 mt-1 row">
+              <div class="col-6 col-sm-6">
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">Gender</span>
+                  <select id="newCharacterGenderInput" class="form-select">
+                    <option value="female">female</option>
+                    <option value="male">male</option>
+                  </select>
+                </div>
+                </div>
+              <div class="col-6 col-sm-6">
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">Skin</span>
+                  <select id="newCharacterSkinInput" class="form-select">
+                    <option value="white">light</option>
+                    <option value="black">dark</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6 col-sm-6">
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">Hair Color</span>
+                  <select id="newCharacterHairColorInput" class="form-select">
+                    <option value="black">black</option>
+                    <option value="grey">grey</option>
+                    <option value="brown">brown</option>
+                    <option value="blonde">blonde</option>
+                    <option value="blue">blue</option>
+                    <option value="blue">green</option>
+                    <option value="ginger">ginger</option>
+                    <option value="red">red</option>
+                  </select></div></div>
+              <div class="col-6 col-sm-6">
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">Hair Style</span>
+                  <select id="newCharacterHairStyleInput" class="form-select">
+                  <option value="">random</option>
+                    <option value="straight">straight</option>
+                    <option value="bob">bob</option>
+                    <option value="pixie">pixie</option>
+                    <option value="ponytail">ponytail</option>
+                    <option value="wavy">wavy</option>
+                  </select>
+                </div></div>
+              <div class="col-6 col-sm-6">
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">Eyes</span>
+                  <select id="newCharacterEyesInput" class="form-select">
+                    <option value="">random</option>
+                    <option value="black">black</option>
+                    <option value="brown">brown</option>
+                    <option value="blue">blue</option>
+                    <option value="green">green</option>
+                    <option value="amber">amber</option>
+                    <option value="green">hazel</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6 col-sm-6">
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">Chest ;)</span>
+                  <select id="newCharacterDressSizeInput" class="form-select">
+                    <option value="">random</option>
+                    <option value="small">small</option>
+                    <option value="medium">medium</option>
+                    <option value="big">big</option>
+                  </select>
+                </div>
+              </div>
+            </div>
             <button
-              onclick="setCharacter(document.getElementById('newCharacterSlugInput').value, document.getElementById('newCharacterNameInput').value, document.getElementById('newCharacterColorInput').value);"
+              onclick="setCharacter(document.getElementById('newCharacterSlugInput').value, document.getElementById('newCharacterNameInput').value, document.getElementById('newCharacterColorInput').value, document.getElementById('newCharacterGenderInput').value, document.getElementById('newCharacterSkinInput').value, document.getElementById('newCharacterHairColorInput').value, document.getElementById('newCharacterHairStyleInput').value, document.getElementById('newCharacterEyesInput').value, document.getElementById('newCharacterDressSizeInput').value);"
               id="setCharacterButton"
-              class="btn btn-success btn-sm w-100"
+              class="btn btn-success btn-sm w-100 mt-1"
             >
               Save as new
             </button>
+
+            <h2 class="fs-6 mt-3">Edit Characters</h2>
             <ul
               id="charactersListInModal"
               class="list-group list-group-sm mt-3"
@@ -1005,7 +1079,7 @@
               <!-- Characters will be dynamically added here -->
             </ul>
             <h2 class="fs-6 mt-3">Add Model Info (Optional)</h2>
-            <div class="mb-0 mt-2 row px-3 text-small">
+            <div class="mb-0 row px-3 text-small">
               <ul
                 id="charactersListAttributionInModal"
                 class="list-group list-group-sm mt-3"
@@ -1768,25 +1842,23 @@
       </div>
     </div>
     <script src="urlify.js"></script>
-    <script src="main.js?v=8"></script>
-    <script src="media.js?v=6"></script>
+    <script src="main.js?v=9"></script>
+    <script src="media.js?v=7"></script>
     <script src="jszip.min.js"></script>
     <script src="FileSaver.min.js"></script>
-    <script src="exporter.js?v=9"></script>
-    <script src="ocr-helpers.js?v=11"></script>
-    <script src="ocr.js?v=7"></script>
+    <script src="exporter.js?v=10"></script>
     <script>
       // dom content loader event listener:
-      document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-          const newsModal = new bootstrap.Modal(
-            document.getElementById("newsModal")
-          );
-          newsModal.show();
-        },
-        false
-      );
+      // document.addEventListener(
+      //   "DOMContentLoaded",
+      //   function () {
+      //     const newsModal = new bootstrap.Modal(
+      //       document.getElementById("newsModal")
+      //     );
+      //     newsModal.show();
+      //   },
+      //   false
+      // );
     </script>
     <script>
       checkChatfic();

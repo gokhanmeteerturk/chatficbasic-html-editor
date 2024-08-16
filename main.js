@@ -82,6 +82,11 @@ var chatfic = {
         jessica: {
             name: "Jessica",
             color: "black",
+            gender: "female",
+            skin: "white",
+            hair: {
+                color: "black"
+            }
         },
     },
 };
@@ -392,9 +397,17 @@ function setCharacter(
     slug,
     name,
     color = null,
-    avatar = null,
+    gender = null,
+    skin = null,
+    hairColor = null,
+    hairStyle = null,
+    eyesColor = null,
+    dressSize = null,
     replace = false
 ) {
+    if(hairColor == "") hairColor = null;
+    if(hairStyle == "") hairStyle = null;
+
     if (name.trim().length < 3 || slug.length < 3) {
         alert("character name and slug can't be shorter than 3 characters");
         return;
@@ -407,8 +420,18 @@ function setCharacter(
     const oldName = chatfic.characters.hasOwnProperty(slug) ? chatfic.characters[slug]["name"] : "";
     chatfic.characters[slug] = {};
     chatfic.characters[slug]["name"] = name.trim();
-    color && color != "" ? (chatfic.characters[slug]["color"] = color) : null;
-    avatar && avatar != "" ? (chatfic.characters[slug]["avatar"] = avatar) : null;
+    color && color !== "" ? (chatfic.characters[slug]["color"] = color) : null;
+    gender && gender !== "" ? (chatfic.characters[slug]["gender"] = gender) : null;
+    skin && skin !== "" ? (chatfic.characters[slug]["skin"] = skin) : null;
+    eyesColor && eyesColor !== "" ? (chatfic.characters[slug]["eyes"] = {"color": eyesColor}) : null;
+    dressSize && dressSize !== "" ? (chatfic.characters[slug]["dress"] = {"size": dressSize}) : null;
+
+    if(hairColor || hairStyle){
+        chatfic.characters[slug]["hair"] = {};
+        hairColor && hairColor !== "" ? (chatfic.characters[slug]["hair"]["color"] = hairColor) : null;
+        hairStyle && hairStyle !== "" ? (chatfic.characters[slug]["hair"]["style"] = hairStyle) : null;
+    }
+
     refreshCharacters();
     checkChatfic();
 
@@ -533,15 +556,34 @@ function refreshCharacters() {
         if (key != "player" && key != "app") {
             const saveOverCell = document.createElement("div");
             saveOverCell.className = "flex-grow-0";
-            saveOverCell.innerHTML = `<button onclick="setCharacter('${key}', document.getElementById('newCharacterNameInput').value, document.getElementById('newCharacterColorInput').value, null, true)" class="btn btn-xs btn-success me-2 mt-1 mb-1">Save over this</button>`;
+            saveOverCell.innerHTML = `<button onclick="setCharacter('${key}', document.getElementById('newCharacterNameInput').value, document.getElementById('newCharacterColorInput').value, document.getElementById('newCharacterGenderInput').value, document.getElementById('newCharacterSkinInput').value, document.getElementById('newCharacterHairColorInput').value, document.getElementById('newCharacterHairStyleInput').value, document.getElementById('newCharacterEyesInput').value, document.getElementById('newCharacterDressSizeInput').value, true)" class="btn btn-xs btn-success me-2 mt-1 mb-1">Save over this</button>`;
             characterRow.appendChild(saveOverCell);
         }
         const infoCell = document.createElement("div");
         infoCell.className = "flex-grow-1 mt-1 mb-1";
         infoCell.innerHTML = `<span class="d-sm-inline d-block"><b>Slug:</b> ${key}, </span><span class="d-sm-inline d-block"><b class="ms-sm-2">Name:</b> ${character.name
-        }, </span><span class="d-sm-inline d-block"><b class="ms-sm-2">Color:</b> ${character.color ?? "Not set"
-        }</span>`;
+        }, </span>`;
         characterRow.appendChild(infoCell);
+        if (key != "player" && key != "app") {
+            const moreButtonCell = document.createElement("div");
+            moreButtonCell.className = "flex-grow-0";
+            moreButtonCell.innerHTML = `<button class="btn btn-xs btn-outline-secondary me-2 mt-1 mb-1"
+                    type="button" data-bs-toggle="collapse"
+                    data-bs-target="#moreInfo${key}" aria-expanded="false"
+                    aria-controls="moreInfo${key}">
+                show more</button>`;
+            characterRow.appendChild(moreButtonCell);
+        }
+        const moreInfoCell = document.createElement("div");
+        if (key != "player" && key != "app") {
+        moreInfoCell.className = "collapse good";
+        moreInfoCell.id = `moreInfo${key}`;
+        moreInfoCell.innerHTML = `<span class="d-sm-inline d-block"><b>Gender:</b> ${character.gender ?? "Not set"}</span>
+        <span class="d-sm-inline d-block"><b class="ms-sm-2">Skin:</b> ${character.skin ?? "Not set"}</span>
+        <span class="d-sm-inline d-block"><b class="ms-sm-2">Hair Color:</b> ${character.hair ? character.hair.color ?? "Not set" : "Not set"}</span>
+        <span class="d-sm-inline d-block"><b class="ms-sm-2">Hair Style:</b> ${character.hair ? character.hair.style ?? "Not set" : "Not set"}</span>
+        <span class="d-sm-inline d-block"><b class="ms-sm-2">Eyes:</b> ${character.eyes ? character.eyes.color ?? "Not set" : "Not set"}</span>
+        <span class="d-sm-inline d-block"><b class="ms-sm-2">Chest:</b> ${character.dress ? character.dress.size ?? "Not set" : "Not set"}</span>`;}
         if (key != "player" && key != "app") {
             const removeCell = document.createElement("div");
             removeCell.className = "flex-grow-0";
@@ -558,9 +600,12 @@ function refreshCharacters() {
             characterRow.appendChild(renameCell);
         }
         characterCard.appendChild(characterRow);
+        if (key != "player" && key != "app") {
+            characterCard.appendChild(moreInfoCell);
+        }
         charactersListInModal.appendChild(characterCard);
 
-        if(key !== "app"){
+        if (key !== "app") {
             const characterCardForAttribution = document.createElement("li");
             characterCardForAttribution.className = "list-group-item small";
 
