@@ -2,6 +2,16 @@
 <!--suppress ALL -->
 <html>
   <head>
+    <style>
+      .ortacanvas{
+        position:fixed;
+        top:50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        border: 3px solid #000;
+      }
+    </style>
     <title>ChatficBasic Editor</title>
     <!-- Project -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -36,7 +46,7 @@
 
     <!-- OpenCV Script -->
     <script src="ocr-helpers.js?v=12"></script>
-    <script src="ocr.js?v=8"></script>
+    <script src="ocr.js?v=9"></script>
     <script async src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
     <script src="bs/js/bootstrap.bundle.min.js"></script>
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
@@ -1821,7 +1831,7 @@
             ></button>
           </div>
           <div class="modal-body">
-            <div class="w-100">
+            <div class="w-100 position-relative">
               <div class="dropzone" id="dropzone">
                 <svg class="mb-4 mt-2" width="64" height="64">
                   <use xlink:href="#upload" />
@@ -1835,6 +1845,18 @@
                   multiple
                   onchange="onImageUploadOCR(this.files);"
                 />
+              </div>
+            </div>
+            <div class="w-100 mt-3">
+              <!-- checkbox for emoji detection: -->
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="emojiDetectionSwitch"
+                />
+                <label class="form-check-label" for="emojiSwitch">Detect emojis (takes ~10 seconds per image, not stable)</label>
               </div>
             </div>
           </div>
