@@ -739,6 +739,7 @@ const recognizeText = async (img, rect, mat, emojiInfo) => {
 
 
   if(document.getElementById('emojiDetectionSwitch').checked && matches.length > 0){
+      text.replaceAll("2x","zx").replaceAll("2X","zx").replaceAll("Zx","zx").replaceAll("ZX","zx").replaceAll("zX","zx");
     for (const emoji of matches) {
       text = text.replace("zx", emojis[emoji.emoji].e);
     }
