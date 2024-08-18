@@ -170,7 +170,7 @@ async function onOpenCvReady(){
     imgElement.onload = () => {
       // Create a canvas to draw the image and get its context
       let canvas = document.createElement('canvas');
-      let ctx = canvas.getContext('2d');
+      let ctx = canvas.getContext('2d',{ willReadFrequently: true });
 
       // Set canvas dimensions
       canvas.width = imgElement.width;
@@ -208,7 +208,7 @@ const resultTextsArray = [];
     const canvas = document.getElementById("ocrCanvas");
 
     // write the image to the canvas
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d",{ willReadFrequently: true });
     const img = new Image();
     img.src = URL.createObjectURL(file);
 
@@ -534,7 +534,7 @@ function calculateDominantColor(roi) {
       const hiddenCanvas = document.createElement("canvas");
       hiddenCanvas.width = 1;
       hiddenCanvas.height = 1;
-      const ctx = hiddenCanvas.getContext("2d");
+      const ctx = hiddenCanvas.getContext("2d",{ willReadFrequently: true });
       ctx.drawImage(img, 0, 0, 1, 1);
 
       // Get the pixel color data
@@ -823,7 +823,7 @@ function getResizedEmoji(emoji_string, emojiCoords, mostCommonColor, dimension){
     let {emojiCanvas, filledEmojiCanvas} = getOrCreateEmojiCanvases();
 
     if(!resizedEmojiLibrary.png[emoji_string].hasOwnProperty("64")) {
-        let filledEmojiCtx = filledEmojiCanvas.getContext("2d");
+        let filledEmojiCtx = filledEmojiCanvas.getContext("2d",{ willReadFrequently: true });
         let emojiCroppedRoi = emojiSpriteImageRoi.roi(
         new cv.Rect(emojiCoords.x, emojiCoords.y, 64, 64)
         );
@@ -840,9 +840,9 @@ function getResizedEmoji(emoji_string, emojiCoords, mostCommonColor, dimension){
     }
 
     if(!resizedEmojiLibrary.filled[emoji_string][background_grayscale_value].hasOwnProperty("64")){
-        let filledEmojiCtx = filledEmojiCanvas.getContext("2d");
+        let filledEmojiCtx = filledEmojiCanvas.getContext("2d",{ willReadFrequently: true });
         let emoji64 = resizedEmojiLibrary.png[emoji_string]["64"];
-        let emojiCtx = emojiCanvas.getContext("2d");
+        let emojiCtx = emojiCanvas.getContext("2d",{ willReadFrequently: true });
         emojiCtx.clearRect(0, 0, emojiCanvas.width, emojiCanvas.height);
         cv.imshow(emojiCanvas, emoji64);
         filledEmojiCtx.fillStyle = `rgb(${mostCommonColor[0]}, ${mostCommonColor[1]}, ${mostCommonColor[2]})`;
@@ -982,7 +982,7 @@ for (let y = 0; y < rows; y++) {
           let tempCanvas = document.createElement("canvas");
           tempCanvas.width = originalImageROI.cols;
           tempCanvas.height = originalImageROI.rows;
-          let tempCtx = tempCanvas.getContext("2d");
+          let tempCtx = tempCanvas.getContext("2d",{ willReadFrequently: true });
           cv.imshow(tempCanvas, originalImageROI);
         for (let i = 0; i < allMatches.length; i++) {
           let match = allMatches[i];
