@@ -739,7 +739,7 @@ const recognizeText = async (img, rect, mat, emojiInfo) => {
 
 
   if(document.getElementById('emojiDetectionSwitch').checked && matches.length > 0){
-      text.replaceAll("2x","zx").replaceAll("2X","zx").replaceAll("Zx","zx").replaceAll("ZX","zx").replaceAll("zX","zx");
+      text=text.replaceAll("2x","zx").replaceAll("2X","zx").replaceAll("Zx","zx").replaceAll("ZX","zx").replaceAll("zX","zx");
     for (const emoji of matches) {
       text = text.replace("zx", emojis[emoji.emoji].e);
     }
@@ -1007,7 +1007,7 @@ for (let y = 0; y < rows; y++) {
           tempCtx.textAlign = "center";
           tempCtx.textBaseline = "middle";
           tempCtx.fillText(
-            "zx",
+            "Zx",
             match.loc.x + match.size.width / 2,
             match.loc.y + match.size.height * 0.09 + match.size.height / 2
           );
