@@ -7,6 +7,8 @@ function setTooltips() {
     );
 }
 
+var clickCount = 0;
+
 function setCaretPosition(elem, caretPos) {
     // Mark Pieszak - https://stackoverflow.com/a/12518737
     // Plus a one line change
@@ -1284,6 +1286,12 @@ function addMessage(multimedia = null) {
     }
     refreshChat();
 }
+function changeMessageText(newText,messageIndex){
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find((x) => x.id == pageId);
+    page.messages[parseInt(messageIndex)].message=newText;
+    refreshChat();
+}
 function saveMessageFromEditModal(){
     // Get new values from the modal fields
     let editMessageIndex = document.getElementById("editMessageIndex").value;
@@ -1525,6 +1533,38 @@ function refreshChat() {
             messageText.appendChild(textNode);
         }
 
+        messageText.addEventListener('click', function() {
+
+             clickCount++;
+            if (clickCount === 1) {
+                singleClickTimer = setTimeout(function() {
+                    clickCount = 0;
+                    singleClick();
+                }, 400);
+            } else if (clickCount === 2) {
+                clearTimeout(singleClickTimer);
+                clickCount = 0;
+
+            // Make the span contenteditable on double click
+            this.setAttribute('contenteditable', 'true');
+            this.focus();
+
+            // Add event listener for keydown to detect the "enter" key
+            this.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();  // Prevent the default action (inserting a newline)
+                    this.removeAttribute('contenteditable');  // Disable contenteditable
+
+                    // Get the data-index value from the grandparent element
+                    let dataIndex = this.parentElement.parentElement.getAttribute('data-index');
+
+                    // Call the updateMemoryText function with the new innerText and data-index
+                    changeMessageText(this.innerText, dataIndex);
+                }
+            });
+            }
+
+        });
 
         messageDiv.appendChild(messageText);
 
