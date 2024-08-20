@@ -143,7 +143,19 @@ function discardDuplicates(texts) {
 
 const initWorker = async () => {
   worker = await Tesseract.createWorker();
-  await worker.setParameters();
+  // it should be english only:
+  await worker.setParameters(
+      // justification: left
+    {
+    //lang: 'eng',
+    // tessedit_pageseg_mode: "3",
+    //     tessjs_create_hocr: 0,
+    // hocr_font_info: "1",
+    // max_page_gradient_recognize: "100",
+    //     tessjs_create_tsv: 0,
+    tessedit_char_blacklist: "|ﬁﬂéï06",
+    }
+  );
 };
 
 function prepareEmojiSizes(){
@@ -260,12 +272,14 @@ function calculateMedian(image) {
     return values[half];
   }
 }
-
+var showTheProcess;
 const processImage = async (img, canvas, ctx) => {
+showTheProcess = document.getElementById('showProcessSwitch').checked;
   const mat = cv.imread(canvas);
 
   const maxEmojiSize = Math.round(mat.cols / 17);
   const minEmojiSize = Math.max(Math.round(mat.cols / 29),16);
+  const possibleLineHeights = {min:minEmojiSize, max:maxEmojiSize};
   const emojiStep = Math.round((maxEmojiSize - minEmojiSize) / 6);
 
   // Convert to grayscale (optional but recommended for edge detection)
@@ -332,7 +346,7 @@ const processImage = async (img, canvas, ctx) => {
 
   for await (const rect of rectangles) {
 
-    let text = await recognizeText(img, rect, mat, {minEmojiSize, maxEmojiSize, emojiStep});
+    let text = await recognizeText(img, rect, mat, {minEmojiSize, maxEmojiSize, emojiStep}, possibleLineHeights);
     if(text && text.message !== null && text.message.length > 0){
       const tempOriginal = text.message;
       if(text.message && checkIfShortGibberish(text.message)){
@@ -510,6 +524,67 @@ const findRectangles = async (contours, mat) => {
 
   return rectangles;
 };
+function mostFrequent(arr) {
+  const store = {}
+    // and ignore <10
+  arr.forEach((num) => store[num] && (num>10 && num<80) ? store[num] += 1 : store[num] = 1)
+  return Object.keys(store).sort((a, b) => store[b] - store[a])[0]
+}
+function detectPadding(roi) {
+    const y = Math.floor(roi.rows / 2);
+    const cols = roi.cols;
+    //const rowPtr = roi.ucharPtr(y); // Get the middle row pointer
+
+
+    function brightness(r,g,b) {
+        return 0.299 * r + 0.587 * g + 0.114 * b;
+    }
+
+    const brightnessList = [];
+    for (let x = 0; x < roi.cols; x++) {
+        let [r, g, b, a] = roi.ucharPtr(y, x);
+        brightnessList.push(Math.floor(brightness(r,g,b)/3));
+    }
+    console.log("brightnessList");
+    console.log(brightnessList);
+    const midValues = brightnessList.slice(Math.floor(cols*0.25), Math.floor(cols*0.75));
+    const mostFrequentBrightness = mostFrequent(midValues);
+    console.log("mostFrequentBrightness");
+    console.log(mostFrequentBrightness);
+    let leftPaddingEnd = 0;
+    let rightPaddingStart = cols;
+    let leftFound = 0;
+    let rightFound = 0;
+    const threshold = 20;
+    for(let x = 0; x < brightnessList.length/3; x++) {
+        // detect first time if brightness more than 10 PERCENT different:
+        if(leftPaddingEnd=== 0 && (brightnessList[x] > 7 && brightnessList[x] < 80) && Math.abs(brightnessList[x] - mostFrequentBrightness) < threshold) {
+            leftFound++;
+        }
+        else{
+            leftFound = 0;
+        }
+        if(leftFound > 2){
+            leftPaddingEnd = x;
+        }
+    }
+    for(let x = brightnessList.length; x > brightnessList.length/3; x--) {
+        if(rightPaddingStart === cols && (brightnessList[x] > 7 && brightnessList[x] < 81) && Math.abs(brightnessList[x] - mostFrequentBrightness) < threshold) {
+            rightFound++;
+        }
+        else{
+            rightFound = 0;
+        }
+        if(rightFound > 2){
+            rightPaddingStart = brightnessList.length - x;
+        }
+    }
+
+    return {
+        left: leftPaddingEnd,
+        right: rightPaddingStart
+    };
+}
 
 // Function to calculate dominant color within a region of interest (ROI)
 function calculateDominantColor(roi) {
@@ -637,9 +712,28 @@ function findMostCommonColors(imageMat, emojiDetectionStep = 5) {
     let mostCommonColor = Object.keys(colorCounts).reduce((a, b) => colorCounts[a] > colorCounts[b] ? a : b).split(',').map(Number);
     return {mostCommonColor, yellowCount};
 }
-const recognizeText = async (img, rect, mat, emojiInfo) => {
-    const roi = mat.roi(rect);
+const recognizeText = async (img, rect, mat, emojiInfo, possibleLineHeights) => {
 
+let tempCanvas = document.createElement("canvas");
+tempCanvas.className='ortacanvas';
+document.body.appendChild(tempCanvas);
+const roi = mat.roi(rect);
+if(showTheProcess){
+cv.imshow(tempCanvas,roi);
+await new Promise(r => setTimeout(r, 3000));
+}
+
+    let leftCrop;
+    let rightCrop;
+    try{
+        const paddingObj = detectPadding(roi);
+console.log(paddingObj);
+        leftCrop = paddingObj.left;
+        rightCrop = paddingObj.right;
+    }
+    catch(e){
+        console.log(e);
+    }
     let padding = 12
     padding = Math.round(padding * Math.round(mat.cols) / 1000);
 
@@ -648,18 +742,34 @@ const recognizeText = async (img, rect, mat, emojiInfo) => {
 
     const x2 = roi.cols - Math.round(padding * 2.5);
     const y2 = roi.rows - padding;
+    const maximumPossibleCropDistance = Math.min(roi.cols/2, roi.rows/2)
+    let rect2;
+    if((leftCrop !== 0 && !leftCrop || leftCrop > maximumPossibleCropDistance) || (rightCrop !== 0 && !rightCrop || rightCrop > maximumPossibleCropDistance)) {
+        rect2 = {
+          x: x1,
+          y: y1,
+          width: x2 - (x1 *1.5),
+          height: y2 - y1,
+        };
+    }
+    else{
+        rect2 = {
+          x: leftCrop + 5,
+          y: y1,
+          width: roi.cols - (leftCrop + rightCrop + 10),
+          height: y2 - y1,
+        };
+    }
 
-    const rect2 = {
-      x: x1,
-      y: y1,
-      width: x2 - x1,
-      height: y2 - y1,
-    };
 
   const croppedRoi = new cv.Mat();
   // Create a new cv.Mat object for the padded image
   roi.roi(new cv.Rect(rect2.x, rect2.y, rect2.width, rect2.height)).copyTo(croppedRoi);
 
+if(showTheProcess){
+cv.imshow(tempCanvas,croppedRoi);
+await new Promise(r => setTimeout(r, 300));
+}
   const {mostCommonColor, yellowCount} = findMostCommonColors(croppedRoi, (Math.floor(emojiInfo.minEmojiSize/3)));
   const colorAtCoordinate = mostCommonColor ?? croppedRoi.ucharPtr(4, 2);
 
@@ -684,16 +794,11 @@ const recognizeText = async (img, rect, mat, emojiInfo) => {
   cv.copyMakeBorder(
       croppedRoi, // Source image (croppedRoi)
       paddedRoi, // Destination image (paddedRoi)
-      30,30,30,30,
+      // 30,30,30,30,
+      30,200,30,60,
       borderType, // Border type
       borderColor // Border color
   );
-
-
-  let tempCanvas = document.createElement("canvas");
-  tempCanvas.className='ortacanvas';
-  document.body.appendChild(tempCanvas);
-
   let matches = [];
   if(document.getElementById('emojiDetectionSwitch').checked){
 
@@ -706,12 +811,22 @@ const recognizeText = async (img, rect, mat, emojiInfo) => {
 
        matches=allMatches;
       cv.imshow(tempCanvas,updatedOriginalImageROI);
+    const paddedGrayscale = new cv.Mat();
+      cv.cvtColor(updatedOriginalImageROI, paddedGrayscale, cv.COLOR_RGBA2GRAY);
+    cv.imshow(tempCanvas,paddedGrayscale);
       // console.log("RESULT IMAGE:")
       // await new Promise(r => setTimeout(r, 10000));
   }
   else{
-    cv.imshow(tempCanvas,paddedRoi);
+      // first convert to greyscale:
+    const paddedGrayscale = new cv.Mat();
+      cv.cvtColor(paddedRoi, paddedGrayscale, cv.COLOR_RGBA2GRAY);
+    cv.imshow(tempCanvas,paddedGrayscale);
   }
+
+if(showTheProcess){
+await new Promise(r => setTimeout(r, 200));
+}
 
   // await new Promise(r => setTimeout(r, 5000));
   let b64image = tempCanvas.toDataURL();
