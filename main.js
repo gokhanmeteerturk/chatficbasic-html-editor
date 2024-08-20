@@ -1528,10 +1528,11 @@ function refreshChat() {
         // messageText.innerText = messageObject.message;
         messageText.className='message-text';
 
+        if(messageObject.message != null){
+
         const regex = /\$\w*\b/gm;
 
         let m;
-
         let previousLastIndex = 0;
         while ((m = regex.exec(messageObject.message)) !== null) {
             // console.log("m.index");
@@ -1570,9 +1571,12 @@ function refreshChat() {
 
         }
 
+        // after variable check, if message has more text after last variable, add this remaining text to the message bubble:
         if(previousLastIndex < messageObject.message.length){
             const textNode = document.createTextNode(messageObject.message.substring(previousLastIndex));
             messageText.appendChild(textNode);
+        }
+
         }
 
         messageText.addEventListener('click', function(e) {
