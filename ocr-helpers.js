@@ -1,12 +1,15 @@
 function replaceCommons(text){
+    console.log("--------");
+    console.log("ilk:");
+    console.log(text);
     // 1. direct replaces
     const replaceDict = {
         "|":"I",
-        " |\n":" ",
-        " 1\n":" ",
-        " l\n":" ",
-        " I\n":" ",
-        "\n":" ",
+        // " |\n":" ",
+        // " 1\n":" ",
+        // " l\n":" ",
+        // " I\n":" ",
+        // "\n":" ",
         "Iam":"I am",
         "Ido ": "I do ",
         "understanc": "understand",
@@ -23,6 +26,7 @@ function replaceCommons(text){
         " vou ": " you ",
         " hir ": " him ",
         " ther ": " then ",
+        "@&": "🥰🥰",
     }
     for (const [key, value] of Object.entries(replaceDict)) {
         text = text.replaceAll(key, value);
@@ -45,7 +49,6 @@ function replaceCommons(text){
     const match = qMarkRegex.exec(text);
     const qMarkLength = match ? match[1].length : 2;
     text = text.replaceAll(qMarkRegex, "?".repeat(qMarkLength));
-
     text = replaceEnd(text.trim());
     text = replaceStart(text.trim());
 
@@ -100,6 +103,7 @@ function replaceEnd(text){
         " 1!": " !!",
         " !1": " !!",
         " |": "",
+        "®®": "🥰🥰",
         "®": "🥰",
         " lo": " lol",
         " sc": " so",
@@ -109,7 +113,7 @@ function replaceEnd(text){
 
     for (const [key, value] of Object.entries(replace_dict)) {
         if (text.endsWith(key)) {
-            return text.slice(0, -key.length) + value;
+            text = text.slice(0, -key.length) + value;
         }
     }
 
@@ -123,6 +127,20 @@ function replaceCommonFinals(text) {
     }
     if (replaceFullDict.hasOwnProperty(text)) {
         return replaceFullDict[text];
+    }
+
+    if(text.split(' `').length === 2 && (text.match(/ `/g) || []).length === 1 ){ // single ` and it is after a space.
+        text = text.replace('`','');
+    }
+
+    const replace_end_final_dict = {
+        "1m": "Im",
+    }
+
+    for (const [key, value] of Object.entries(replace_end_final_dict)) {
+        if (text.startsWith(key)) {
+            text = value + text.slice(key.length);
+        }
     }
 
     return text;
@@ -155,7 +173,8 @@ function fixSideEffects(text){
 
 
 function fixSingleLetterWords(text){
-    return text.replace(/((?!'|`|\.)(?:.{1}|^)\b(B|C|D|E|G|H|J|L|N|P|T|V|W)\b)/gi, "");
+    text = text.replace(/((?!'|`|\.)(?:.{1}|^)\b(B|C|D|E|G|H|J|L|N|P|V|W)\b)/gi, "");
+    return text;
 }
 
 function fixSpecialCharacters(text){
@@ -164,6 +183,9 @@ function fixSpecialCharacters(text){
 
     // fix single specials:
     text = text.replace(/(?:\b|^|\s)(\s*[\s\_#%&>¢£¥·=®©@{}~\*\+\/\\\[\]\^]{2,10}\s*)+(?:\b|$|\s)/g, " ");
+
+    text = text.replace(/[\_%&>¢£¥·®©@{}~\*\+\\\[\]\^]{2,10}/g, " ");
+    text = text.replace(/[\_%&>¢£¥·®©@{}~\*\+\\\[\]\^]🥰/g, "🥰");
 
     return text;
 }
