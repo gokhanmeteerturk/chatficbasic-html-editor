@@ -1575,21 +1575,33 @@ function refreshChat() {
             messageText.appendChild(textNode);
         }
 
-        messageText.addEventListener('click', function() {
-
+        messageText.addEventListener('click', function(e) {
              clickCount++;
             if (clickCount === 1) {
                 singleClickTimer = setTimeout(function() {
                     clickCount = 0;
-                    singleClick();
                 }, 400);
-            } else if (clickCount === 2) {
+            } else if (clickCount === 2 && this.getAttribute('contenteditable') !== 'true') {
                 clearTimeout(singleClickTimer);
                 clickCount = 0;
 
             // Make the span contenteditable on double click
             this.setAttribute('contenteditable', 'true');
             this.focus();
+
+                    // Move the cursor to the end of the text
+                try {
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+                    range.selectNodeContents(this);
+                    range.collapse(false);  // Collapse the range to the end of the content
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                } catch (error) {
+                    console.error(error);
+                }
+
+                openEmojiPicker();
 
             // Add event listener for keydown to detect the "enter" key
             this.addEventListener('keydown', function(event) {
@@ -1602,8 +1614,25 @@ function refreshChat() {
 
                     // Call the updateMemoryText function with the new innerText and data-index
                     changeMessageText(this.innerText, dataIndex);
+                    closeEmojiPicker();
                 }
             });
+
+             this.addEventListener('blur', function(event) {
+            // Check if the new focus is on the emoji picker div or its siblings
+            if (!event.relatedTarget || !document.getElementById('emojipickerdiv').contains(event.relatedTarget)) {
+                // If not, trigger the same actions as pressing "Enter"
+                this.removeAttribute('contenteditable');  // Disable contenteditable
+                // Get the data-index value from the grandparent element
+                let dataIndex = this.parentElement.parentElement.getAttribute('data-index');
+
+                // Call the updateMemoryText function with the new innerText and data-index
+                changeMessageText(this.innerText, dataIndex);
+                closeEmojiPicker();
+            }
+        });
+
+
             }
 
         });
@@ -1963,3 +1992,39 @@ pageSelect.addEventListener("change", () => {
 // window.onbeforeunload = function () {
 //     return "Are you sure you want to leave?";
 // };
+
+      function insertTextAtCursor(text) {
+    let selection = window.getSelection();
+    let range = selection.getRangeAt(0);
+
+    // Check if the selection is within a contenteditable element
+    if (selection.rangeCount && range) {
+        // Delete any selected text first
+        range.deleteContents();
+
+        // Create a text node for the text to be inserted
+        let textNode = document.createTextNode(text);
+
+        // Insert the text node at the current cursor position
+        range.insertNode(textNode);
+
+        // Move the cursor to the end of the inserted text node
+        range.setStartAfter(textNode);
+        range.collapse(true);
+
+        // Update the selection to reflect the new cursor position
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
+
+function emojiSelected(emoji){
+  insertTextAtCursor(emoji);
+}
+
+      function closeEmojiPicker(){
+        document.getElementById("emojipickerdiv").style.display = "none";
+      }
+      function openEmojiPicker(){
+        document.getElementById("emojipickerdiv").style.display = "block";
+      }
