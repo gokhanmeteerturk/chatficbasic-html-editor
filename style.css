@@ -330,6 +330,10 @@ textarea.small {
   font-size: small;
 }
 
+.chatroom-actions-menu{
+  position:absolute;
+  top:16px;right:12px;
+}
 .messages span.author {
   position: absolute;
   top: -17px;
@@ -880,7 +884,6 @@ cursor.active::after {
     height: calc(39vw - 54px) !important;
     transition: height 0.2s ease;
   }
-
   .accordion-body {
     width: calc(39vw - 54px);
     transition: width 0.2s ease;
