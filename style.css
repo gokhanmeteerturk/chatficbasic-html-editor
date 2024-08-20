@@ -106,6 +106,9 @@ body {
   cursor: pointer;
 }
 
+#emojipickerdiv{
+  position:fixed;bottom:0;left:50%;margin-left:-200px;background: black;
+}
 .setCustomChatroom:hover {
   color: #666 !important;
 }
