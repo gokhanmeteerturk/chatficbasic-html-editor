@@ -1364,6 +1364,31 @@ function editMessage(messageIndex) {
     auto_height(document.getElementById("messageInput"));
   }
 
+  function flipMessages(messageIndex){
+    const pageId = document.getElementById("pageSelect").value;
+    const page = pages.find((x) => x.id == pageId);
+    let chatroomName = null;
+
+    const pageMessagesLength = page.messages.length;
+    for (let i = 0; i < pageMessagesLength; i++) {
+        if(i<messageIndex){
+            continue;
+        }
+        if(i===messageIndex){
+            chatroomName = page.messages[i].chatroom;
+        }
+        if(page.messages[i].chatroom === chatroomName){
+            const currentSide = page.messages[i].side;
+            const newSides = [2, currentSide, 0]; // 0->2, 1->no change, 2->0
+            page.messages[i].side = newSides[currentSide];
+        }
+        else{
+            break;
+        }
+    }
+    refreshChat();
+  }
+
 function refreshChat() {
     const sides = ["left", "middle", "right"];
     const pageId = document.getElementById("pageSelect").value;
@@ -1398,6 +1423,23 @@ function refreshChat() {
             const chatroomHeader = document.createElement("div");
             chatroomHeader.className = "sticky-top chatroom-header";
             chatroomHeader.innerText = messageObject.chatroom;
+
+            const chatroomActionsMenu = document.createElement("div");
+            chatroomActionsMenu.className = "chatroom-actions-menu";
+            chatroomActionsMenu.innerHTML = `<div class="dropdown">
+  <button class="btn btn-light btn-sm" type="button" id="dropdownMenu${i}" data-bs-toggle="dropdown" aria-expanded="false">
+    <svg width="18px" height="18px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#000000" class="bi bi-three-dots-vertical">
+      <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+    </svg>
+  </button>
+  <ul class="dropdown-menu list-group-sm" aria-labelledby="dropdownMenu${i}">
+    <li><button onclick="flipMessages(${i})" class="dropdown-item list-group-item" type="button">Flip message sides</button></li>
+<!--    <li><button class="dropdown-item list-group-item" type="button">Another action</button></li>-->
+<!--    <li><button class="dropdown-item list-group-item" type="button">Something else here</button></li>-->
+  </ul>
+</div>`;
+
+            chatroomHeader.appendChild(chatroomActionsMenu);
             chatContainer.appendChild(chatroomHeader);
         }
         /*
