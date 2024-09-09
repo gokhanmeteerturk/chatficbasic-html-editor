@@ -720,7 +720,7 @@ document.body.appendChild(tempCanvas);
 const roi = mat.roi(rect);
 if(showTheProcess){
 cv.imshow(tempCanvas,roi);
-await new Promise(r => setTimeout(r, 3000));
+await new Promise(r => setTimeout(r, 400));
 }
 
     let leftCrop;
@@ -768,7 +768,7 @@ console.log(paddingObj);
 
 if(showTheProcess){
 cv.imshow(tempCanvas,croppedRoi);
-await new Promise(r => setTimeout(r, 300));
+await new Promise(r => setTimeout(r, 200));
 }
   const {mostCommonColor, yellowCount} = findMostCommonColors(croppedRoi, (Math.floor(emojiInfo.minEmojiSize/3)));
   const colorAtCoordinate = mostCommonColor ?? croppedRoi.ucharPtr(4, 2);
@@ -825,7 +825,7 @@ await new Promise(r => setTimeout(r, 300));
   }
 
 if(showTheProcess){
-await new Promise(r => setTimeout(r, 200));
+await new Promise(r => setTimeout(r, 150));
 }
 
   // await new Promise(r => setTimeout(r, 5000));
