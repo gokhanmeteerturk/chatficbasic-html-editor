@@ -523,10 +523,10 @@ textarea.small {
 }
 
 .message .delete::before {
-  content: "\2715";
+  content: "✕";
 }
 .message .edit::before {
-  content: "\270E";
+  content: "✎";
   font-family: Arial, sans-serif;
 }
 
@@ -539,19 +539,19 @@ textarea.small {
 }
 
 .message .to-right::before {
-  content: "\1F846";
+  content: "🡆";
   font-family: Arial, sans-serif;
 }
 .message .to-up::before {
-  content: "\1F845";
+  content: "🡅";
   font-family: Arial, sans-serif;
 }
 .message .to-down::before {
-  content: "\1F847";
+  content: "🡇";
   font-family: Arial, sans-serif;
 }
 .message .to-left::before {
-  content: "\1F844";
+  content: "🡄";
   font-family: Arial, sans-serif;
 }
 
@@ -673,7 +673,7 @@ cursor.active {
 }
 
 cursor.active::after {
-  content: "new messages position \00a0 \00a0 ✕" !important;
+  content: "new messages position     ✕" !important;
   width: 160px;
   margin-left: -80px;
   background-color: orangered;
