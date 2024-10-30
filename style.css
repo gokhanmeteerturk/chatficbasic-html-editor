@@ -209,6 +209,9 @@ span.fake-input {
 .message-text{
   display:inline-block;
 }
+.message-text[contenteditable="true"]{
+  outline:1px solid black;
+}
 .message-text span.variable{
   position:relative;
   display:inline-block;
@@ -706,6 +709,17 @@ cursor.active::after {
   height: 13px;
   background: white;
   border-bottom-left-radius: 10px;
+}
+
+.emoji-picker-opener{
+  display: inline-block;
+  padding:2px 3px;
+  border-radius:50%;
+  background: grey;
+  position: absolute;
+  bottom: -24px;
+  right: 8px;
+  cursor:pointer;
 }
 
 .arrowstart,

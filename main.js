@@ -1591,6 +1591,7 @@ function refreshChat() {
 
             // Make the span contenteditable on double click
             this.setAttribute('contenteditable', 'true');
+            this.setAttribute('title', 'Click enter or elsewhere to save');
             this.focus();
 
                     // Move the cursor to the end of the text
@@ -1605,7 +1606,9 @@ function refreshChat() {
                     console.error(error);
                 }
 
-                openEmojiPicker();
+                showEmojiPickerOpener(this);
+
+                //openEmojiPicker();
 
             // Add event listener for keydown to detect the "enter" key
             this.addEventListener('keydown', function(event) {
@@ -1624,7 +1627,7 @@ function refreshChat() {
 
              this.addEventListener('blur', function(event) {
             // Check if the new focus is on the emoji picker div or its siblings
-            if (!event.relatedTarget || !document.getElementById('emojipickerdiv').contains(event.relatedTarget)) {
+            if (!event.relatedTarget || (!document.getElementById('emojipickerdiv').contains(event.relatedTarget) && !this.parentNode.parentNode.contains(event.relatedTarget))) {
                 // If not, trigger the same actions as pressing "Enter"
                 this.removeAttribute('contenteditable');  // Disable contenteditable
                 // Get the data-index value from the grandparent element
@@ -1641,6 +1644,7 @@ function refreshChat() {
 
         });
 
+        addCursorTracking(messageText);
         messageDiv.appendChild(messageText);
 
         if(messageObject.hasOwnProperty("isCleaned") && messageObject.isCleaned){
@@ -1998,6 +2002,11 @@ pageSelect.addEventListener("change", () => {
 // };
 
       function insertTextAtCursor(text) {
+          const parentEl = getSelectionParentElement();
+          if(!parentEl.classList.contains("message-text")){
+              alert("No cursor! Remember to focus on the text when selecting emojis.")
+              return;
+          }
     let selection = window.getSelection();
     let range = selection.getRangeAt(0);
 
@@ -2021,6 +2030,73 @@ pageSelect.addEventListener("change", () => {
         selection.addRange(range);
     }
 }
+function addCursorTracking(element) {
+    // Function to update the cursor position
+    function updateCursorPosition() {
+        if (element.selectionStart !== undefined) {
+            console.log(element.selectionStart);
+            // Store the current cursor position in a data attribute
+            element.setAttribute('data-cursor-position', element.selectionStart);
+        }
+        else{
+            const pos = getCaretPosition(element);
+            if (pos !== undefined) {
+                console.log(pos);
+                element.setAttribute('data-cursor-position', pos);
+            }
+            else{
+                console.log("undefined cursor for element");
+                console.log(element);
+            }
+        }
+    }
+
+    // Add event listeners to track cursor position
+    element.addEventListener("click", updateCursorPosition);
+    element.addEventListener("keyup", updateCursorPosition);
+}
+function getSelectionParentElement() {
+    var parentEl = null, sel;
+    if (window.getSelection) {
+        sel = window.getSelection();
+        if (sel.rangeCount) {
+            parentEl = sel.getRangeAt(0).commonAncestorContainer;
+            if (parentEl.nodeType != 1) {
+                parentEl = parentEl.parentNode;
+            }
+        }
+    } else if ( (sel = document.selection) && sel.type != "Control") {
+        parentEl = sel.createRange().parentElement();
+    }
+    return parentEl;
+}
+function getCaretPosition(editableDiv) {
+  // this function is from https://stackoverflow.com/a/397612
+  // by Tim Down
+  // CC BY-SA 4.0
+  var caretPos = 0,
+    sel, range;
+  if (window.getSelection) {
+    sel = window.getSelection();
+    if (sel.rangeCount) {
+      range = sel.getRangeAt(0);
+      if (range.commonAncestorContainer.parentNode == editableDiv) {
+        caretPos = range.endOffset;
+      }
+    }
+  } else if (document.selection && document.selection.createRange) {
+    range = document.selection.createRange();
+    if (range.parentElement() == editableDiv) {
+      var tempEl = document.createElement("span");
+      editableDiv.insertBefore(tempEl, editableDiv.firstChild);
+      var tempRange = range.duplicate();
+      tempRange.moveToElementText(tempEl);
+      tempRange.setEndPoint("EndToEnd", range);
+      caretPos = tempRange.text.length;
+    }
+  }
+  return caretPos;
+}
 
 function emojiSelected(emoji){
   insertTextAtCursor(emoji);
@@ -2028,6 +2104,41 @@ function emojiSelected(emoji){
 
       function closeEmojiPicker(){
         document.getElementById("emojipickerdiv").style.display = "none";
+      }
+      function showEmojiPickerOpener(messageTextEl){
+          const messageEl = messageTextEl.parentNode;
+          // create an emoji picker opening button on the corner of this element, so when clicked it can run openEmojiPicker():
+          const emojiPickerOpener = document.createElement("div");
+          emojiPickerOpener.classList.add("emoji-picker-opener");
+          emojiPickerOpener.innerHTML = "🙂";
+          emojiPickerOpener.addEventListener("click", () => {
+
+
+              const cursorPosition = parseInt(messageTextEl.getAttribute('data-cursor-position'), 10);
+              console.log({cursorPosition})
+            openEmojiPicker();
+            messageTextEl.focus();
+
+           if(cursorPosition || cursorPosition === 0){
+
+                var range = document.createRange()
+                var sel = window.getSelection()
+
+                range.setStart(messageTextEl.childNodes[0], cursorPosition)
+                range.collapse(true)
+
+                sel.removeAllRanges()
+                sel.addRange(range)
+
+              //setCaretPosition(messageTextEl, cursorPosition);
+            }
+            else{
+               //setCaretPosition(messageTextEl, messageTextEl.innerText.length);
+            }
+
+
+          });
+          messageEl.appendChild(emojiPickerOpener);
       }
       function openEmojiPicker(){
         document.getElementById("emojipickerdiv").style.display = "block";
