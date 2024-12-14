@@ -1114,7 +1114,7 @@ function addMessageCustom(side = 0, message= "", cleaned = false, refresh= false
                     chatroom = prompt(
                         "Player is sending this message to:",
                         Object.keys(chatfic.characters).length > 2
-                            ? chatfic.characters[Object.keys(chatfic.characters)[2]].name
+                            ? chatfic.characters.hasOwnProperty(characterSlugRight) ?  chatfic.characters[characterSlugRight].name : chatfic.characters[Object.keys(chatfic.characters)[2]].name
                             : "Jessica"
                     );
                     if (chatroom == null || chatroom == "") {
@@ -1256,7 +1256,7 @@ function addMessage(multimedia = null) {
                     chatroom = prompt(
                         "Player is sending this message to:",
                         Object.keys(chatfic.characters).length > 2
-                            ? chatfic.characters[Object.keys(chatfic.characters)[2]].name
+                            ? chatfic.characters.hasOwnProperty(characterSlugRight) ?  chatfic.characters[characterSlugRight].name : chatfic.characters[Object.keys(chatfic.characters)[2]].name
                             : "Jessica"
                     );
                     if (chatroom == null || chatroom == "") {
