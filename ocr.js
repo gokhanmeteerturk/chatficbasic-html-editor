@@ -213,11 +213,17 @@ const onImageUploadOCR = async (files) => {
     .filter((file) => file.type.startsWith("image"))
     .sort((a, b) => naturalCompare(a.name, b.name));
 
+  const myPromiseResult = await showImageProcessingModal(files[0]);
+  localStorage.setItem("gamma", myPromiseResult["gamma"].toFixed(1));
+  localStorage.setItem("sharpen", myPromiseResult["sharpen"].toFixed(1));
+
+
 const resultTextsArray = [];
   for await (const file of filteredFiles) {
     const currentIndex = filteredFiles.indexOf(file) + 1;
 
     const canvas = document.getElementById("ocrCanvas");
+
 
     // write the image to the canvas
     const ctx = canvas.getContext("2d",{ willReadFrequently: true });
@@ -229,6 +235,9 @@ const resultTextsArray = [];
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0, img.width, img.height);
+
+        doGammaAndSharpen(myPromiseResult["gamma"], myPromiseResult["sharpen"], canvas, ctx);
+        
         document.getElementById(
           "screenshotStatus"
         ).innerText = `Processing ${currentIndex}/${filteredFiles.length} files.`;
@@ -272,9 +281,424 @@ function calculateMedian(image) {
     return values[half];
   }
 }
+function resizeAndDrawPreviewCanvas() {
+    const imageCanvas = document.getElementById("imageCanvas");
+    const previewCanvas = document.getElementById("previewCanvas");
+
+    if (imageCanvas && previewCanvas) {
+        // Get the 2D contexts
+        const imageContext = imageCanvas.getContext("2d");
+        const previewContext = previewCanvas.getContext("2d");
+
+        // Get the dimensions of the imageCanvas
+        const imageCanvasWidth = imageCanvas.width;
+        const imageCanvasHeight = imageCanvas.height;
+
+        // Calculate the aspect ratio
+        const aspectRatio = imageCanvasWidth / imageCanvasHeight;
+
+        // Compute maximum dimensions
+        const maxWidth = 500;
+        const maxHeight = window.innerHeight - 400;
+
+        // Calculate dimensions for the previewCanvas within constraints
+        let previewWidth = maxWidth;
+        let previewHeight = previewWidth / aspectRatio;
+
+        if (previewHeight > maxHeight) {
+            previewHeight = maxHeight;
+            previewWidth = previewHeight * aspectRatio;
+        }
+
+        // Set the new dimensions for the previewCanvas
+        previewCanvas.width = previewWidth;
+        previewCanvas.height = previewHeight;
+        previewCanvas.style.margin = "0 auto";
+        previewCanvas.style.display = "block";
+        previewCanvas.style.border = "1px solid #ccc";
+
+        // Draw the image from the first canvas onto the second canvas
+        previewContext.drawImage(imageCanvas, 0, 0, imageCanvasWidth, imageCanvasHeight, 0, 0, previewWidth, previewHeight);
+
+        console.log(`Preview canvas resized and content drawn: ${previewWidth}x${previewHeight}`);
+    } else {
+        console.error("Either imageCanvas or previewCanvas is not found.");
+    }
+}
+
+function doGammaAndSharpen(gamma, sharpenAmount, canvas, ctx) {
+    try{
+        function createGammaTable(gamma) {
+            const table = new Uint8Array(256);
+            for (let i = 0; i < 256; i++) {
+                table[i] = Math.min(255, Math.pow(i / 255, 1 / gamma) * 255);
+            }
+            return table;
+        }
+
+
+        const originalImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        const imageData = new ImageData(
+            new Uint8ClampedArray(originalImage.data),
+            originalImage.width,
+            originalImage.height
+        );
+
+        const data = imageData.data;
+
+        // Apply gamma correction
+        const gammaTable = createGammaTable(gamma);
+        for (let i = 0; i < data.length; i += 4) {
+            data[i] = gammaTable[data[i]];     // Red
+            data[i + 1] = gammaTable[data[i + 1]]; // Green
+            data[i + 2] = gammaTable[data[i + 2]]; // Blue
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+
+
+
+    let src = cv.matFromImageData(imageData);
+    let rgbSrc = new cv.Mat();
+    cv.cvtColor(src, rgbSrc, cv.COLOR_RGBA2BGR);    // Step 2: Create destination matrix
+    let dst = new cv.Mat();
+
+    // Step 3: Apply sharpening
+    const kernel = cv.Mat.eye(3, 3, cv.CV_32F);
+    kernel.data32F[0] = 0;
+    kernel.data32F[1] = -sharpenAmount;
+    kernel.data32F[2] = 0;
+    kernel.data32F[3] = -sharpenAmount;
+    kernel.data32F[4] = 1 + 4 * sharpenAmount;
+    kernel.data32F[5] = -sharpenAmount;
+    kernel.data32F[6] = 0;
+    kernel.data32F[7] = -sharpenAmount;
+    kernel.data32F[8] = 0;
+
+    cv.filter2D(rgbSrc, dst, -1, kernel);
+
+    // Step 4: Convert back to RGBA
+    let rgbaDst = new cv.Mat();
+    cv.cvtColor(dst, rgbaDst, cv.COLOR_BGR2RGBA);
+
+    // Step 5: Ensure correct data length for ImageData
+    const width = canvas.width;
+    const height = canvas.height;
+
+    const rgbaData = new Uint8ClampedArray(rgbaDst.data); // Extract data
+    if (rgbaData.length !== width * height * 4) {
+        console.error(
+            `Invalid data length: ${rgbaData.length}. Expected: ${width * height * 4}`
+        );
+        alert("Error: Data length mismatch detected. Check console for details.");
+        return;
+    }
+
+    const resultImageData = new ImageData(rgbaData, width, height);
+    ctx.putImageData(resultImageData, 0, 0);
+
+    // Cleanup
+    src.delete();
+    rgbSrc.delete();
+    dst.delete();
+    rgbaDst.delete();
+    kernel.delete();
+    }
+    catch(err){
+        console.error(err);
+    }
+}
+
+async function showImageProcessingModal(file) {
+    return new Promise((resolve, reject) => {
+        const defaultGamma = parseFloat(localStorage.getItem("gamma")) || 0.6;
+        const defaultSharpen = parseFloat(localStorage.getItem("sharpen")) || 0.0;
+        // Create modal HTML
+        const modalHTML = `
+            <div class="modal fade" id="imageProcessingModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Set overall filter</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <canvas id="imageCanvas" style="display: none" class="img-fluid"></canvas>
+                            <canvas id="previewCanvas" class="img-fluid"></canvas>
+                            <div class="mt-3">
+                                <div class="mb-3">
+                                    <label for="gamma" class="form-label">Gamma: <span id="gammaValue">\` + defaultGamma.toFixed(1) + \`</span></label>
+                                    <input type="range" class="form-range" id="gamma" min="0.1" max="2.0" step="0.1" value="` + defaultGamma.toFixed(1) + `">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="sharpen" class="form-label">Sharpening: <span id="sharpenValue">\` + defaultSharpen.toFixed(1) + \`</span></label>
+                                    <input type="range" class="form-range" id="sharpen" min="0" max="1.0" step="0.1" value="` + defaultSharpen.toFixed(1) + `">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="applyButton">Apply To All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add modal to document
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        // Get modal element and create Bootstrap modal instance
+        const modalElement = document.getElementById('imageProcessingModal');
+        const modal = new bootstrap.Modal(modalElement);
+
+        // Get UI elements
+        const mycanvas = document.getElementById('imageCanvas');
+        const myctx = mycanvas.getContext('2d', { willReadFrequently: true });
+        const gammaSlider = document.getElementById('gamma');
+        const sharpenSlider = document.getElementById('sharpen');
+        const gammaValue = document.getElementById('gammaValue');
+        const sharpenValue = document.getElementById('sharpenValue');
+        const applyButton = document.getElementById('applyButton');
+
+        let originalImage = null;
+
+        // Handle image loading
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                mycanvas.width = img.width;
+                mycanvas.height = img.height;
+                myctx.clearRect(0, 0, img.width, img.height);
+                myctx.fillStyle = "white";
+                myctx.fillRect(0, 0, img.width, img.height);
+                myctx.drawImage(img, 0, 0);
+                originalImage = myctx.getImageData(0, 0, img.width, img.height);
+
+                applyCorrections();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        // Gamma correction lookup table
+        function createGammaTable(gamma) {
+            const table = new Uint8Array(256);
+            for (let i = 0; i < 256; i++) {
+                table[i] = Math.min(255, Math.pow(i / 255, 1 / gamma) * 255);
+            }
+            return table;
+        }
+        // Apply image corrections
+
+        function applyCorrections() {
+            if (!originalImage) return;
+
+            // Update slider values display
+            gammaValue.textContent = gammaSlider.value;
+            sharpenValue.textContent = sharpenSlider.value;
+
+            const gamma = parseFloat(gammaSlider.value);
+            const sharpenAmount = parseFloat(sharpenSlider.value);
+
+            const imageData = new ImageData(
+                new Uint8ClampedArray(originalImage.data),
+                originalImage.width,
+                originalImage.height
+            );
+
+
+            const data = imageData.data;
+
+            // Apply gamma correction
+            const gammaTable = createGammaTable(gamma);
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = gammaTable[data[i]];     // Red
+                data[i + 1] = gammaTable[data[i + 1]]; // Green
+                data[i + 2] = gammaTable[data[i + 2]]; // Blue
+            }
+
+
+            // Create a temporary canvas to avoid data corruption
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = mycanvas.width;
+            tempCanvas.height = mycanvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+
+            // Put the gamma-corrected image data
+            tempCtx.putImageData(imageData, 0, 0);
+
+            // Draw it back to the main canvas
+            myctx.clearRect(0, 0, mycanvas.width, mycanvas.height);
+            myctx.drawImage(tempCanvas, 0, 0);
+
+           applySharpening(sharpenAmount);
+
+            (() => {
+                findAndDisplayRectangles(mycanvas, myctx)
+                    .then(() => resizeAndDrawPreviewCanvas())
+                    .catch(err => console.error('Error displaying rectangles:', err));
+            })();
+
+        }
+// Apply sharpening filter with robust handling for ImageData
+async function applySharpening(amount) {
+    if (!originalImage || amount <= 0) return;
+
+    const imageData = myctx.getImageData(0, 0, mycanvas.width, mycanvas.height);
+
+
+    let src = cv.matFromImageData(imageData);
+    let rgbSrc = new cv.Mat();
+    cv.cvtColor(src, rgbSrc, cv.COLOR_RGBA2BGR);
+    // Step 2: Create destination matrix
+    let dst = new cv.Mat();
+
+    // Step 3: Apply sharpening
+    const kernel = cv.Mat.eye(3, 3, cv.CV_32F);
+    kernel.data32F[0] = 0;
+    kernel.data32F[1] = -amount;
+    kernel.data32F[2] = 0;
+    kernel.data32F[3] = -amount;
+    kernel.data32F[4] = 1 + 4 * amount;
+    kernel.data32F[5] = -amount;
+    kernel.data32F[6] = 0;
+    kernel.data32F[7] = -amount;
+    kernel.data32F[8] = 0;
+
+    cv.filter2D(rgbSrc, dst, -1, kernel);
+
+    // Step 4: Convert back to RGBA
+    let rgbaDst = new cv.Mat();
+    cv.cvtColor(dst, rgbaDst, cv.COLOR_BGR2RGBA);
+
+    // Step 5: Ensure correct data length for ImageData
+    const width = mycanvas.width;
+    const height = mycanvas.height;
+
+    const rgbaData = new Uint8ClampedArray(rgbaDst.data); // Extract data
+    if (rgbaData.length !== width * height * 4) {
+        console.error(
+            `Invalid data length: ${rgbaData.length}. Expected: ${width * height * 4}`
+        );
+        alert("Error: Data length mismatch detected. Check console for details.");
+        return;
+    }
+
+    const resultImageData = new ImageData(rgbaData, width, height);
+    myctx.putImageData(resultImageData, 0, 0);
+
+    // Cleanup
+    src.delete();
+    rgbSrc.delete();
+    dst.delete();
+    rgbaDst.delete();
+    kernel.delete();
+}
+
+        // Event listeners
+        gammaSlider.addEventListener('input', applyCorrections);
+        sharpenSlider.addEventListener('input', applyCorrections);
+
+        // Handle apply button click
+        applyButton.addEventListener('click', () => {
+            const result = {
+                gamma: parseFloat(gammaSlider.value),
+                sharpen: parseFloat(sharpenSlider.value)
+            };
+            modalElement.classList.add('processed'); // Add this line
+            modal.hide();
+            modalElement.addEventListener('hidden.bs.modal', () => {
+                try{
+                modalElement.remove();
+                }
+                catch(err){}
+                resolve(result);
+            }, { once: true });
+        });
+
+        // Handle modal dismissal
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            if (!modalElement.classList.contains('processed')) {
+                modalElement.remove();
+                reject(new Error('Modal was dismissed'));
+            }
+        }, { once: true });
+
+        // Show modal
+        modal.show();
+    });
+}
+
+
+
 var showTheProcess;
+
+async function findAndDisplayRectangles(canvas, ctx) {
+  const mat = cv.imread(canvas);
+  const grayscaleImage = new cv.Mat();
+  cv.cvtColor(mat, grayscaleImage, cv.COLOR_RGB2GRAY, 0);
+  const median = calculateMedian(grayscaleImage);
+
+  // Define Canny's parameters based on the median value
+  let cannyTh1, cannyTh2;
+  const s = 0.33;
+  if (median > 191) {
+    // light images
+    cannyTh1 = Math.max(0, (1 - 2 * s) * (255 - median));
+    cannyTh2 = Math.max(85, (1 + 2 * s) * (255 - median));
+  } else if (median > 127) {
+    cannyTh1 = Math.max(0, (1 - s) * (255 - median));
+    cannyTh2 = Math.min(255, (1 + s) * (255 - median));
+  } else if (median < 63) {
+    // dark images
+    cannyTh1 = Math.max(0, (1 - 2 * s) * median);
+    cannyTh2 = Math.max(85, (1 + 2 * s) * median);
+  } else {
+    cannyTh1 = Math.max(0, (1 - s) * median);
+    cannyTh2 = Math.min(255, (1 + s) * median);
+  }
+  // Apply Gaussian blur (optional for noise reduction)
+  const blurredImage = new cv.Mat();
+  const ksize = new cv.Size(5, 5); // Adjust kernel size as needed
+  cv.GaussianBlur(
+    grayscaleImage,
+    blurredImage,
+    ksize,
+    0,
+    0,
+    cv.BORDER_REPLICATE
+  );
+
+  const edges = new cv.Mat();
+  const apertureSize = 3; // Sobel kernel size (common value)
+  cv.Canny(blurredImage, edges, cannyTh1, cannyTh2, apertureSize, false); // Use gradient magnitude
+
+  // Find contours (using the Canny edge image)
+  const contours = new cv.MatVector();
+  const hierarchy = new cv.Mat();
+  cv.findContours(
+    edges,
+    contours,
+    hierarchy,
+    cv.RETR_EXTERNAL,
+    cv.CHAIN_APPROX_SIMPLE
+  );
+  const rectangles = groupRectangles(
+    await findRectangles(contours, mat),
+    mat.cols
+  ).reverse();
+
+
+  displayRectangles(rectangles, ctx, false);
+
+}
+
 const processImage = async (img, canvas, ctx) => {
 showTheProcess = document.getElementById('showProcessSwitch').checked;
+
   const mat = cv.imread(canvas);
 
   const maxEmojiSize = Math.round(mat.cols / 17);
@@ -338,6 +762,7 @@ showTheProcess = document.getElementById('showProcessSwitch').checked;
     await findRectangles(contours, mat),
     mat.cols
   ).reverse();
+
 
   displayRectangles(rectangles, ctx);
 
@@ -545,12 +970,8 @@ function detectPadding(roi) {
         let [r, g, b, a] = roi.ucharPtr(y, x);
         brightnessList.push(Math.floor(brightness(r,g,b)/3));
     }
-    console.log("brightnessList");
-    console.log(brightnessList);
     const midValues = brightnessList.slice(Math.floor(cols*0.25), Math.floor(cols*0.75));
     const mostFrequentBrightness = mostFrequent(midValues);
-    console.log("mostFrequentBrightness");
-    console.log(mostFrequentBrightness);
     let leftPaddingEnd = 0;
     let rightPaddingStart = cols;
     let leftFound = 0;
@@ -651,28 +1072,30 @@ const groupRectangles = (rectangles, width) => {
   }));
 };
 
-const displayRectangles = (rectangles, ctx) => {
+const displayRectangles = (rectangles, ctx, addCoordinates=true) => {
   rectangles.forEach((rect) => {
     const color = DEBUG_COLORS[rect.group];
 
     ctx.beginPath();
     ctx.rect(rect.x, rect.y, rect.width, rect.height);
     ctx.strokeStyle = color;
-    ctx.strokeWidth = 2;
+    ctx.lineWidth  = 4;
     ctx.stroke();
 
-    // write informations on the rectangle
 
     ctx.fillStyle = color;
-    ctx.font = "24px Helvetica";
+    ctx.font = "bold 24px Helvetica";
     ctx.fillText(rect.group, rect.x, rect.y - 16);
-    ctx.font = "12px Helvetica";
-    ctx.fillText(
-      `(${rect.x}, ${rect.y}, ${rect.endX})`,
-      rect.x,
-      rect.y + rect.height + 16
-    );
+    if(addCoordinates){
+        ctx.font = "bold 12px Helvetica";
+        ctx.fillText(
+            `(${rect.x}, ${rect.y}, ${rect.endX})`,
+            rect.x,
+            rect.y + rect.height + 16
+        );
+    }
   });
+
 };
 function findMostCommonColors(imageMat, emojiDetectionStep = 5) {
     let colorCounts = {};
@@ -727,7 +1150,6 @@ await new Promise(r => setTimeout(r, 400));
     let rightCrop;
     try{
         const paddingObj = detectPadding(roi);
-console.log(paddingObj);
         leftCrop = paddingObj.left;
         rightCrop = paddingObj.right;
     }
