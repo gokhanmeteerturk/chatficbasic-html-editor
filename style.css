@@ -525,37 +525,52 @@ textarea.small {
   border-top: 0;
 }
 
-.message .delete::before {
-  content: "✕";
-}
-.message .edit::before {
-  content: "✎";
-  font-family: Arial, sans-serif;
+.messages.middle .message .delete:hover,
+.messages.middle .message .to-down:hover,
+.messages.middle .message .to-up:hover,
+.messages.middle .message .edit:hover {
+  bottom:-17px;
 }
 
+.message .delete:before,
+.message .edit:before,
+.message .to-right::before,
+.message .to-left::before,
+.message .to-up::before,
+.message .to-down::before,
+.message .delete::before {
+  content: "";
+  width: 27px;
+  height: 27px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 14px 14px;
+  background-position: center center;
+}
+.message .delete::before {
+  background-image: url('/icons/close.png');
+}
+.message .edit::before {
+  background-image: url('/icons/pen.png');
+}
 .message .edit:hover {
   opacity: 1;
 }
-
 .message .delete:hover {
   opacity: 1;
 }
 
 .message .to-right::before {
-  content: "🡆";
-  font-family: Arial, sans-serif;
+  background-image: url('/icons/right.png');
 }
 .message .to-up::before {
-  content: "🡅";
-  font-family: Arial, sans-serif;
+  background-image: url('/icons/up.png');
 }
 .message .to-down::before {
-  content: "🡇";
-  font-family: Arial, sans-serif;
+  background-image: url('/icons/down.png');
 }
 .message .to-left::before {
-  content: "🡄";
-  font-family: Arial, sans-serif;
+  background-image: url('/icons/left.png');
 }
 
 .message .to-right:hover,.message .to-left:hover,.message .to-up:hover,.message .to-down:hover {
