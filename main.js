@@ -6,7 +6,7 @@ function setTooltips() {
         (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
     );
 }
-
+var previousAppSelection = "chat"; // only for decorative use.
 var clickCount = 0;
 
 function setCaretPosition(elem, caretPos) {
@@ -43,10 +43,57 @@ function setCaretPosition(elem, caretPos) {
     }
 }
 
+function setCharacterPickersBasedOnApp(){
+
+    const selectedAppSlug = document.getElementById("messageAppSelector").value;
+
+    if(selectedAppSlug === "photofeed"){
+        sideleft.checked=true;
+        // document.getElementById("leftCharacterPickerButton").style.display = "none";
+        // document.getElementById("sideleft").style.display = "none";
+        // document.getElementById("leftCharacterLabel").style.display = "none";
+        document.getElementById("leftCharacterPickerButton").classList.add("flex-grow-1");
+        document.getElementById("leftCharacterPickerButton").classList.remove("flex-grow-0");
+        document.getElementById("sidemiddle").style.display = "none";
+        document.getElementById("middleCharacterLabel").style.display = "none";
+        document.getElementById("sideright").style.display = "none";
+        document.getElementById("rightCharacterLabel").style.display = "none";
+        document.getElementById("rightCharacterPickerButton").style.display = "none";
+    }
+    else{
+        // document.getElementById("leftCharacterLabel").style.display = "block";
+        document.getElementById("leftCharacterPickerButton").classList.add("flex-grow-0");
+        document.getElementById("leftCharacterPickerButton").classList.remove("flex-grow-1");
+        document.getElementById("sidemiddle").style.display = "block";
+        document.getElementById("middleCharacterLabel").style.display = "block";
+        document.getElementById("sideright").style.display = "block";
+        document.getElementById("rightCharacterLabel").style.display = "block";
+        document.getElementById("rightCharacterPickerButton").style.display = "block";
+    }
+
+}
+
+function checkMessageApp(select) {
+    const selectedValue = select.value;
+  
+    if (selectedValue === 'what-is-this') {
+      select.value = previousAppSelection;
+      showWhatisanappModal();
+    } else {
+      previousAppSelection = selectedValue;
+    }
+    setCharacterPickersBasedOnApp();
+  }
+
 var defaultTitle = "My Chatfic Story";
 var defaultAuthor = "/u/myself";
 var defaultHandles = {};
 var defaultVariables = {};
+var defaultApps = {
+    "chat": {"name": "Messages"},
+    "photofeed": {"name": "InstaPic"},
+    "home": {"name": "Home"} // normally "home" shouldn't be here, we will remove it during output
+};
 var defaultStoryVariablesToInclude = {
     "roommateFemale":{"value":"roommate"},
     "roommateFemaleShort":{"value":"roomie"},
@@ -72,6 +119,7 @@ var chatfic = {
     author: defaultAuthor,
     handles: defaultHandles,
     variables: defaultVariables,
+    apps: defaultApps,
     modified: 0,
     episode: 1,
     characters: {
@@ -138,6 +186,7 @@ let pages = [
                 side: 0,
                 multimedia: null,
                 chatroom: "Jessica",
+                app: "chat"
             },
             {
                 message: "Hi.",
@@ -145,6 +194,7 @@ let pages = [
                 side: 2,
                 multimedia: null,
                 chatroom: "Jessica",
+                app: "chat"
             },
             {
                 message:
@@ -153,6 +203,7 @@ let pages = [
                 side: 1,
                 multimedia: null,
                 chatroom: "Jessica",
+                app: "chat"
             },
         ],
         options: [],
@@ -1009,7 +1060,7 @@ function getLeftFromsToBackRecursive(messages, mi){
 }
 
 
-function addMessageCustom(side = 0, message= "", cleaned = false, refresh= false, multimedia = null) {
+function addMessageCustom(side = 0, message= "", cleaned = false, refresh= false, multimedia = null, app="chat") {
     // Fetch input values
     let pageId = document.getElementById("pageSelect").value;
     let page = pages.find((x) => x.id == pageId);
@@ -1132,6 +1183,7 @@ function addMessageCustom(side = 0, message= "", cleaned = false, refresh= false
         side: side,
         multimedia: multimedia,
         chatroom: chatroom,
+        app:app,
         isCleaned: cleaned
     };
     latestMessageAdded = message;
@@ -1152,6 +1204,8 @@ function addMessageCustom(side = 0, message= "", cleaned = false, refresh= false
 function addMessage(multimedia = null) {
     // Fetch input values
     let pageId = document.getElementById("pageSelect").value;
+    let appSlug = document.getElementById("messageAppSelector").value;
+    if(appSlug == "what-is-this"){appSlug = "chat";}
     let page = pages.find((x) => x.id == pageId);
 
     let chatroom = document.getElementById("customChatroomNameInput").value;
@@ -1267,6 +1321,10 @@ function addMessage(multimedia = null) {
         }
     }
 
+    if(appSlug != "chat"){
+        chatroom = "-";
+    }
+
     // Create message object
     var newMessage = {
         message: message,
@@ -1274,7 +1332,12 @@ function addMessage(multimedia = null) {
         side: side,
         multimedia: multimedia,
         chatroom: chatroom,
+        app: appSlug
     };
+    if(appSlug == "photofeed"){
+        newMessage.extra = {};
+        newMessage.side = 1;
+    }
     latestMessageAdded = message;
     document.getElementById('message').value='';
     if (position == 0) {
@@ -1305,22 +1368,83 @@ function saveMessageFromEditModal(){
     let newMultimedia = document.getElementById("multimediaInput").value;
     let newChatroom = document.getElementById("chatroomInput").value;
 
+    let pageId = document.getElementById("pageSelect").value;
+    let page = pages.find((x) => x.id == pageId);
+    let oldMessage = page.messages[parseInt(editMessageIndex)];
+    if(oldMessage.app != "chat"){
+        newChatroom = "-";
+    }
+
     let updatedMessage = {
         message: newMessage || null,
         from: newFrom || null,
         side: newSide || null,
         multimedia: newMultimedia || null,
         chatroom: newChatroom || null,
+        app: oldMessage.app || "chat",
     };
+    if(oldMessage.app == "photofeed"){
+        const extra = getExtra();
+        updatedMessage.extra = extra;
+        updatedMessage.side = 1;
+    }
+    if(document.getElementById('thoughttype').checked){
+        updatedMessage.type = "thought";
+    }
     // Update the page.messages array with the updated message
-    let pageId = document.getElementById("pageSelect").value;
-    let page = pages.find((x) => x.id == pageId);
     page.messages[parseInt(editMessageIndex)] = updatedMessage;
     // Step 5: Run the refreshChat function
     refreshChat();
     // Hide the modal after saving
     editMessageModal.hide();
 }
+function escapeHTML(str) {
+    if (typeof str !== 'string') return '';
+    const p = document.createElement('p');
+    p.appendChild(document.createTextNode(str));
+    return p.innerHTML;
+  }
+  function buildUsingExtra(extra) {
+    const likesInput = document.getElementById('likesInput');
+    const commentsContainer = document.getElementById('commentsContainer');
+
+    // 1. Update Likes
+    if (likesInput) {
+      if (extra && typeof extra.likes === 'number') {
+        likesInput.value = extra.likes;
+      } else {
+        likesInput.value = 0; // Default to 0 if likes is not provided or not a number
+      }
+    }
+
+    // 2. Recreate Comments
+    if (commentsContainer) {
+      commentsContainer.innerHTML = ''; // Clear any existing comments
+
+      if (extra && Array.isArray(extra.comments)) {
+        extra.comments.forEach(commentObject => {
+          if (typeof commentObject === 'object' && commentObject !== null) {
+            const usernames = Object.keys(commentObject);
+            if (usernames.length > 0) {
+              const username = usernames[0]; // Takes the first key as username
+              const commentText = commentObject[username];
+
+              const newCommentRow = document.createElement('div');
+              newCommentRow.className = 'input-group input-group-sm mb-2 comment-row';
+              newCommentRow.innerHTML = `
+                <input type="text" class="form-control form-control-sm comment-username" placeholder="Username" value="${escapeHTML(username)}">
+                <input type="text" class="form-control form-control-sm comment-text" placeholder="Comment text" value="${escapeHTML(commentText)}">
+                <button class="btn btn-danger btn-sm delete-comment-btn" type="button" onclick="deleteComment(this)">Delete</button>
+              `;
+              commentsContainer.appendChild(newCommentRow);
+            }
+          }
+        });
+      }
+      // If extra.comments is not an array or is empty, the commentsContainer will remain empty.
+      // The user can then use the "Add Comment" button to add new comments if desired.
+    }
+  }
 let editMessageModal;
 document.addEventListener("DOMContentLoaded", function () {
     editMessageModal = new bootstrap.Modal(document.getElementById("editMessageModal"));
@@ -1329,6 +1453,49 @@ document.addEventListener("DOMContentLoaded", function () {
         saveMessageFromEditModal();
       });
 });
+function addComment() {
+    const commentsContainer = document.getElementById('commentsContainer');
+    const newCommentRow = document.createElement('div');
+    newCommentRow.className = 'input-group input-group-sm mb-2 comment-row';
+    newCommentRow.innerHTML = `
+      <input type="text" class="form-control form-control-sm comment-username" placeholder="Username">
+      <input type="text" class="form-control form-control-sm comment-text" placeholder="Comment text">
+      <button class="btn btn-danger btn-sm delete-comment-btn" type="button" onclick="deleteComment(this)">Delete</button>
+    `;
+    commentsContainer.appendChild(newCommentRow);
+  }
+
+  function deleteComment(buttonElement) {
+    const commentRow = buttonElement.closest('.comment-row');
+    if (commentRow) {
+      commentRow.remove();
+    }
+  }
+  function getExtra() {
+    const likes = parseInt(document.getElementById('likesInput').value) || 0;
+    const comments = [];
+    const commentRows = document.getElementById('commentsContainer').getElementsByClassName('comment-row');
+
+    for (let i = 0; i < commentRows.length; i++) {
+      const row = commentRows[i];
+      const usernameInput = row.querySelector('.comment-username');
+      const commentTextInput = row.querySelector('.comment-text');
+
+      const username = usernameInput.value.trim();
+      const commentText = commentTextInput.value.trim();
+
+      if (username && commentText) { // Only add if both username and comment are present
+        comments.push({ [username]: commentText });
+      } else if (username || commentText) { // If one is filled, but not the other, you might want to handle this
+        console.warn("Partial comment found, skipping:", {username, commentText});
+      }
+    }
+
+    return {
+      likes: likes,
+      comments: comments
+    };
+  }
 // Function to edit a message
 function editMessage(messageIndex) {
     // Step 1: Detect current page object
@@ -1361,6 +1528,28 @@ function editMessage(messageIndex) {
     }
     document.getElementById("multimediaInput").value = message.multimedia;
     document.getElementById("chatroomInput").value = message.chatroom;
+
+    document.getElementById('thoughttype').checked = message.hasOwnProperty("type") && message.type == "thought" ? true : false;
+
+    if(message.app == "chat"){
+        document.getElementById("chatroominputgroup").style.display = "flex";
+        document.getElementById("quickemojipicker").style.display = "flex";
+    }
+    else{
+        document.getElementById("chatroominputgroup").style.display = "none";
+        document.getElementById("quickemojipicker").style.display = "none";
+    }
+    if(message.app == "photofeed"){
+        document.getElementById("likesandcomments").style.display = "block";
+        document.getElementById("sideinputgroup").style.display = "none";
+        buildUsingExtra(message.extra);
+    }
+    else{
+        document.getElementById("likesandcomments").style.display = "none";
+        document.getElementById("sideinputgroup").style.display = "block";
+    }
+    
+
     auto_height(document.getElementById("messageInput"));
   }
 
@@ -1400,7 +1589,11 @@ function refreshChat() {
 
     const pageMessages = page.messages;
     const pageMessagesLength = pageMessages.length;
-
+    let isChatMessage = true;
+    let isPhotoFeedMessage = false;
+    let isLocationMessage = false;
+    let isAppMessage = false;
+    let lastAdded = null;
     for (let i = 0; i < pageMessagesLength; i++) {
         const messageObject = pageMessages[i];
         const previousMessage = i == 0 ? null : pageMessages[i - 1];
@@ -1415,11 +1608,71 @@ function refreshChat() {
         }
         chatContainer.appendChild(cursor);
 
+        if(messageObject.hasOwnProperty("app")){
+            if(messageObject.app == "chat"){
+                isChatMessage = true;
+                isPhotoFeedMessage = false;
+                isLocationMessage = false;
+                isAppMessage = false;
+            }
+            else if(messageObject.app == "photofeed"){
+                isChatMessage = false;
+                isPhotoFeedMessage = true;
+                isLocationMessage = false;
+                isAppMessage = true;
+            }
+            else if(messageObject.app == "home"){
+                isChatMessage = false;
+                isPhotoFeedMessage = false;
+                isLocationMessage = false;
+                isAppMessage = true;
+            }
+            else{
+                isChatMessage = false;
+                isPhotoFeedMessage = false;
+                isLocationMessage = true;
+                isAppMessage = false;
+            }
+        }
+        else{
+            isChatMessage = true;
+            isPhotoFeedMessage = false;
+            isLocationMessage = false;
+            isAppMessage = false;
+        }
+
         // create chatroom header if needed:
-        if (
+        let appName = "";
+        if(!isChatMessage){
+            try{
+                appName = chatfic.apps[messageObject.app].name;
+            }
+            catch(e){
+                appName = messageObject.app;
+            }
+            if(previousMessage == null || !previousMessage.hasOwnProperty("app") || previousMessage.app != messageObject.app){
+                if(lastAdded){
+                    lastAdded.classList.add("group-end");
+                }
+                const appHeader = document.createElement("div");
+                if(isAppMessage){
+                    appHeader.className = "sticky-top app-header";
+                }
+                else{ // isLocationMessage == true
+                    appHeader.className = "sticky-top location-header";
+                }
+                appHeader.innerText = appName;
+                appHeader.innerHTML += `&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;color:red;" onclick="showWhatisanappModal();">(?)</span>`;
+                chatContainer.appendChild(appHeader);
+            }
+        }
+        else if (
             previousMessage == null ||
             previousMessage.chatroom != messageObject.chatroom
         ) {
+            if(lastAdded){
+                lastAdded.classList.add("group-end");
+            }
             const chatroomHeader = document.createElement("div");
             chatroomHeader.className = "sticky-top chatroom-header";
             chatroomHeader.innerText = messageObject.chatroom;
@@ -1456,6 +1709,11 @@ function refreshChat() {
         messageContainer.setAttribute("tabindex", 0);
         messageContainer.className = sides[messageObject.side] + " messages";
 
+        messageContainer.className += (isAppMessage ? " app" : isLocationMessage ? " location" : "");
+        if(messageObject.hasOwnProperty("type") && messageObject.type == "thought"){
+            messageContainer.className += " thought";
+        }
+
         const messageDiv = document.createElement("div");
 
         let setAuthor = false;
@@ -1463,7 +1721,8 @@ function refreshChat() {
             previousMessage == null ||
             previousMessage.chatroom != messageObject.chatroom ||
             previousMessage.from != messageObject.from ||
-            previousMessage.side != messageObject.side
+            previousMessage.side != messageObject.side ||
+            ((previousMessage.hasOwnProperty("type") ? previousMessage.type : null) != (messageObject.hasOwnProperty("type") ? messageObject.type : null) )
         ) {
             setAuthor = true;
         }
@@ -1489,6 +1748,16 @@ function refreshChat() {
             fromSpan.className = "author";
             messageDiv.appendChild(fromSpan);
             messageDiv.className = messageDiv.className + " withAuthor";
+        }
+        else{
+            if(isPhotoFeedMessage){
+                const fromSpan = document.createElement("span");
+                // console.log(messageObject);
+                // console.log(messageObject.from);
+                fromSpan.innerText = "New " + appName + " post from " + chatfic.characters[messageObject.from].name + ":";
+                fromSpan.className = "author app";
+                chatContainer.appendChild(fromSpan);
+            }
         }
 
         if (messageObject.multimedia) {
@@ -1683,7 +1952,11 @@ function refreshChat() {
         messageDiv.appendChild(messageEdit);
 
         messageContainer.appendChild(messageDiv);
+        lastAdded = messageContainer;
         chatContainer.appendChild(messageContainer);
+    }
+    if(lastAdded){
+        lastAdded.classList.add("group-end");
     }
     document.getElementById("chatscreen").innerHTML = "";
     document.getElementById("chatscreen").appendChild(chatContainer);
@@ -1970,6 +2243,12 @@ function setCursor(cursorEl) {
 
         // get message index
         let messageEl = cursorEl.nextElementSibling;
+        if(messageEl.getAttribute("data-index") === null){
+            messageEl = messageEl.nextElementSibling;
+        }
+        if(messageEl.getAttribute("data-index") === null){
+            messageEl = messageEl.nextElementSibling;
+        }
         document.getElementById("position").value =
             messageEl.getAttribute("data-index");
     } else {
@@ -2098,6 +2377,461 @@ function getCaretPosition(editableDiv) {
   return caretPos;
 }
 
+let appLocationModalInstance = null;
+let mediaPickerModalInstance = null;
+let currentEditingLocationKey = null; 
+
+
+
+/* start apps modal */
+
+document.addEventListener('DOMContentLoaded', () => {
+    const appLocationModalEl = document.getElementById('appLocationModal');
+    if (appLocationModalEl) {
+        appLocationModalInstance = new bootstrap.Modal(appLocationModalEl);
+        // Update chatFicOutput when modal is closed to see changes
+        appLocationModalEl.addEventListener('hidden.bs.modal', () => {
+            updateChatFicOutput();
+        });
+    }
+    const mediaPickerModalEl = document.getElementById('mediaPickerModal');
+    if (mediaPickerModalEl) {
+        mediaPickerModalInstance = new bootstrap.Modal(mediaPickerModalEl);
+    }
+    
+    document.getElementById('manageAppsLocationsBtn').addEventListener('click', showAppLocationModal);
+    updateChatFicOutput(); // Initial display of chatfic.apps
+});
+
+function updateChatFicOutput() {
+    updateAppSelector();
+}
+
+// --- Main Modal Logic ---
+function showAppLocationModal() {
+    if (!appLocationModalInstance) {
+        console.error("App/Location Modal not initialized.");
+        return;
+    }
+
+    const modalBody = document.getElementById('appLocationModalBody');
+    modalBody.innerHTML = ''; // Clear previous content to reconstruct
+
+    // --- Apps Section ---
+    const appsSection = document.createElement('div');
+    appsSection.classList.add('mb-4');
+    appsSection.innerHTML = `
+        <h6>Core Apps</h6>
+        <p class="text-muted small">Manage display names for built-in applications.</p>
+    `;
+    const appsContainer = document.createElement('div');
+    appsContainer.classList.add('list-group');
+
+    const coreAppKeys = ["chat", "photofeed", "home"];
+    coreAppKeys.forEach(appKey => {
+        if (chatfic.apps[appKey]) {
+            const app = chatfic.apps[appKey];
+            const appDiv = document.createElement('div');
+            appDiv.classList.add('list-group-item');
+            
+            const isHomeApp = appKey === 'home';
+            appDiv.innerHTML = `
+                <div class="row align-items-center">
+                   <div class="col-7 col-md-3">
+                        <b>${app.name}</b>
+                   </div>
+                   <div class="col-5 col-md-3 order-1 order-md-5 text-end">
+                        <small class="text-muted small-text text-end">Key: <code>${appKey}</code></small>
+                   </div>
+                   <div class="col-12 col-md-6 order-5 order-md-1">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text" style="font-size: 0.9em;">Name</span>
+                            <input type="text" class="form-control form-control-sm app-name-input" value="${app.name}" 
+                                data-app-key="${appKey}" ${isHomeApp ? 'readonly' : ''}>
+                            ${!isHomeApp ? `<button class="btn btn-outline-primary btn-sm save-app-name-btn" data-app-key="${appKey}">Save</button>` : ''}
+                        </div>
+                   </div>
+                </div>
+            `;
+            appsContainer.appendChild(appDiv);
+        }
+    });
+    appsSection.appendChild(appsContainer);
+    modalBody.appendChild(appsSection);
+
+    // --- Locations Section ---
+    const locationsSection = document.createElement('div');
+    locationsSection.innerHTML = `
+        <h6>Custom Locations</h6>
+    `;
+    const locationsContainer = document.createElement('div');
+    locationsContainer.id = 'locationsContainer'; // For easy refresh
+    locationsContainer.classList.add('list-group', 'mb-3');
+    
+    renderLocations(locationsContainer); // Populate existing locations
+    locationsSection.appendChild(locationsContainer);
+
+    // Add new location form
+    const addLocationForm = document.createElement('div');
+    addLocationForm.classList.add('mt-1', 'p-2', 'border', 'rounded', 'bg-light-subtle'); // Bootstrap 5.3 class
+    addLocationForm.innerHTML = `
+        <b>Add New Location</b>
+        <div class="mb-2">
+            <label for="newLocationName" class="form-label">Location Display Name</label>
+            <div class="input-group input-group-sm">
+                <span class="input-group-text" style="font-size: 0.9em;">Name</span>
+                <input type="text" class="form-control form-control-sm" id="newLocationName" placeholder="e.g., Park, Haunted Mansion, Cafe">
+        <button type="button" class="btn btn-sm btn-success" id="addNewLocationBtn">Add</button>
+            </div>
+        </div>
+    `;
+    locationsSection.appendChild(addLocationForm);
+    modalBody.appendChild(locationsSection);
+
+    attachAppLocationModalListeners(modalBody); 
+    appLocationModalInstance.show();
+}
+
+function renderLocations(container) {
+    container.innerHTML = ''; // Clear existing locations before rendering
+
+    let hasCustomLocations = false;
+    Object.keys(chatfic.apps).forEach(appKey => {
+        if (!["chat", "photofeed", "home"].includes(appKey)) {
+            hasCustomLocations = true;
+            const location = chatfic.apps[appKey];
+            const locationItem = document.createElement('div');
+            locationItem.classList.add('list-group-item', 'location-entry');
+            locationItem.dataset.locationKey = appKey;
+
+            const bgFileName = location.background || "Not set";
+            const bgImageSrc = location.background && mediaFileSrcList[location.background] 
+                               ? mediaFileSrcList[location.background] 
+                               : null;
+            
+            const bgDisplay = bgImageSrc
+                ? `<img src="${bgImageSrc}" alt="${location.background}" style="max-height: 40px; max-width: 70px; margin-right: 8px;"> ${location.background}`
+                : '<span class="text-muted">No background image set</span>';
+
+            locationItem.innerHTML = `
+                <div class="row align-items-center">
+                   <div class="col-7 col-md-3">
+                        <b>${location.name}</b>
+                   </div>
+                   <div class="col-5 col-md-3 order-1 order-md-5 text-end">
+                    <button class="btn btn-sm ms-1 float-end btn-outline-danger delete-location-btn" data-location-key="${appKey}" title="Delete Location">&times;</button>
+                       <!-- <small class="text-muted small-text text-end">Key: <code>${appKey}</code></small> -->
+                   </div>
+                   <div class="col-12 col-md-6 order-5 order-md-1">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text" style="font-size: 0.9em;">Name</span>
+                            <input type="text" class="form-control form-control-sm location-name-input" value="${location.name}" 
+                                data-location-key="${appKey}">
+                            <button class="btn btn-outline-primary btn-sm save-location-name-btn" data-location-key="${appKey}">Save</button>
+                        </div>
+                   </div>
+                </div>
+                <div class="mt-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="flex-grow-1 current-background-display mb-2 p-2 border rounded bg-white d-flex align-items-center" style="min-height: 50px;">
+                        ${bgDisplay}
+                    </div>
+                    <div class="flex-grow-0 btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary set-background-btn ms-2" data-location-key="${appKey}">Set/Change</button>
+                        ${location.background ? `<button type="button" class="btn btn-outline-warning remove-background-btn" data-location-key="${appKey}">Remove</button>` : ''}
+                    </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(locationItem);
+        }
+    });
+    if (!hasCustomLocations) {
+        container.innerHTML = '<p class="list-group-item text-muted text-small">No custom locations added yet. Use the form below to add one.</p>';
+    }
+}
+
+// --- Event Listener Management & Handlers ---
+// Helper to remove and re-add listeners to avoid duplicates on dynamic content
+function rebindEventListener(element, eventType, handlerFunction) {
+    const newElement = element.cloneNode(true);
+    element.parentNode.replaceChild(newElement, element);
+    newElement.addEventListener(eventType, handlerFunction);
+    return newElement; // Return the new element in case the caller needs it
+}
+
+function attachAppLocationModalListeners(scopeElement) {
+    scopeElement.querySelectorAll('.save-app-name-btn').forEach(button => {
+        if(button.parentNode){
+            rebindEventListener(button, 'click', handleSaveAppName);
+        }
+    });
+    scopeElement.querySelectorAll('.save-location-name-btn').forEach(button => {
+        if(button.parentNode){
+        rebindEventListener(button, 'click', handleSaveLocationName);
+    }
+    });
+    scopeElement.querySelectorAll('.delete-location-btn').forEach(button => {
+        if(button.parentNode){
+        rebindEventListener(button, 'click', handleDeleteLocation);
+    }
+    });
+    scopeElement.querySelectorAll('.set-background-btn').forEach(button => {
+        if(button.parentNode){
+        rebindEventListener(button, 'click', handleSetBackground);
+    }
+    });
+    scopeElement.querySelectorAll('.remove-background-btn').forEach(button => {
+        if(button.parentNode){
+        rebindEventListener(button, 'click', handleRemoveBackground);
+    }
+    });
+    
+    const addNewLocationBtn = scopeElement.querySelector('#addNewLocationBtn');
+    if(addNewLocationBtn) {
+        if(addNewLocationBtn.parentNode){
+        rebindEventListener(addNewLocationBtn, 'click', handleAddNewLocation);
+    }
+    }
+}
+
+function handleSaveAppName(e) {
+    const appKey = e.target.dataset.appKey;
+    const inputElement = document.querySelector(`#appLocationModalBody .app-name-input[data-app-key="${appKey}"]`);
+    const newName = inputElement.value.trim();
+
+    if (appKey === 'home') return; // Should be caught by readonly, but defensive check
+
+    if (newName.length > 0 && chatfic.apps[appKey]) {
+        chatfic.apps[appKey].name = newName;
+        chatfic.modified = Date.now();
+        // Update the H5 title in the modal directly
+        const h5 = inputElement.closest('.list-group-item').querySelector('h5');
+        if (h5) h5.textContent = newName;
+        alertToast(`App "${appKey}" name updated to "${newName}".`);
+    } else {
+        alertToast("App name cannot be empty.");
+        inputElement.value = chatfic.apps[appKey].name; // Revert
+    }
+}
+
+function handleSaveLocationName(e) {
+    const locationKey = e.target.dataset.locationKey;
+    const inputElement = document.querySelector(`#appLocationModalBody .location-name-input[data-location-key="${locationKey}"]`);
+    const newName = inputElement.value.trim();
+
+    if (newName.length > 1 && chatfic.apps[locationKey]) {
+        chatfic.apps[locationKey].name = newName;
+        chatfic.modified = Date.now();
+        // Update the H5 title in the modal directly for this location
+        const h5 = inputElement.closest('.location-entry').querySelector('h5.location-display-name');
+        if(h5) h5.textContent = newName;
+        alertToast(`Location name for key "${locationKey}" updated to "${newName}".`);
+        // No full re-render needed if only name changes and is updated locally
+    } else {
+        alertToast("Location name must be at least 2 characters long.");
+        inputElement.value = chatfic.apps[locationKey].name; // Revert
+    }
+}
+
+function handleDeleteLocation(e) {
+    const locationKey = e.target.dataset.locationKey;
+    const locationName = chatfic.apps[locationKey]?.name || locationKey;
+    let anyPageMessageHasThisApp = false;
+    pages.forEach(page => {
+        if(page.messages.some(message => message.app === locationKey)){
+            anyPageMessageHasThisApp = true;
+        }
+    });
+    if(anyPageMessageHasThisApp){
+        alertToast(`Cannot delete location "${locationName}" (key: ${locationKey}) because it is used in one or more messages. Delete any messages using this location first.`);
+        return;
+    }
+
+    if (confirm(`Are you sure you want to delete location "${locationName}" (key: ${locationKey})? This cannot be undone.`)) {
+        delete chatfic.apps[locationKey];
+        chatfic.modified = Date.now();
+        updateAppSelector();
+        alertToast(`Location "${locationName}" deleted.`);
+        renderLocations(document.getElementById('locationsContainer')); // Re-render this section
+        attachAppLocationModalListeners(document.getElementById('appLocationModalBody'));// Re-attach for the whole modal (or just locations part)
+    }
+}
+
+function updateAppSelector(){
+    const oldValue = document.getElementById("messageAppSelector").value;
+    document.getElementById("messageAppSelector").innerHTML =
+    Object.entries(chatfic.apps).map(([value, { name }]) =>
+    `<option value="${value}">${name}</option>`
+    ).join('') +
+    `<option value="what-is-this">what is this?</option>`;
+    if(oldValue && chatfic.apps[oldValue]){
+        document.getElementById("messageAppSelector").value = oldValue;
+    }
+    setCharacterPickersBasedOnApp();
+}
+
+function handleSetBackground(e) {
+    currentEditingLocationKey = e.target.dataset.locationKey;
+    showMediaPickerModal();
+}
+
+function handleRemoveBackground(e) {
+    const locationKey = e.target.dataset.locationKey;
+    if (chatfic.apps[locationKey] && chatfic.apps[locationKey].background) {
+        const locationName = chatfic.apps[locationKey].name;
+        delete chatfic.apps[locationKey].background; 
+        chatfic.modified = Date.now();
+        alertToast(`Background removed for location "${locationName}".`);
+        renderLocations(document.getElementById('locationsContainer'));
+        attachAppLocationModalListeners(document.getElementById('appLocationModalBody'));
+    }
+}
+
+function handleAddNewLocation() {
+    const newLocationNameInput = document.getElementById('newLocationName');
+    const newLocationName = newLocationNameInput.value.trim();
+
+    if (newLocationName.length <= 1) {
+        alertToast("New location name must be at least 2 characters long.");
+        newLocationNameInput.focus();
+        return;
+    }
+    
+    // Generate a unique key: sanitize name + timestamp + fallback random string
+    let baseKey = newLocationName.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+    if (!baseKey) baseKey = 'custom_location'; // Handle cases where name is all special chars
+
+    let newLocationKey = `${baseKey}_${Date.now().toString(36)}`;
+    let attempt = 0;
+    while(chatfic.apps[newLocationKey] && attempt < 10) { // Prevent infinite loop
+        newLocationKey = `${baseKey}_${Date.now().toString(36)}_${Math.random().toString(36).substring(2,7)}`;
+        attempt++;
+    }
+    if (chatfic.apps[newLocationKey]) { // Extremely unlikely fallback
+         newLocationKey = `location_fallback_${Date.now().toString(36)}${Math.random().toString(36).substring(2,7)}`;
+    }
+
+
+    chatfic.apps[newLocationKey] = { name: newLocationName }; // Background is undefined initially
+    chatfic.modified = Date.now();
+    newLocationNameInput.value = ''; // Clear input
+    renderLocations(document.getElementById('locationsContainer'));
+    attachAppLocationModalListeners(document.getElementById('appLocationModalBody'));
+}
+function alertToast(text) {
+    // Get the modal element
+    const alertModalEl = document.getElementById('alertToastModal');
+
+    if (alertModalEl) {
+        // Get the modal body element
+        const modalBody = alertModalEl.querySelector('.modal-body');
+
+        // Update the modal body content
+        if (modalBody) {
+            modalBody.textContent = text;
+        }
+
+        // Get or create a Bootstrap modal instance
+        const alertModal = bootstrap.Modal.getOrCreateInstance(alertModalEl);
+
+        // Show the modal
+        alertModal.show();
+    } else {
+        console.error("Modal element with ID 'alertToastModal' not found.");
+        // Fallback to the browser's built-in alert if modal element is missing
+        alert(text);
+    }
+}
+// --- Media Picker Modal Logic ---
+function showMediaPickerModal() {
+    if (!mediaPickerModalInstance) {
+        console.error("Media Picker Modal not initialized.");
+        return;
+    }
+    if (!currentEditingLocationKey || !chatfic.apps[currentEditingLocationKey]) {
+        console.error("No valid location key set for media picking, or location does not exist.");
+        alertToast("Error: Could not identify the location to set background for.");
+        return;
+    }
+
+    const mediaPickerBody = document.getElementById('mediaPickerModalBody');
+    mediaPickerBody.innerHTML = '<p class="text-muted p-3 text-center">Loading images...</p>'; 
+
+    const imageGrid = document.createElement('div');
+    imageGrid.className = 'row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3'; // Responsive grid
+
+    let foundImages = false;
+    mediaFiles.forEach(mediaFile => {
+        // Check if a mediaFile is not a video file
+        const isVideo = mediaFile.name.toLowerCase().endsWith(".mp4") ||
+                        mediaFile.name.toLowerCase().endsWith(".webm");
+        
+        if (!isVideo && mediaFileSrcList[mediaFile.name]) {
+            foundImages = true;
+            const col = document.createElement('div');
+            col.className = 'col';
+            
+            const card = document.createElement('div');
+            card.className = 'card h-100 selectable-media text-center shadow-sm';
+            card.style.cursor = 'pointer';
+            card.dataset.fileName = mediaFile.name;
+
+            const img = document.createElement('img');
+            img.src = mediaFileSrcList[mediaFile.name];
+            img.className = 'card-img-top p-2'; // Padding around image within card
+            img.style.objectFit = 'contain'; 
+            img.style.maxHeight = '120px'; 
+            img.alt = mediaFile.name;
+
+            const cardBody = document.createElement('div');
+            cardBody.className = 'card-body p-2';
+            
+            const cardTitle = document.createElement('p');
+            cardTitle.className = 'card-text small text-truncate m-0';
+            cardTitle.textContent = mediaFile.name;
+            cardTitle.title = mediaFile.name; // Show full name on hover
+
+            cardBody.appendChild(cardTitle);
+            card.appendChild(img);
+            card.appendChild(cardBody);
+            
+            card.addEventListener('click', () => handleMediaSelection(mediaFile.name));
+
+            col.appendChild(card);
+            imageGrid.appendChild(col);
+        }
+    });
+
+    if (!foundImages) {
+        mediaPickerBody.innerHTML = '<p class="text-center text-muted p-3">No suitable images found in media files. Videos are excluded.</p>';
+    } else {
+        mediaPickerBody.innerHTML = ''; // Clear "Loading..."
+        mediaPickerBody.appendChild(imageGrid);
+    }
+    mediaPickerModalInstance.show();
+}
+
+function handleMediaSelection(selectedFileName) {
+    if (currentEditingLocationKey && chatfic.apps[currentEditingLocationKey]) {
+        chatfic.apps[currentEditingLocationKey].background = selectedFileName;
+        chatfic.modified = Date.now();
+        mediaPickerModalInstance.hide();
+        const locationName = chatfic.apps[currentEditingLocationKey].name;
+        alertToast(`Background for location "${locationName}" set to "${selectedFileName}".`);
+        
+        renderLocations(document.getElementById('locationsContainer'));
+        attachAppLocationModalListeners(document.getElementById('appLocationModalBody')); 
+    } else {
+        console.error("Error setting background: No location key or location not found during selection handling.");
+        mediaPickerModalInstance.hide(); // Still hide picker
+    }
+    currentEditingLocationKey = null; // Reset after use
+}
+
+
+/* end apps modal */
+
 function emojiSelected(emoji){
   insertTextAtCursor(emoji);
 }
@@ -2143,3 +2877,4 @@ function emojiSelected(emoji){
       function openEmojiPicker(){
         document.getElementById("emojipickerdiv").style.display = "block";
       }
+

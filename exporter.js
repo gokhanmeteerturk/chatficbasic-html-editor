@@ -1,12 +1,16 @@
 let viewCodeModal = null;
 let importCodeModal = null;
 let importMarkdownModal = null;
+let whatisanappModal = null;
 
 function showImportCodeModal() {
     importCodeModal.show();
 }
 function showImportMarkdownModal() {
     importMarkdownModal.show();
+}
+function showWhatisanappModal() {
+    whatisanappModal.show();
 }
 function showViewCodeModal(type = "md") {
     if (!storyInfoComplete) {
@@ -38,7 +42,6 @@ function importChatficMarkdown(){
     const basic = importMarkdownModalTextarea.value;
     if(basic.length < 100){
         return;
-        return;
     }
     try {
         const importCode = convertChatficFromMdToJSON(basic);
@@ -51,6 +54,25 @@ function importChatficMarkdown(){
             chatficFromJson["variables"] = {};
             storyVariablesToInclude = defaultStoryVariablesToInclude;
         }
+        if(chatficFromJson.hasOwnProperty("apps")){
+            let hasChatApp = false;
+            let hasPhotoFeedApp = false;
+            for (let key in chatficFromJson.apps){
+                if(key == "home"){delete chatficFromJson.apps["home"];}
+                if(key == "chat"){hasChatApp = true;}
+                if(key == "photofeed"){hasPhotoFeedApp = true;}
+            }
+            if(!hasChatApp){
+                chatficFromJson.apps["chat"] = {"name": "Messages"};
+            }
+            if(!hasPhotoFeedApp){
+                chatficFromJson.apps["photofeed"] = {"name": "InstaPic"};
+            }
+            chatficFromJson.apps["home"] = {"name": "Home"};
+        }
+        else{
+            chatficFromJson.apps = defaultApps;
+        }
         pages = JSON.parse(JSON.stringify(chatficFromJson.pages));
         delete chatficFromJson.format;
         delete chatficFromJson.pages;
@@ -58,6 +80,7 @@ function importChatficMarkdown(){
         importMarkdownModal.hide();
         checkChatfic();
         refreshChat();
+        updateAppSelector();
         refreshCharacters();
         refreshPageOptionsList();
         updatePageSelect();
@@ -66,6 +89,7 @@ function importChatficMarkdown(){
         chatfic = oldChatfic;
         checkChatfic();
         refreshChat();
+        updateAppSelector();
         refreshCharacters();
         refreshPageOptionsList();
         updatePageSelect();
@@ -87,6 +111,7 @@ function importChatficJson() {
     const oldChatfic = chatfic;
     try {
         let chatficFromJson = JSON.parse(importCode);
+        chatficFromJson.version = "1.1";
         if(chatficFromJson.hasOwnProperty("variables") && Object.keys(chatficFromJson.variables).length > 0){
             storyVariablesToInclude = JSON.parse(JSON.stringify(chatficFromJson["variables"]));
             chatficFromJson["variables"] = {};
@@ -95,6 +120,27 @@ function importChatficJson() {
             chatficFromJson["variables"] = {};
             storyVariablesToInclude = defaultStoryVariablesToInclude;
         }
+
+        if(chatficFromJson.hasOwnProperty("apps")){
+            let hasChatApp = false;
+            let hasPhotoFeedApp = false;
+            for (let key in chatficFromJson.apps){
+                if(key == "home"){delete chatficFromJson.apps["home"];}
+                if(key == "chat"){hasChatApp = true;}
+                if(key == "photofeed"){hasPhotoFeedApp = true;}
+            }
+            if(!hasChatApp){
+                chatficFromJson.apps["chat"] = {"name": "Messages"};
+            }
+            if(!hasPhotoFeedApp){
+                chatficFromJson.apps["photofeed"] = {"name": "InstaPic"};
+            }
+            chatficFromJson.apps["home"] = {"name": "Home"};
+        }
+        else{
+            chatficFromJson.apps = defaultApps;
+        }
+
         pages = JSON.parse(JSON.stringify(chatficFromJson.pages));
 
         delete chatficFromJson.format;
@@ -105,6 +151,8 @@ function importChatficJson() {
             // check each pages's .messages array if there is a message with a multimedia, if there is, remove "media/" from beginning of it:
             pages.forEach((page) => {
                 page.messages.forEach((singleMessage) => {
+                    if (!singleMessage.hasOwnProperty("chatroom")){singleMessage.chatroom = "-";}
+                    if (singleMessage.hasOwnProperty("app") && singleMessage.app == "photofeed"){singleMessage.side = "1";}
                     if (singleMessage.multimedia && singleMessage.multimedia.length > 6) {
                         singleMessage.multimedia = singleMessage.multimedia.replace("media/", "");
                         if (!mediaFileSrcList.hasOwnProperty(singleMessage.multimedia)) {
@@ -122,6 +170,7 @@ function importChatficJson() {
         checkChatfic();
         updateMetaUI(chatfic);
         refreshChat();
+        updateAppSelector();
         refreshCharacters();
         refreshPageOptionsList();
         updatePageSelect();
@@ -134,6 +183,7 @@ function importChatficJson() {
         chatfic = oldChatfic;
         checkChatfic();
         refreshChat();
+        updateAppSelector();
         refreshCharacters();
         refreshPageOptionsList();
         updatePageSelect();
@@ -149,6 +199,9 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     importMarkdownModal = new bootstrap.Modal(
         document.getElementById("importMarkdownModal")
+    );
+    whatisanappModal = new bootstrap.Modal(
+        document.getElementById("whatisanappModal")
     );
 });
 
@@ -186,6 +239,10 @@ function loadFromLocalCustom(loadPages=false) {
     }
     if (localStorage.getItem("chatfic") && localStorage.getItem("pages")) {
         chatfic = JSON.parse(localStorage.getItem("chatfic"));
+        chatfic.version = "1.1";
+        if(!chatfic.hasOwnProperty("apps")){
+            chatfic.apps = defaultApps;
+        }
         if(loadPages){
             pages = JSON.parse(localStorage.getItem("pages"));
         }
@@ -229,7 +286,9 @@ function loadFromLocalCustom(loadPages=false) {
         alert("No story found in local storage!");
     }
     checkChatfic();
+    updateAppSelector();
     refreshChat();
+    updateAppSelector();
     refreshCharacters();
     refreshPageOptionsList();
     updatePageSelect();
@@ -242,6 +301,17 @@ function saveZip() {
         return;
     }
     const mediaFilesList = [];
+    Object.values(chatfic.apps).forEach((app) => {
+        if (app.hasOwnProperty("background") && app.background != null && app.background.length > 1) {
+            const mediaFile = getMediaByName(app.background.replace("media/",""));
+            if (!mediaFile) {
+                alert("Background Media File Not In Library: " + app.background);
+                return false;
+            } else {
+                mediaFilesList.push(mediaFile);
+            }
+        }
+    });
     pages.forEach((page) => {
         page.messages.forEach((singleMessage) => {
             if (singleMessage.multimedia) {
@@ -284,14 +354,31 @@ function generateChatficBasicJson(filterUnusedVariables = false) {
     //create deep copy first:
     const chatficForJson = JSON.parse(JSON.stringify(chatfic));
     chatficForJson.format = "chatficbasicjson";
+    chatficForJson.version = "1.1";
     chatficForJson.pages = pages;
+    let isPhotofeedUsed = false;
     chatficForJson.pages.forEach((page) => {
         page.messages.forEach((message) => {
+            // if(message.hasOwnProperty("app") && message.app !== "chat" && message.hasOwnProperty("chatroom")){delete message["chatroom"];}
             if(message.hasOwnProperty("isCleaned")){delete message["isCleaned"];}
+            if(message.hasOwnProperty("app") && message.app === "photofeed"){isPhotofeedUsed = true;}
+            if(message.hasOwnProperty("app") && message.app === "chat"){delete message["app"];}
             if(message.multimedia && message.multimedia.length>1){
                 message.multimedia = "media/" + message.multimedia.replaceAll("media/","");
             }
         });
+    });
+
+    if(chatficForJson.apps.hasOwnProperty("home")){
+        delete chatficForJson.apps["home"];
+    }
+    if(chatficForJson.apps.hasOwnProperty("photofeed") && !isPhotofeedUsed){
+        delete chatficForJson.apps["photofeed"];
+    }
+    Object.values(chatficForJson.apps).forEach((app) => {
+        if(app.hasOwnProperty("background") && app.background != null && app.background.length > 1){
+            app.background = "media/" + app.background.replaceAll("media/","");
+        }
     });
     let tempVariables = {...storyVariablesToInclude};
     if(filterUnusedVariables){
@@ -333,7 +420,7 @@ function generateChatficBasic(chatficBasicJson) {
     const fic = JSON.parse(chatficBasicJson);
     let chatficbasic = "";
     chatficbasic += `> format: chatficbasic
-> version: 1
+> version: 1.1
 > title: ${fic.title}
 > description: ${fic.description}
 > author: ${fic.author}
@@ -343,6 +430,16 @@ function generateChatficBasic(chatficBasicJson) {
     for (let key in fic.handles){
         const handle = fic.handles[key];
         chatficbasic += "> handles/" + key + ": " + handle + "\n";
+    }
+    chatficbasic += "\n";
+    for (let key in fic.apps){
+        const app = fic.apps[key];
+        if(app.hasOwnProperty("name") && app.name != null && app.name.length > 1){
+            chatficbasic += "> apps/" + key + "/name: " + app.name + "\n";
+        }
+        if(app.hasOwnProperty("background") && app.background != null && app.background.length > 1){
+            chatficbasic += "> apps/" + key + "/background: " + app.background.replaceAll("media/","") + "\n";
+        }
     }
     for (let key in fic.characters) {
         const character = fic.characters[key];
@@ -418,12 +515,18 @@ function generateChatficBasic(chatficBasicJson) {
         chatficbasic += "# " + page.name + "\n";
 
         let latestChatroom = "";
+        let latestApp = "chat";
         page.messages.forEach((message) => {
+            if (message.hasOwnProperty("app")) {
+                if(message.app != latestApp){
+                    chatficbasic += "*app: " + message.app + "\n";
+                    latestApp = message.app;
+                }
+            }
             if(message.hasOwnProperty("isCleaned")){delete message["isCleaned"];}
             const povText =
                 message.from != "player" && message.side == 2 ? "(pov)" : "";
-            const chatroomText =
-                message.chatroom != latestChatroom &&
+            const chatroomText = (message.hasOwnProperty("app") && message.app != "chat" && message.app != null) ? "" : message.chatroom != latestChatroom &&
                     message.chatroom != fic.characters[message.from].name
                     ? "(" + message.chatroom + ")"
                     : "";
@@ -439,9 +542,16 @@ function generateChatficBasic(chatficBasicJson) {
                         message.multimedia.toLowerCase().endsWith(".webm"))
                     ? " ![VIDEO](" + message.multimedia + ")"
                     : "";
-            chatficbasic += `${message.from
+            if(message.hasOwnProperty("type") && message.type === "thought"){
+                chatficbasic += "_" + `${message.from
                 }${chatroomText}${povText}: ${imageText}${videoText}${message.message ? " " + message.message.replace("\n", " ") : ""
-                }\n`;
+                }` + "_\n";
+            }
+            else{
+                chatficbasic += `${message.from
+                    }${chatroomText}${povText}: ${imageText}${videoText}${message.message ? " " + message.message.replace("\n", " ") : ""
+                    }\n`;
+            }
 
             latestChatroom = message.chatroom;
         });
@@ -478,7 +588,12 @@ function convertChatficFromMdToJSON(chatficbasicCode) {
         pages: [],
         handles: {},
         characters: {},
-        variables: {}
+        variables: {},
+        apps: {
+            "chat": {"name": "Messages"},
+            "photofeed": {"name": "InstaPic"},
+            "home": {"name": "Home"}
+        },
     };
     const metadataKeys = [
         "title",
@@ -505,7 +620,6 @@ function convertChatficFromMdToJSON(chatficbasicCode) {
                  chatficToAdd.handles["patreon"] = myValue;
                  console.log("handles");
                  console.log(chatficToAdd.handles);
-
              }
              if (trimmedLine.startsWith("> handles/")) {
                 const parts = trimmedLine
@@ -522,6 +636,24 @@ function convertChatficFromMdToJSON(chatficbasicCode) {
                     chatficToAdd.handles[handleType] = handleValue;
                 }
             }
+            if (trimmedLine.startsWith("> apps/")) {
+                const parts = trimmedLine
+                    .slice(7)
+                    .replace(" : ", ":")
+                    .replace(" :", ":")
+                    .replace(": ", ":")
+                    .replace(":", "/")
+                    .split("/");
+                if (parts.length >= 3) {
+                    const app_key = parts[0].trim();
+                    const attribute = parts[1].trim();
+                    const value = parts[2].trim();
+                    if (!chatficToAdd.apps.hasOwnProperty(app_key)) {
+                        chatficToAdd.apps[app_key] = {};
+                    }
+                    chatficToAdd.apps[app_key][attribute] = value;
+                }
+            }
             if (trimmedLine.startsWith("> variables/")) {
                 const parts = trimmedLine
                     .slice(12)
@@ -531,13 +663,13 @@ function convertChatficFromMdToJSON(chatficbasicCode) {
                     .replace(":", "/")
                     .split("/");
                 if (parts.length >= 3) {
-                    const character = parts[0].trim();
+                    const variable = parts[0].trim();
                     const attribute = parts[1].trim();
                     const value = parts[2].trim();
-                    if (!chatficToAdd.characters.hasOwnProperty(character)) {
-                        chatficToAdd.characters[character] = {};
+                    if (!chatficToAdd.variables.hasOwnProperty(variable)) {
+                        chatficToAdd.variables[variable] = {};
                     }
-                    chatficToAdd.characters[character][attribute] = value;
+                    chatficToAdd.variables[variable][attribute] = value;
                 }
             }
             if (trimmedLine.startsWith("> characters/")) {
@@ -633,8 +765,9 @@ function convertChatficFromMdToJSON(chatficbasicCode) {
     }
 
     chatficConversionResult.handles = chatficToAdd.handles;
-    chatficConversionResult.version = "1";
+    chatficConversionResult.version = "1.1";
     chatficConversionResult.variables = chatficToAdd.variables;
+    chatficConversionResult.apps = chatficToAdd.apps;
     chatficConversionResult.characters = chatficToAdd.characters;
     chatficConversionResult.pages = chatficToAdd.pages;
 
@@ -668,10 +801,21 @@ function parsePage(pageId, pageName, pageLines) {
     const optionSingle = /^\s*\[next\]\(\s*#\s*([^\)]*)\s*\)\s*$/;
     const optionRegular = /^\s*\[([^\]]*)\]\(\s*#\s*([^\)]*)\s*\)\s*$/;
     let previousChatroom = null;
-
+    let currentApp = "chat";
     for (const lineUntrimmed of pageLines) {
         const line = lineUntrimmed.trim();
+        let isThought = false;
+        if (line.startsWith("_") && line.endsWith("_")) {
+            isThought = true;
+            line = line.slice(1, -1).trim();
+        }
         if (line.startsWith("//")) {
+            continue;
+        } else if(line.startsWith("*app:")){
+            currentApp = line.slice(5).trim();
+            if(currentApp.length < 1){
+                currentApp = "chat";
+            }
             continue;
         } else {
             const result = {};
@@ -683,8 +827,12 @@ function parsePage(pageId, pageName, pageLines) {
                     matchWithChatroomAndPov[3]
                 );
                 result.message = message;
+                result.app = currentApp;
                 result.multimedia = multimedia;
                 result.chatroom = matchWithChatroomAndPov[2];
+                if(currentApp !== "chat"){result.chatroom = "-"}
+                if(currentApp === "photofeed"){result.side = 1}
+                if(isThought){result.type = "thought"}
                 page.messages.push(result);
                 continue;
             }
@@ -694,18 +842,26 @@ function parsePage(pageId, pageName, pageLines) {
                 result.side = 2;
                 const [message, multimedia] = extractMultimedia(matchWithPov[2]);
                 result.message = message;
+                result.app = currentApp;
                 result.multimedia = multimedia;
                 if (previousChatroom) {
                     result.chatroom = previousChatroom;
+                    if(currentApp !== "chat"){result.chatroom = "-"}
+                    if(currentApp === "photofeed"){result.side = 1}
                 } else if (
                     result.from !== "player" &&
                     chatficToAdd.characters[result.from]
                 ) {
                     previousChatroom = chatficToAdd.characters[result.from].name;
                     result.chatroom = previousChatroom;
+                    if(currentApp !== "chat"){result.chatroom = "-"}
+                    if(currentApp === "photofeed"){result.side = 1}
                 } else {
                     result.chatroom = "Unknown";
+                    if(currentApp !== "chat"){result.chatroom = "-"}
+                    if(currentApp === "photofeed"){result.side = 1}
                 }
+                if(isThought){result.type = "thought"}
                 page.messages.push(result);
                 continue;
             }
@@ -714,11 +870,15 @@ function parsePage(pageId, pageName, pageLines) {
                 result.from = matchWithChatroom[1];
                 const [message, multimedia] = extractMultimedia(matchWithChatroom[3]);
                 result.message = message;
+                result.app = currentApp;
                 result.multimedia = multimedia;
                 result.side =
                     result.from === "player" ? 2 : result.from === "app" ? 1 : 0;
                 previousChatroom = matchWithChatroom[2];
                 result.chatroom = previousChatroom;
+                if(currentApp !== "chat"){result.chatroom = "-"}
+                if(currentApp === "photofeed"){result.side = 1}
+                if(isThought){result.type = "thought"}
                 page.messages.push(result);
                 continue;
             }
@@ -727,20 +887,28 @@ function parsePage(pageId, pageName, pageLines) {
                 result.from = matchWithNothing[1];
                 const [message, multimedia] = extractMultimedia(matchWithNothing[2]);
                 result.message = message;
+                result.app = currentApp;
                 result.multimedia = multimedia;
                 result.side =
                     result.from === "player" ? 2 : result.from === "app" ? 1 : 0;
                 if (previousChatroom) {
                     result.chatroom = previousChatroom;
+                    if(currentApp !== "chat"){result.chatroom = "-"}
+                    if(currentApp === "photofeed"){result.side = 1}
                 } else if (
                     result.from !== "player" &&
                     chatficToAdd.characters[result.from]
                 ) {
                     previousChatroom = chatficToAdd.characters[result.from].name;
                     result.chatroom = previousChatroom;
+                    if(currentApp !== "chat"){result.chatroom = "-"}
+                    if(currentApp === "photofeed"){result.side = 1}
                 } else {
                     result.chatroom = "Unknown";
+                    if(currentApp !== "chat"){result.chatroom = "-"}
+                    if(currentApp === "photofeed"){result.side = 1}
                 }
+                if(isThought){result.type = "thought"}
                 page.messages.push(result);
                 continue;
             }

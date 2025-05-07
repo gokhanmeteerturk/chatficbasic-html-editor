@@ -17,7 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="UTF-8" />
 
-    <link rel="stylesheet" href="style.css?v=12" />
+    <link rel="stylesheet" href="style.css?v=16" />
     <link href="bs/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Bootstrap JS CDN script -->
@@ -282,7 +282,15 @@
                     data-bs-toggle="modal"
                     data-bs-target="#variablesModal"
                   >
-                    Edit Variables<span
+                    Edit Variables
+                  </button>
+                  <div class="clearfix"></div>
+                  <button
+                    type="button"
+                    class="btn btn-xs float-start ml-2 mt-2 btn-primary position-relative"
+                    id="manageAppsLocationsBtn"
+                  >
+                    Manage Apps & Locations<span
                       style="position: absolute; top: -9px; right: -15px"
                       class="badge badge-danger bg-danger"
                       >NEW</span
@@ -392,12 +400,13 @@
               </div>
               <!-- /flex grow-1 -->
               <div class="chatbar">
-                <div class="btn-group my-2 btn-group-sm w-100" role="group">
+                <div class="btn-group my-1 btn-group-sm w-100" role="group">
                   <button
                     type="button"
                     class="btn btn-outline-secondary flex-grow-0 dropdown-toggle dropdown-toggle-split"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
+                    id="leftCharacterPickerButton"
                   >
                     <span class="visually-hidden">Toggle Dropdown</span>
                   </button>
@@ -417,7 +426,7 @@
                   />
                   <label
                     id="leftCharacterLabel"
-                    class="btn btn-outline-secondary"
+                    class="btn btn-outline-secondary flex-grow-3"
                     for="sideleft"
                   >
                     Jessica
@@ -430,7 +439,7 @@
                     id="sidemiddle"
                     autocomplete="off"
                   />
-                  <label class="btn btn-outline-dark" for="sidemiddle"
+                  <label id="middleCharacterLabel" class="btn btn-outline-dark flex-grow-3" for="sidemiddle"
                     >Middle</label
                   >
 
@@ -444,12 +453,13 @@
                   />
                   <label
                     id="rightCharacterLabel"
-                    class="btn btn-outline-primary"
+                    class="btn btn-outline-primary flex-grow-3"
                     for="sideright"
                     >John</label
                   >
                   <button
                     type="button"
+                    id="rightCharacterPickerButton"
                     class="btn btn-outline-primary flex-grow-0 dropdown-toggle dropdown-toggle-split"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
@@ -473,6 +483,7 @@
                     </div>
                   </div>
                   <div class="flex-grow-1">
+                    <div class="btn-group btn-group-sm mb-2 w-100">
                     <input
                       onclick="checkVariableSuggestions(this);"
                       oninput="suggestVariable(this);"
@@ -483,6 +494,15 @@
                       placeholder="Type here"
                       id="message"
                     />
+                    <div class="flex-grow-0">
+                      <select id="messageAppSelector" data-prev="chat" class="form-select dropup" onchange="checkMessageApp(this);">
+                        <option value="chat">Chat App</option>
+                        <option value="photofeed">Instagram</option>
+                        <option value="home">Home</option>
+                        <option value="what-is-this">what is this?</option>
+                      </select>
+                    </div>
+                    </div>
                   </div>
                   <div class="flex-grow-0">
                     <div class="btn-group dropup">
@@ -634,7 +654,7 @@
                   onclick="showViewCodeModal('json');"
                   class="btn btn-sm btn-outline-secondary"
                 >
-                  Show JSON (v1)
+                  Show JSON (v1.1)
                 </button>
                 <button
                   onclick="showImportCodeModal();"
@@ -1232,6 +1252,46 @@
       </div>
     </div>
 
+    <div class="modal fade" id="appLocationModal" tabindex="-1" aria-labelledby="appLocationModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-6" id="appLocationModalLabel">Manage Apps & Locations</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body bg-slight" id="appLocationModalBody">
+            </div>
+          <div class="modal-footer p-2">
+            <button type="button" class="btn btn-warning btn-sm" onclick="showWhatisanappModal();">What is this?</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="mediaPickerModal" tabindex="-1" aria-labelledby="mediaPickerModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mediaPickerModalLabel">Select Background Image</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="mediaPickerModalBody">
+            </div>
+          <div class="modal-footer">            <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#mediaLibraryModal"
+          >
+            Open Media Library
+          </button>
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- "edit message" modal -->
     <div
       class="modal fade"
@@ -1266,7 +1326,7 @@
 
                 </textarea>
                 <input type="hidden" id="editMessageIndex" />
-                <div class="quick-emoji-picker noselect">
+                <div class="quick-emoji-picker noselect" id="quickemojipicker">
                   <span onclick="quickEmoji(this.innerText);">😲</span>
                   <span onclick="quickEmoji(this.innerText);">😊</span>
                   <span onclick="quickEmoji(this.innerText);">😏</span>
@@ -1321,9 +1381,14 @@
                   name="fromInput"
                 ></select>
               </div>
-              <div class="mb-3">
-                <label class="form-label form-label-sm"
-                  >Side</label>
+            <div class="mb-3" id="thoughtinputgroup" class="">
+              <div class="form-check form-switch d-inline-block align-top">
+                <input class="form-check-input" type="checkbox" id="thoughttype">
+              </div>
+              <label for="thoughttype" class="form-label text-small me-2 align-top">Is this message a thought (inner monologue)?</label>
+            </div>
+              <div class="mb-3" id="sideinputgroup">
+                <label class="form-label form-label-sm">Side</label>
                 <div>
                   <div class="btn-group btn-group-sm w-100" role="group">
                     <input value="0" type="radio" class="btn-check" name="sideInputS" id="editSide0" autocomplete="off" checked>
@@ -1341,10 +1406,33 @@
                 <span class="input-group-text">Multimedia</span>
                 <input type="text" id="multimediaInput" class="form-control form-control-sm">
               </div>
-              <div class="input-group input-group-sm mb-3">
+              <div class="input-group input-group-sm mb-3" id="chatroominputgroup">
                 <span class="input-group-text">Chatroom</span>
                 <input type="text" id="chatroomInput" class="form-control form-control-sm">
               </div>
+              <div id="likesandcomments">
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Likes</span>
+                <input type="number" id="likesInput" class="form-control form-control-sm" value="0">
+              </div>
+    
+              <div class="mb-3">
+                <h6 class="form-label form-label-sm">Comments</h6>
+                <div id="commentsContainer">
+                  <div class="input-group input-group-sm mb-2 comment-row">
+                    <input type="text" class="form-control form-control-sm comment-username" placeholder="Username">
+                    <input type="text" class="form-control form-control-sm comment-text" placeholder="Comment text">
+                    <button class="btn btn-danger btn-sm delete-comment-btn" type="button" onclick="deleteComment(this)">Delete</button>
+                  </div>
+                </div>
+                <button class="btn btn-success btn-sm mt-1" type="button" id="addCommentBtn" onclick="addComment()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                  </svg> Add Comment
+                </button>
+              </div>
+            </div>
             </form>
           </div>
           <div class="modal-footer p-2">
@@ -1412,7 +1500,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="importCodeModalLabel">
-              Import Chatfic Basic JSON(v1)
+              Import Chatfic Basic JSON(v1.1)
             </h5>
             <button
               type="button"
@@ -1492,7 +1580,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="importMarkdownModalLabel">
-              Import Chatfic Basic Markdown(v1)
+              Import Chatfic Basic Markdown(v1.1)
             </h5>
             <button
               type="button"
@@ -1526,7 +1614,15 @@
         </div>
       </div>
     </div>
-
+    <div class="modal fade" id="alertToastModal" tabindex="-1" aria-labelledby="alertToastModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered"> <div class="modal-content">
+              <div class="modal-header p-3"> <h5 class="modal-title fs-5" id="alertToastModalLabel">Alert</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body p-3"> </div>
+              </div>
+      </div>
+  </div>
     <div
       class="modal fade"
       id="variablesModal"
@@ -1629,6 +1725,70 @@
       </div>
     </div>
 
+    <div
+      class="modal fade"
+      id="whatisanappModal"
+      tabindex="-1"
+      aria-labelledby="whatisanappModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="whatisanappModalLabel">
+              What are apps and locations?
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body bg-slight mb-0 pb-1">
+            <small class="text-small">
+              Simply put, apps let you include stuff like fake instagram posts to your story. And locations let you turn your story into a visual novel style game.
+              <div class="row align-items-start mt-4">
+                <div class="col col-12 col-lg-6 mb-4">
+                  <h6>1. Apps: Instagram posts for your story</h6>
+                  <p><small class="text-small">
+                    You can now include social posts from other apps in your chat story.
+                  </small></p><img src="img/example-apps.gif" class="img-fluid" alt="Example for chatficlab apps"/>
+                </div>
+                <div class="col col-12 col-lg-6 mb-4">
+                  <h6>2. Locations: Visual-novel style conversations</h6>
+                  <p><small class="text-small">
+                    You can now set your story’s messages in imaginary locations, like a school or a cafe, shown as visual-novel style conversations with background images you choose.
+                  </small></p><img src="img/example-locations.jpg" class="img-fluid" alt="Visual‑novel style scene at a school">
+                </div>
+                <div class="col col-12 col-lg-6 mb-4">
+                  <h6>3. "Home" screen</h6>
+                  <p><small class="text-small">
+                    If you don't need real locations, you can use "Home" screen for your messages to show them on top of the default home screen of a story.
+                  </small></p><img src="img/example-vn.jpg" class="img-fluid" alt="Phone home‑screen chat style">
+                </div>
+                <div class="col col-12 col-lg-6 mb-4">
+                  <h6>How can I use these?</h6>
+                  <p><small class="text-small">
+                    Just type a new message and select the app or location name before you click "Send". In order to add new locations or manage them, you need to use the "ManageApps & Locations" button from Settings & Pages section.
+                  </small></p><img src="img/example-manage.jpg" class="img-fluid" alt="Example for chatficlab apps"/>
+                </div>
+              </div>
+
+            </small>
+          </div>
+          <div class="modal-footer p-2">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div
       class="modal fade"
       id="handlesModal"
@@ -1875,13 +2035,12 @@
       </div>
     </div>
     <script src="urlify.js"></script>
-    <script src="main.js?v=14"></script>
-    <script src="media.js?v=7"></script>
+    <script src="main.js?v=16"></script>
+    <script src="media.js?v=16"></script>
     <script src="jszip.min.js"></script>
     <script src="FileSaver.min.js"></script>
-    <script src="exporter.js?v=10"></script>
+    <script src="exporter.js?v=16"></script>
     <script>
-      // dom content loader event listener:
       // document.addEventListener(
       //   "DOMContentLoaded",
       //   function () {
@@ -1897,6 +2056,7 @@
       checkChatfic();
       refreshChat();
       refreshCharacters();
+      updateAppSelector();
       refreshPageOptionsList();
       refreshChat();
     </script>
