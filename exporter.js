@@ -1,4 +1,4 @@
-bulet viewCodeModal = null;
+let viewCodeModal = null;
 let importCodeModal = null;
 let importMarkdownModal = null;
 let whatisanappModal = null;
