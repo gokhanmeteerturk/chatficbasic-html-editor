@@ -1371,7 +1371,9 @@ function saveMessageFromEditModal(){
     let pageId = document.getElementById("pageSelect").value;
     let page = pages.find((x) => x.id == pageId);
     let oldMessage = page.messages[parseInt(editMessageIndex)];
-    if(oldMessage.app != "chat"){
+    if(!oldMessage.hasOwnProperty("app") || oldMessage.app == null || oldMessage.app == "chat"){
+    }
+    else{
         newChatroom = "-";
     }
 
@@ -1381,7 +1383,7 @@ function saveMessageFromEditModal(){
         side: newSide || null,
         multimedia: newMultimedia || null,
         chatroom: newChatroom || null,
-        app: oldMessage.app || "chat",
+        app: (oldMessage.hasOwnProperty("app") ? oldMessage.app : "chat") || "chat",
     };
     if(oldMessage.app == "photofeed"){
         const extra = getExtra();
@@ -1502,6 +1504,8 @@ function editMessage(messageIndex) {
     let pageId = document.getElementById("pageSelect").value;
     let page = pages.find((x) => x.id == pageId);
     let message = page.messages[messageIndex];
+    console.log("editing:");
+    console.log(message);
 
     try{
         delete page.messages[messageIndex]["isCleaned"];
@@ -1531,7 +1535,7 @@ function editMessage(messageIndex) {
 
     document.getElementById('thoughttype').checked = message.hasOwnProperty("type") && message.type == "thought" ? true : false;
 
-    if(message.app == "chat"){
+    if(!message.hasOwnProperty("app") || message.app == null || message.app == "chat"){
         document.getElementById("chatroominputgroup").style.display = "flex";
         document.getElementById("quickemojipicker").style.display = "flex";
     }
