@@ -8,7 +8,7 @@ function setTooltips() {
 }
 var previousAppSelection = "chat"; // only for decorative use.
 var clickCount = 0;
-
+var characterThumbnails = {};
 function setCaretPosition(elem, caretPos) {
     // Mark Pieszak - https://stackoverflow.com/a/12518737
     // Plus a one line change
@@ -135,7 +135,8 @@ var chatfic = {
             gender: "female",
             skin: "white",
             hair: {
-                color: "black"
+                color: "black",
+                style: "straight",
             }
         },
     },
@@ -485,6 +486,8 @@ function setCharacter(
         hairStyle && hairStyle !== "" ? (chatfic.characters[slug]["hair"]["style"] = hairStyle) : null;
     }
 
+    characterThumbnails[slug] = getResizedCharacterDataURL();
+
     refreshCharacters();
     checkChatfic();
 
@@ -579,6 +582,21 @@ function setModelName(slug){
         }
     }
 }
+async function createCharacterImageAndRefreshThumbnail(key, character, characterImageCell){
+    if(key == "app" || key == "player"){
+        return;
+    }
+    const characterCommand = convertToCharacterCommand(character);
+    const characterCanvasHolder = document.createElement("div");
+    const randomId = Math.random().toString(36).substring(2, 15);
+    characterCanvasHolder.id = `characterImage${randomId}`;
+
+    await drawLayeredCharacter(characterCommand, null,parentEl=characterCanvasHolder);
+    const imageDataUrl = await getResizedCharacterDataURL(null,parentEl=characterCanvasHolder);
+    characterThumbnails[key] = imageDataUrl;
+    characterImageCell.innerHTML = `<img src="${imageDataUrl}" class="me-2" width="64" height="64" alt="${key}">`;
+    characterCanvasHolder.remove();
+}
 function refreshCharacters() {
     const charactersListInModal = document.getElementById(
         "charactersListInModal"
@@ -605,7 +623,19 @@ function refreshCharacters() {
         characterCard.className = "list-group-item small";
 
         const characterRow = document.createElement("div");
-        characterRow.className = "d-flex";
+        characterRow.className = "d-flex align-items-center";
+        if(characterThumbnails[key]){
+            const characterImageCell = document.createElement("div");
+            characterImageCell.className = "flex-grow-0";
+            characterImageCell.innerHTML = `<img src="${characterThumbnails[key]}" class="me-2" width="64" height="64" alt="${key}">`;
+            characterRow.appendChild(characterImageCell);
+        }
+        else{
+            const characterImageCell = document.createElement("div");
+            characterImageCell.className = "flex-grow-0";
+            characterRow.appendChild(characterImageCell);
+            createCharacterImageAndRefreshThumbnail(key, character, characterImageCell);
+        }
         if (key != "player" && key != "app") {
             const saveOverCell = document.createElement("div");
             saveOverCell.className = "flex-grow-0";
@@ -764,6 +794,7 @@ function deleteCharacter(slug) {
     }
     delete chatfic.characters[slug];
     refreshCharacters();
+    delete characterThumbnails[slug];
 }
 function checkCurrentMessagesForCharacter(slug) {
     pages.forEach((page) => {

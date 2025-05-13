@@ -942,6 +942,9 @@ cursor.active::after {
 }
 
 @media screen and (min-width: 576px) {
+  #layeredcharacter{
+    margin-top:-75px; margin-left:-25px;
+  }
   .accordion-button {
     text-align: right;
   }
@@ -1185,3 +1188,5 @@ content:" (thinking)";
 #alertToastModal .modal-content{
   box-shadow: 0px 0px 80px 40px rgba(0,0,0,0.6) !important;
 }
+
+
