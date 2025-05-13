@@ -808,7 +808,7 @@ function parsePage(pageId, pageName, pageLines) {
     let previousChatroom = null;
     let currentApp = "chat";
     for (const lineUntrimmed of pageLines) {
-        const line = lineUntrimmed.trim();
+        let line = lineUntrimmed.trim();
         let isThought = false;
         if (line.startsWith("_") && line.endsWith("_")) {
             isThought = true;
