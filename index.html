@@ -17,7 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="UTF-8" />
 
-    <link rel="stylesheet" href="style.css?v=16" />
+    <link rel="stylesheet" href="style.css?v=17" />
     <link href="bs/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Bootstrap JS CDN script -->
@@ -972,9 +972,18 @@
             ></button>
           </div>
           <div class="modal-body bg-slight">
-            <h2 class="fs-6">Create New Character</h2>
-            <div class="mb-0 mt-3 row">
-              <div class="col-6 col-sm-6">
+            <div class="mb-0 mt-0 row">
+              <div class="col-12 col-sm-6">
+                <div class="row">
+                  <div class="col-7 col-sm-12">
+                <h2 class="fs-6">Create New Character</h2>
+                  </div>
+                  <div class="col-5 col-sm-12 d-sm-none text-end">
+                  <button class="btn btn-secondary btn-xs mb-1 d-inline-block d-sm-none" type="button" data-bs-toggle="collapse" data-bs-target="#layeredCharacterCollapse" aria-expanded="false" aria-controls="layeredCharacterCollapse">
+                    preview<br>on/off
+                  </button>
+                  </div>
+                </div>
                 <div class="input-group input-group-sm mb-1">
                   <span class="input-group-text">Name<sup style="color: red;">*</sup></span>
                   <input
@@ -984,6 +993,51 @@
                     type="text"
                     class="form-control"
                   />
+                  <input
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    data-bs-title="Auto generated from 'Name'."
+                    readonly="readonly"
+                    disabled
+                    placeholder="john"
+                    id="newCharacterSlugInput"
+                    type="hidden"
+                    class="form-control"
+                  />
+                </div>
+                <div class="input-group input-group-sm mb-1">
+                  <select id="newCharacterGenderInput" class="form-select">
+                    <option value="female">female</option>
+                    <option value="male">male</option>
+                  </select>
+                </div>
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">Skin</span>
+                  <select id="newCharacterSkinInput" class="form-select">
+                    <option value="white">light</option>
+                    <option value="black">dark</option>
+                  </select>
+                </div>
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">Eyes</span>
+                  <select id="newCharacterEyesInput" class="form-select">
+                    <option value="">random</option>
+                    <option value="black">black</option>
+                    <option value="brown">brown</option>
+                    <option value="blue">blue</option>
+                    <option value="green">green</option>
+                    <option value="amber">amber</option>
+                    <option value="green">hazel</option>
+                  </select>
+                </div>
+                <div class="input-group input-group-sm mb-1">
+                  <span class="input-group-text">Chest ;)</span>
+                  <select id="newCharacterDressSizeInput" class="form-select">
+                    <option value="">random</option>
+                    <option value="small">small</option>
+                    <option value="medium">medium</option>
+                    <option value="big">big</option>
+                  </select>
                 </div>
               </div>
               <div style="max-width:1px !important;height:1px !important;overflow:hidden;opacity:0;position:absolute;top:-100px;left:-200px;" class="col-6 col-sm-3">
@@ -1008,44 +1062,15 @@
                   </select>
                 </div>
               </div>
-              <div class="col-6 col-sm-6">
-                <div class="input-group input-group-sm mb-1">
-                  <span class="input-group-text">Slug</span>
-                  <input
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Auto generated from 'Name'."
-                    readonly="readonly"
-                    disabled
-                    placeholder="john"
-                    id="newCharacterSlugInput"
-                    type="text"
-                    class="form-control"
-                  />
-                </div>
+              <div class="col-12 col-sm-6">
+                  <div class="collapse good d-sm-block" id="layeredCharacterCollapse">
+                    <div id="layeredcharacter">
+
+                    </div>
+                  </div>
               </div>
-            </div>
-            <div class="mb-0 mt-1 row">
-              <div class="col-6 col-sm-6">
-                <div class="input-group input-group-sm mb-1">
-                  <span class="input-group-text">Gender</span>
-                  <select id="newCharacterGenderInput" class="form-select">
-                    <option value="female">female</option>
-                    <option value="male">male</option>
-                  </select>
-                </div>
-                </div>
-              <div class="col-6 col-sm-6">
-                <div class="input-group input-group-sm mb-1">
-                  <span class="input-group-text">Skin</span>
-                  <select id="newCharacterSkinInput" class="form-select">
-                    <option value="white">light</option>
-                    <option value="black">dark</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-6 col-sm-6">
-                <div class="input-group input-group-sm mb-1">
+              <div class="col-12 col-sm-6">
+                              <div class="input-group input-group-sm mb-1">
                   <span class="input-group-text">Hair Color</span>
                   <select id="newCharacterHairColorInput" class="form-select">
                     <option value="black">black</option>
@@ -1056,8 +1081,10 @@
                     <option value="blue">green</option>
                     <option value="ginger">ginger</option>
                     <option value="red">red</option>
-                  </select></div></div>
-              <div class="col-6 col-sm-6">
+                  </select></div>
+              </div>
+              <div class="col-12 col-sm-6">
+              
                 <div class="input-group input-group-sm mb-1">
                   <span class="input-group-text">Hair Style</span>
                   <select id="newCharacterHairStyleInput" class="form-select">
@@ -1066,31 +1093,7 @@
                     <option value="bob">bob</option>
                     <option value="pixie">pixie</option>
                     <option value="ponytail">ponytail</option>
-                    <option value="wavy">wavy</option>
-                  </select>
-                </div></div>
-              <div class="col-6 col-sm-6">
-                <div class="input-group input-group-sm mb-1">
-                  <span class="input-group-text">Eyes</span>
-                  <select id="newCharacterEyesInput" class="form-select">
-                    <option value="">random</option>
-                    <option value="black">black</option>
-                    <option value="brown">brown</option>
-                    <option value="blue">blue</option>
-                    <option value="green">green</option>
-                    <option value="amber">amber</option>
-                    <option value="green">hazel</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-6 col-sm-6">
-                <div class="input-group input-group-sm mb-1">
-                  <span class="input-group-text">Chest ;)</span>
-                  <select id="newCharacterDressSizeInput" class="form-select">
-                    <option value="">random</option>
-                    <option value="small">small</option>
-                    <option value="medium">medium</option>
-                    <option value="big">big</option>
+                    <option value="wavy" selected>wavy</option>
                   </select>
                 </div>
               </div>
@@ -1110,6 +1113,10 @@
             >
               <!-- Characters will be dynamically added here -->
             </ul>
+  <a class="btn btn-xs mt-2 btn-secondary" data-bs-toggle="collapse" data-bs-target="#collapseModelInfo" href="#collapseModelInfo" aria-expanded="false" aria-controls="collapseModelInfo">
+    Show/Hide Optional Model Info
+  </a>
+<div class="collapse good" id="collapseModelInfo">
             <h2 class="fs-6 mt-3">Add Model Info (Optional)</h2>
             <div class="mb-0 row px-3 text-small">
               <ul
@@ -1119,6 +1126,7 @@
                 <!-- Characters will be dynamically added here -->
               </ul>
             </div>
+  </div>
           </div>
           <div class="modal-footer p-2">
             <button
@@ -2035,11 +2043,13 @@
       </div>
     </div>
     <script src="urlify.js"></script>
-    <script src="main.js?v=16"></script>
-    <script src="media.js?v=16"></script>
+    <script src="main.js?v=17"></script>
+    <script src="media.js?v=17"></script>
     <script src="jszip.min.js"></script>
     <script src="FileSaver.min.js"></script>
-    <script src="exporter.js?v=16"></script>
+    <script src="exporter.js?v=17"></script>
+    <script src="js-yaml.min.js"></script>
+    <script src="layeredcharacters.js?v=17"></script>
     <script>
       // document.addEventListener(
       //   "DOMContentLoaded",
@@ -2066,6 +2076,32 @@
     </div>
     <emoji-picker></emoji-picker>
   </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const inputIds = [
+        'newCharacterGenderInput',
+        'newCharacterSkinInput',
+        'newCharacterHairColorInput',
+        'newCharacterHairStyleInput',
+        'newCharacterEyesInput',
+        'newCharacterDressSizeInput'
+    ];
+
+    inputIds.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', updateCharacterPreview);
+        } else {
+            console.warn(`Element with ID '${id}' not found for event listener setup.`);
+        }
+    });
+
+    // Initial character draw when the page loads, based on default selections
+    // Ensure the YAML files for default gender are pre-cached or handled gracefully by getImagesForCommand
+    console.log("Performing initial character draw.");
+    updateCharacterPreview();
+});
+  </script>
     <script>
       document.addEventListener(
         "DOMContentLoaded",

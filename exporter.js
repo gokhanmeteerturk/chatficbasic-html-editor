@@ -81,6 +81,7 @@ function importChatficMarkdown(){
         checkChatfic();
         refreshChat();
         updateAppSelector();
+        characterThumbnails = {};
         refreshCharacters();
         refreshPageOptionsList();
         updatePageSelect();
@@ -90,6 +91,7 @@ function importChatficMarkdown(){
         checkChatfic();
         refreshChat();
         updateAppSelector();
+        characterThumbnails = {};
         refreshCharacters();
         refreshPageOptionsList();
         updatePageSelect();
@@ -171,6 +173,7 @@ function importChatficJson() {
         updateMetaUI(chatfic);
         refreshChat();
         updateAppSelector();
+        characterThumbnails = {};
         refreshCharacters();
         refreshPageOptionsList();
         updatePageSelect();
@@ -184,6 +187,7 @@ function importChatficJson() {
         checkChatfic();
         refreshChat();
         updateAppSelector();
+        characterThumbnails = {};
         refreshCharacters();
         refreshPageOptionsList();
         updatePageSelect();
@@ -289,6 +293,7 @@ function loadFromLocalCustom(loadPages=false) {
     updateAppSelector();
     refreshChat();
     updateAppSelector();
+    characterThumbnails = {};
     refreshCharacters();
     refreshPageOptionsList();
     updatePageSelect();
