@@ -21,7 +21,8 @@ const hairColorMap = {
     "blonde": "blonde-hair",
     "blue": "blue-hair",    // HTML options for "blue" and "green" (text) both have value="blue"
     "ginger": "ginger-hair",
-    "red": "red-hair"
+    "red": "red-hair",
+    "pink": "pink-hair"
 };
 
 const hairStyleMap = {
@@ -69,7 +70,7 @@ function mapWordToNumber(word, maxIncluding) {
 
 // Constants for default value arrays
 const EYE_COLORS_DEFAULT = ["amber", "blue", "brown", "green", "black"];
-const HAIR_COLORS_DEFAULT = ["black", "blonde", "blue", "brown", "ginger", "grey", "red"];
+const HAIR_COLORS_DEFAULT = ["black", "blonde", "blue", "brown", "ginger", "grey", "red", "pink"];
 const HAIR_STYLES_MALE_DEFAULT = ["straight", "bob"];
 const HAIR_STYLES_FEMALE_DEFAULT = ["straight", "bob", "pixie", "ponytail", "wavy", "buns", "bangs-short", "afro-short", "braids", "pony-two", "pigtails"];
 
