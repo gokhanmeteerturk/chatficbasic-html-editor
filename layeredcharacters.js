@@ -29,7 +29,13 @@ const hairStyleMap = {
     "bob": "bob-hair",
     "pixie": "pixie-hair",
     "ponytail": "ponytail-hair",
-    "wavy": "wavy-hair"
+    "wavy": "wavy-hair",
+    "buns": "buns-hair",
+    "bangs-short": "bangs-short-hair",
+    "afro-short": "afro-short-hair",
+    "braids": "braids-hair",
+    "pony-two": "pony-two-hair",
+    "pigtails": "pigtails-hair"
 };
 
 const dressSizeMap = { // For "Chest ;)"
@@ -65,7 +71,8 @@ function mapWordToNumber(word, maxIncluding) {
 const EYE_COLORS_DEFAULT = ["amber", "blue", "brown", "green", "black"];
 const HAIR_COLORS_DEFAULT = ["black", "blonde", "blue", "brown", "ginger", "grey", "red"];
 const HAIR_STYLES_MALE_DEFAULT = ["straight", "bob"];
-const HAIR_STYLES_FEMALE_DEFAULT = ["straight", "bob", "pixie", "ponytail", "wavy"];
+const HAIR_STYLES_FEMALE_DEFAULT = ["straight", "bob", "pixie", "ponytail", "wavy", "buns", "bangs-short", "afro-short", "braids", "pony-two", "pigtails"];
+
 const DRESS_SIZES_DEFAULT = ["small", "medium", "big"];
 
 function convertToCharacterCommand(character) {
