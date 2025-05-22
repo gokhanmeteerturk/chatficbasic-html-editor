@@ -611,6 +611,11 @@ function refreshCharacters() {
     );
     fromInput.innerHTML = "";
 
+    const selectForReplaceFirst = document.getElementById("replaceCharacterSelectFirst");
+    selectForReplaceFirst.innerHTML = "";
+    const selectForReplaceSecond = document.getElementById("replaceCharacterSelectSecond");
+    selectForReplaceSecond.innerHTML = "";
+
     for (let key in chatfic.characters) {
         const character = chatfic.characters[key];
 
@@ -618,6 +623,12 @@ function refreshCharacters() {
         option.innerText = character.name;
         option.value = key;
         fromInput.appendChild(option);
+        // duplicate option for second select:
+        const option2 = option.cloneNode(true);
+        const option3 = option.cloneNode(true);
+        selectForReplaceFirst.appendChild(option2);
+        selectForReplaceSecond.appendChild(option3);
+
 
         const characterCard = document.createElement("li");
         characterCard.className = "list-group-item small";
@@ -1479,8 +1490,10 @@ function escapeHTML(str) {
     }
   }
 let editMessageModal;
+let replaceCharacterMessagesModal;
 document.addEventListener("DOMContentLoaded", function () {
     editMessageModal = new bootstrap.Modal(document.getElementById("editMessageModal"));
+    replaceCharacterMessagesModal = new bootstrap.Modal(document.getElementById('replaceCharacterMessagesModal'));
 
     document.getElementById("saveMessageButton").addEventListener("click", function () {
         saveMessageFromEditModal();
@@ -1586,6 +1599,61 @@ function editMessage(messageIndex) {
     
 
     auto_height(document.getElementById("messageInput"));
+  }
+
+  function replaceCharacter(messageIndex){
+    document.getElementById("replaceCharacterFirstMessageIndex").value = messageIndex;
+    replaceCharacterMessagesModal.show();
+  }
+
+  function replaceCharacterBulk(){
+    const firstMessageIndex = parseInt(document.getElementById("replaceCharacterFirstMessageIndex").value);
+    if(firstMessageIndex == null || firstMessageIndex.length < 1){
+        return;
+        replaceCharacterMessagesModal.hide();
+    }
+
+    const characterSlug1 = document.getElementById("replaceCharacterSelectFirst").value;
+    const characterSlug2 = document.getElementById("replaceCharacterSelectSecond").value;
+    const characterName1 = chatfic.characters[characterSlug1].name;
+    const characterName2 = chatfic.characters[characterSlug2].name;
+    
+    const pageId = document.getElementById("pageSelect").value;
+    const page = pages.find((x) => x.id == pageId);
+    let chatroomName = null;
+    let newChatroomName = null;
+    const pageMessagesLength = page.messages.length;
+    for (let i = 0; i < pageMessagesLength; i++) {
+        if(i<firstMessageIndex){
+            continue;
+        }
+        if(i===firstMessageIndex){
+            chatroomName = page.messages[i].chatroom;
+            if(chatroomName == characterName1 && characterSlug2!="player" && characterSlug2!="app"){
+                newChatroomName = characterName2;
+            }
+        }
+        if(page.messages[i].chatroom === chatroomName){
+            if(newChatroomName){page.messages[i].chatroom = newChatroomName;}
+            if(page.messages[i].from == characterSlug1){
+                page.messages[i].from = characterSlug2;
+                if(page.messages[i].side == 1 && characterSlug2 != "app"){
+                    page.messages[i].side = 0;
+                }
+                if(characterSlug2 == "player"){
+                    page.messages[i].side = 2;
+                }
+                else if(characterSlug2 == "app"){
+                    page.messages[i].side = 1;
+                }
+            }
+        }
+        else{
+            break;
+        }
+    }
+    replaceCharacterMessagesModal.hide();
+    refreshChat();
   }
 
   function renameChatroom(messageIndex){
@@ -1752,7 +1820,8 @@ function refreshChat() {
   </button>
   <ul class="dropdown-menu list-group-sm" aria-labelledby="dropdownMenu${i}">
     <li><button onclick="flipMessages(${i})" class="dropdown-item list-group-item" type="button">Flip message sides</button></li>
-    <li><button onclick="renameChatroom(${i})" class="dropdown-item list-group-item" type="button">Rename Chatroom</button></li>
+    <li><button onclick="renameChatroom(${i})" class="dropdown-item list-group-item" type="button">Rename chatroom</button></li>
+    <li><button onclick="replaceCharacter(${i})" class="dropdown-item list-group-item" type="button">Replace a character</button></li>
 <!--    <li><button class="dropdown-item list-group-item" type="button">Another action</button></li>-->
 <!--    <li><button class="dropdown-item list-group-item" type="button">Something else here</button></li>-->
   </ul>
