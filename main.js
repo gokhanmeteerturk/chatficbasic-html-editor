@@ -1588,6 +1588,36 @@ function editMessage(messageIndex) {
     auto_height(document.getElementById("messageInput"));
   }
 
+  function renameChatroom(messageIndex){
+    const pageId = document.getElementById("pageSelect").value;
+    const page = pages.find((x) => x.id == pageId);
+    let chatroomName = null;
+
+    let newChatroomName = prompt("Please enter new name for this chatroom.\nIt will not change all occurrences of this chatroom in the page,\nit will only change it for the messages under this chatroom header.\nThis also won't change who each message is from.");
+
+    if(newChatroomName == null || newChatroomName.length < 1){
+        return;
+    }
+
+    newChatroomName = newChatroomName.trim();
+
+    const pageMessagesLength = page.messages.length;
+    for (let i = 0; i < pageMessagesLength; i++) {
+        if(i<messageIndex){
+            continue;
+        }
+        if(i===messageIndex){
+            chatroomName = page.messages[i].chatroom;
+        }
+        if(page.messages[i].chatroom === chatroomName){
+            page.messages[i].chatroom = newChatroomName;
+        }
+        else{
+            break;
+        }
+    }
+    refreshChat();
+  }
   function flipMessages(messageIndex){
     const pageId = document.getElementById("pageSelect").value;
     const page = pages.find((x) => x.id == pageId);
@@ -1722,6 +1752,7 @@ function refreshChat() {
   </button>
   <ul class="dropdown-menu list-group-sm" aria-labelledby="dropdownMenu${i}">
     <li><button onclick="flipMessages(${i})" class="dropdown-item list-group-item" type="button">Flip message sides</button></li>
+    <li><button onclick="renameChatroom(${i})" class="dropdown-item list-group-item" type="button">Rename Chatroom</button></li>
 <!--    <li><button class="dropdown-item list-group-item" type="button">Another action</button></li>-->
 <!--    <li><button class="dropdown-item list-group-item" type="button">Something else here</button></li>-->
   </ul>
