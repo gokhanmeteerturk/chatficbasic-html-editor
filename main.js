@@ -1807,6 +1807,7 @@ function refreshChat() {
                     const videoSpanEl = document.createElement("span");
                     videoSpanEl.innerText = `Video file: ${messageObject.multimedia}`;
                     videoEl.src = mediaFileVideoThumbnailList[messageObject.multimedia];
+                    videoContainerEl.setAttribute("onclick", `openVideo("${messageObject.multimedia.replaceAll('"','')}");`);
                     videoContainerEl.appendChild(videoEl);
                     videoContainerEl.appendChild(videoSpanEl);
                     messageDiv.appendChild(videoContainerEl);
@@ -1820,6 +1821,7 @@ function refreshChat() {
                 const imageEl = document.createElement("img");
                 if (mediaFileSrcList.hasOwnProperty(messageObject.multimedia)) {
                     imageEl.src = mediaFileSrcList[messageObject.multimedia];
+                    imageEl.setAttribute("onclick", `openImage("${messageObject.multimedia.replaceAll('"','')}");`);
                 }
                 else{
                     imageEl.src = createPlaceholderSrc("Missing media:\n" + messageObject.multimedia + "\nPlease drop the\nactual media here", 15);
