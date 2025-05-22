@@ -1999,6 +1999,32 @@
     </div>
   </div>
 </div>
+<!-- Replace Character Modal Media Modal -->
+<div class="modal fade" id="replaceCharacterMessagesModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Replace Character Messages</h5>
+        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <p>You can replace all of the messages under this chatroom from a specific character so they will be from another character. Just use below tool to select characters and click the replace button.</p>
+          <p>For this chatroom, </p>
+          <div class="input-group input-group-sm mb-2">
+            <input class="form-control form-control-sm" type="hidden" id="replaceCharacterFirstMessageIndex" />
+            <span class="input-group-text inputGroup-sizing-sm">replace messages of </span>
+            <select id="replaceCharacterSelectFirst" class="form-select form-select-sm">
+            </select><span class="input-group-text inputGroup-sizing-sm">to be from </span>
+            <select id="replaceCharacterSelectSecond" class="form-select form-select-sm">
+            </select>
+          </div>
+            <button id="replaceCharacterButton" class="btn w-100 btn-danger btn-sm mt-2" onclick="replaceCharacterBulk();">Replace</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
     <div
       class="modal fade"
@@ -2063,7 +2089,7 @@
       </div>
     </div>
     <script src="urlify.js"></script>
-    <script src="main.js?v=21"></script>
+    <script src="main.js?v=22"></script>
     <script src="media.js?v=18"></script>
     <script src="jszip.min.js"></script>
     <script src="FileSaver.min.js"></script>
