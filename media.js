@@ -63,6 +63,52 @@ function generateVideoThumbnail(file){
       };
     });
   };
+// Assume mediaFiles is defined globally
+// const mediaFiles = []; // Array of File objects
+
+function getMediaBlobUrl(filename) {
+  const file = mediaFiles.find(f => f.name === filename);
+  if (!file) {
+    console.error(`File not found: ${filename}`);
+    return null;
+  }
+  return URL.createObjectURL(file);
+}
+
+function showMediaInModal(elementHtml) {
+  const container = document.getElementById('mediaContainer');
+  container.innerHTML = ''; // Clear previous content
+  container.appendChild(elementHtml);
+
+  const modal = new bootstrap.Modal(document.getElementById('mediaModal'));
+  modal.show();
+}
+
+function openImage(filename) {
+  const url = getMediaBlobUrl(filename);
+  if (!url) return;
+
+  const img = document.createElement('img');
+  img.src = url;
+  img.className = 'img-fluid'; // Bootstrap class to scale image
+  img.style.maxHeight = 'calc(100vh - 50px)';
+  img.style.maxWidth = 'calc(100vw - 50px)';
+  showMediaInModal(img);
+}
+
+function openVideo(filename) {
+  const url = getMediaBlobUrl(filename);
+  if (!url) return;
+
+  const video = document.createElement('video');
+  video.src = url;
+  video.controls = true;
+  video.autoplay = true;
+  video.className = 'w-100';
+  video.style.maxHeight = 'calc(100vh - 100px)';
+  video.style.maxWidth = 'calc(100vw - 50px)';
+  showMediaInModal(video);
+}
 
 function loadFiles(files){
     if(files && files.length>0){
