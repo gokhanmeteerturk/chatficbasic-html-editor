@@ -1006,7 +1006,9 @@
                   />
                 </div>
                 <div class="input-group input-group-sm mb-1">
-                  <select id="newCharacterGenderInput" class="form-select">
+                  <select id="newCharacterGenderInput" class="form-select"
+                  onchange="if(this.value=='male'){document.getElementById('newCharacterHairStyleInput').value='straight';document.querySelector('#newCharacterHairStyleInput option[value=\'pony-two\']').disabled=true;document.querySelector('#newCharacterHairStyleInput option[value=\'ponytail\']').disabled=true;document.querySelector('#newCharacterHairStyleInput option[value=\'wavy\']').disabled=true;document.querySelector('#newCharacterHairStyleInput option[value=\'buns\']').disabled=true;document.querySelector('#newCharacterHairStyleInput option[value=\'bangs-short\']').disabled=true;document.querySelector('#newCharacterHairStyleInput option[value=\'pigtails\']').disabled=true;}else{document.querySelector('#newCharacterHairStyleInput option[value=\'pony-two\']').disabled=false;document.querySelector('#newCharacterHairStyleInput option[value=\'ponytail\']').disabled=false;document.querySelector('#newCharacterHairStyleInput option[value=\'wavy\']').disabled=false;document.querySelector('#newCharacterHairStyleInput option[value=\'buns\']').disabled=false;document.querySelector('#newCharacterHairStyleInput option[value=\'bangs-short\']').disabled=false;document.querySelector('#newCharacterHairStyleInput option[value=\'pigtails\']').disabled=false;}"
+                  >
                     <option value="female">female</option>
                     <option value="male">male</option>
                   </select>
@@ -1014,8 +1016,18 @@
                 <div class="input-group input-group-sm mb-1">
                   <span class="input-group-text">Skin</span>
                   <select id="newCharacterSkinInput" class="form-select">
-                    <option value="white">light</option>
-                    <option value="black">dark</option>
+                    <option value="light-cool">light cool</option>
+                    <option value="light-neutral">light neutral</option>
+                    <option value="light-warm">light warm</option>
+                    <option value="medium-cool">medium cool</option>
+                    <option value="medium-neutral">medium neutral</option>
+                    <option value="medium-warm">medium warm</option>
+                    <option value="tan-cool">tan cool</option>
+                    <option value="tan-neutral">tan neutral</option>
+                    <option value="tan-warm">tan warm</option>
+                    <option value="dark-cool">dark cool</option>
+                    <option value="dark-neutral">dark neutral</option>
+                    <option value="dark-warm">dark warm</option>
                   </select>
                 </div>
                 <div class="input-group input-group-sm mb-1">
@@ -2089,13 +2101,13 @@
       </div>
     </div>
     <script src="urlify.js"></script>
-    <script src="main.js?v=22"></script>
+    <script src="main.js?v=23"></script>
     <script src="media.js?v=18"></script>
     <script src="jszip.min.js"></script>
     <script src="FileSaver.min.js"></script>
     <script src="exporter.js?v=19"></script>
     <script src="js-yaml.min.js"></script>
-    <script src="layeredcharacters.js?v=19"></script>
+    <script src="layeredcharacters.js?v=20"></script>
     <script>
       // document.addEventListener(
       //   "DOMContentLoaded",
