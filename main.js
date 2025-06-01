@@ -133,7 +133,7 @@ var chatfic = {
             name: "Jessica",
             color: "black",
             gender: "female",
-            skin: "white",
+            skin: "light-warm",
             hair: {
                 color: "black",
                 style: "straight",

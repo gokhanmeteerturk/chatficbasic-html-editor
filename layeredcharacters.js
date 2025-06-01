@@ -69,9 +69,17 @@ function mapWordToNumber(word, maxIncluding) {
 }
 
 // Constants for default value arrays
+const SKINS_DEFAULT = [
+    "light-cool", "light-neutral", "light-warm",
+    "medium-cool", "medium-neutral", "medium-warm",
+    "tan-cool", "tan-neutral", "tan-warm",
+    "dark-cool", "dark-neutral", "dark-warm",
+    "red","blue","green","silver",
+    "white", "black"
+];
 const EYE_COLORS_DEFAULT = ["amber", "blue", "brown", "green", "black"];
 const HAIR_COLORS_DEFAULT = ["black", "blonde", "blue", "brown", "ginger", "grey", "red", "pink"];
-const HAIR_STYLES_MALE_DEFAULT = ["straight", "bob"];
+const HAIR_STYLES_MALE_DEFAULT = ["straight", "bob", "pixie", "afro-short", "braids"];
 const HAIR_STYLES_FEMALE_DEFAULT = ["straight", "bob", "pixie", "ponytail", "wavy", "buns", "bangs-short", "afro-short", "braids", "pony-two", "pigtails"];
 
 const DRESS_SIZES_DEFAULT = ["small", "medium", "big"];
@@ -87,14 +95,22 @@ function convertToCharacterCommand(character) {
         genderCmd = "b1";
     }
 
-    // 2. $skin: "white" or "black", defaults to white.
-    let skinCmd = "white"; // Default to white
-    if (char.skin === "black") {
-        skinCmd = "black";
-    } else if (char.skin === "white") { // Explicitly check for "white" in case of other values
-        skinCmd = "white";
-    }
     // If char.skin is undefined or an unrecognized value, it remains "white".
+    let skinCmd;
+    if (char.skin && typeof char.skin === 'string' && char.skin.trim() !== "") {
+        skinCmd = char.skin;
+        if(skinCmd == 'white'){
+            character.skin = 'light-cool';
+            skinCmd = 'light-cool';
+        }
+        else if(skinCmd == 'black'){
+            character.skin = 'dark-neutral';
+            skinCmd = 'dark-neutral';
+        }
+    } else {
+        const skinIndex = mapWordToNumber(characterName, 8);
+        skinCmd = SKINS_DEFAULT[skinIndex];
+    }
 
     // 3. $body: always "body1".
     const bodyCmd = "body1";
