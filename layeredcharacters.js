@@ -74,6 +74,7 @@ const SKINS_DEFAULT = [
     "medium-cool", "medium-neutral", "medium-warm",
     "tan-cool", "tan-neutral", "tan-warm",
     "dark-cool", "dark-neutral", "dark-warm",
+    "red","blue","green","silver",
     "white", "black"
 ];
 const EYE_COLORS_DEFAULT = ["amber", "blue", "brown", "green", "black"];
